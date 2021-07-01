@@ -1,6 +1,7 @@
 import csv
 import random
 import string
+import time
 
 FIELDNAMES = ["id", "submission_time", "view_number", "vote_number", "title", "message"]
 
@@ -23,6 +24,12 @@ def generate_key():
     return int("".join(new_id))
 
 
+def get_time():
+    named_tuple = time.localtime()
+    current_time= time.strftime("%H:%M", named_tuple)
+    return current_time
+
+
 def read_all_entries(file, header):
     output = []
     with open(file, mode="r") as file:
@@ -42,7 +49,7 @@ def insert_entry(title, message):
             writer.writerow(
                 {
                     "id": count,
-                    "submission_time": generate_key(),
+                    "submission_time": get_time(),
                     "view_number": 1,
                     "vote_number": 0,
                     "title": title,
@@ -65,7 +72,7 @@ def insert_answer(id, message):
             writer.writerow(
                 {
                     "id": count,
-                    "submission_time": generate_key(),
+                    "submission_time": get_time(),
                     "vote_number": 0,
                     "question_id": id,
                     "message": message,

@@ -27,8 +27,18 @@ def get_entry(id):
         answer_all = read_answers(id)
         answer = []
         for element in answer_all:
+            answer_headings = ["message", "submission_time", "vote_number"]
+            current_information = []
             if element["question_id"] == str(id):
-                answer.append(element["message"])
+                message_val = element["message"]
+                current_information.append(message_val)
+                sub_time = element["submission_time"]
+                current_information.append(sub_time)
+                vote_nr = element["vote_number"]
+                current_information.append(vote_nr)
+
+                compile_answer = {answer_headings[i]: current_information[i] for i in range(len(answer_headings))}
+                answer.append(compile_answer)
     except TypeError:
         print("hahahaha i crashed stuff @ accessing an entry")
         answer = None
@@ -37,18 +47,21 @@ def get_entry(id):
         title = entry["title"]
         message = entry["message"]
         view_count = entry["view_number"]
+        submission_time = entry["submission_time"]
 
         return render_template(
             "entry.html",
             title=title,
             message=message,
             view_count=view_count,
+            submission_time=submission_time,
             id=id,
         )
     else:
         title = entry["title"]
         message = entry["message"]
         view_count = entry["view_number"]
+        submission_time = entry["submission_time"]
 
         answer = answer
         print(f"This is what is passed to the html : {answer}")
@@ -58,6 +71,7 @@ def get_entry(id):
             title=title,
             message=message,
             view_count=view_count,
+            submission_time=submission_time,
             answer=answer,
             id=id,
         )

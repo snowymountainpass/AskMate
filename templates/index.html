@@ -23,6 +23,7 @@
             <th>Title</th>
             <th>Message</th>
             <th>View count</th>
+            <th>Submitted at</th>
         </tr>
     </thead>
     <tbody>
@@ -35,6 +36,7 @@
             </td>
             <td>{{ e.message }}</td>
             <td>{{ e.view_number }}</td>
+            <td>{{ e.submission_time}}</td>
         </tr>
         {% endfor %}
     </tbody>
