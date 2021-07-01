@@ -1,5 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from sample_data import read_all_entries, insert_entry, read_entry, read_answers, HEADERS_QUESTIONS, HEADERS_ANSWERS
+from sample_data import (
+    read_all_entries,
+    insert_entry,
+    read_entry,
+    read_answers,
+    HEADERS_QUESTIONS,
+    HEADERS_ANSWERS,
+    change_entry, insert_answer,
+
+)
 
 app = Flask(__name__)
 app.secret_key = "alskua ekjegu keucyf iqek,rvgkfarg rkjegkjqaved"
@@ -11,17 +20,17 @@ def index():
     return render_template("index.html", entries=entries)
 
 
-@app.route("/entry/<int:id>", methods=['GET'])
+@app.route("/entry/<int:id>", methods=["GET"])
 def get_entry(id):
     entry = read_entry(id)
     try:
         answer_all = read_answers(id)
         answer = []
         for element in answer_all:
-            if element['question_id'] == ' ' + str(id):
-                answer.append(element['message'])
+            if element["question_id"] == str(id):
+                answer.append(element["message"])
     except TypeError:
-        print('hahahaha i crashed stuff @ accessing an entry')
+        print("hahahaha i crashed stuff @ accessing an entry")
         answer = None
 
     if not answer:
@@ -34,6 +43,7 @@ def get_entry(id):
             title=title,
             message=message,
             view_count=view_count,
+            id=id,
         )
     else:
         title = entry["title"]
@@ -41,19 +51,42 @@ def get_entry(id):
         view_count = entry["view_number"]
 
         answer = answer
-        print(f'This is what is passed to the html : {answer}')
+        print(f"This is what is passed to the html : {answer}")
 
         return render_template(
             "entry.html",
             title=title,
             message=message,
             view_count=view_count,
-            answer=answer
+            answer=answer,
+            id=id,
         )
 
 
+@app.route("/enter-edit/<int:id>", methods=["GET"])
+def editting(id):
+    entry = read_entry(id)
+    return render_template("edit_question.html", id=id, entry=entry)
 
-@app.route("/post-question", methods=['GET'])
+
+@app.route("/edit/<int:id>/", methods=["POST"])
+def edit_entry(id):
+    entry = read_entry(id)
+    print(f"TYPE OF ENTRY{type(entry)}")
+    print(entry)
+    title = ""
+    if entry["id"] == str(id):
+        title = entry["title"]
+
+    message = request.form.get("message")
+    if change_entry(id, message):
+        flash("Question successfully edited")
+        return redirect(url_for("get_entry",id=id))
+    flash("Edit was not saved")
+    return redirect(url_for("get_entry",id=id))
+
+
+@app.route("/post-question", methods=["GET"])
 def enter_question():
     return render_template("post_question.html")
 
@@ -62,17 +95,31 @@ def enter_question():
 def adding():
     title = request.form.get("title")
     message = request.form.get("message")
+    id = insert_entry(title, message)
 
-    if insert_entry(title, message):
+    if bool(id):
         flash("Entry added")
-        return redirect(url_for("index"))
+        return redirect(url_for("get_entry",id=id))
 
     flash("Entry not added")
     return redirect(url_for("index"))
 
-@app.route("/edit/<question_id>")
-def edit():
-    pass
+
+@app.route("/post-answer/<int:id>", methods=['GET'])
+def enter_answer(id):
+    return render_template("post_answer.html",id=id)
+
+
+@app.route("/add-answer/<int:id>", methods=['POST'])
+def add_answer(id):
+    message = request.form.get("message")
+
+    if insert_answer(id,message):
+        flash("Answer added")
+        return redirect(url_for("get_entry",id=id))
+
+    flash("Answer not added")
+    return redirect(url_for("get_entry",id=id))
 
 
 

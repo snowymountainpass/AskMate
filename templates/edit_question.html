@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post a question</title>
+</head>
+<body>
+<form action="{{ url_for('edit_entry', id=id) }}" method="POST">
+    <p>Editting current ID : {{id}}</p>
+    <p>
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" value="{{entry.title}}"/>
+    </p>
+    <p>
+        <label for="message">Message</label>
+        <textarea name="message" id="message" cols="30" rows="10">{{entry.message}}</textarea>
+    </p>
+    <p><button type="submit">Submit</button></p>
+</form>
+</body>
+</html>

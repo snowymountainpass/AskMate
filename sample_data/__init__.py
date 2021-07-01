@@ -2,10 +2,17 @@ import csv
 import random
 import string
 
-FIELDNAMES = ["id","submission_time","view_number","vote_number", "title", "message"]
+FIELDNAMES = ["id", "submission_time", "view_number", "vote_number", "title", "message"]
 
-HEADERS_QUESTIONS = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message']
-HEADERS_ANSWERS = ['id', 'submission_time', 'vote_number', 'question_id', 'message']
+HEADERS_QUESTIONS = [
+    "id",
+    "submission_time",
+    "view_number",
+    "vote_number",
+    "title",
+    "message",
+]
+HEADERS_ANSWERS = ["id", "submission_time", "vote_number", "question_id", "message"]
 
 
 def generate_key():
@@ -13,22 +20,7 @@ def generate_key():
     for digit in range(5):
         random_element = random.choice(string.digits)
         new_id.append(random_element)
-    return int(''.join(new_id))
-
-
-def get_questions(file):
-    input_file = csv.DictReader(open(file))
-    return input_file
-
-
-def save_question(some_dictionary, file):
-    with open(file, 'a', newline='\n') as csvfile:
-        fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writerow(some_dictionary)
-        csvfile.close()
-        return csvfile
-
+    return int("".join(new_id))
 
 
 def read_all_entries(file, header):
@@ -45,8 +37,7 @@ def insert_entry(title, message):
         count = len(read_all_entries("sample_data/question.csv", HEADERS_QUESTIONS))
 
         with open("sample_data/question.csv", mode="a", newline="\n") as file:
-            writer = csv.DictWriter(file, fieldnames=FIELDNAMES)
-
+            writer = csv.DictWriter(file, fieldnames=HEADERS_QUESTIONS)
 
             writer.writerow(
                 {
@@ -55,7 +46,29 @@ def insert_entry(title, message):
                     "view_number": 1,
                     "vote_number": 0,
                     "title": title,
-                    "message": message
+                    "message": message,
+                }
+            )
+        return count
+
+    except:
+        return 0
+
+
+def insert_answer(id, message):
+    try:
+        count = len(read_all_entries("sample_data/answer.csv", HEADERS_ANSWERS))
+
+        with open("sample_data/answer.csv", mode="a", newline="\n") as file:
+            writer = csv.DictWriter(file, fieldnames=HEADERS_ANSWERS)
+
+            writer.writerow(
+                {
+                    "id": count,
+                    "submission_time": generate_key(),
+                    "vote_number": 0,
+                    "question_id": id,
+                    "message": message,
                 }
             )
         return True
@@ -74,7 +87,7 @@ def read_entry(id):
             output = entry
 
     with open("sample_data/question.csv", mode="w", newline="\n") as file:
-        writer = csv.DictWriter(file, fieldnames=FIELDNAMES)
+        writer = csv.DictWriter(file, fieldnames=HEADERS_QUESTIONS)
         writer.writeheader()
 
         for index, entry in enumerate(entries):
@@ -85,11 +98,36 @@ def read_entry(id):
                     "view_number": entry["view_number"],
                     "vote_number": entry["vote_number"],
                     "title": entry["title"],
-                    "message": entry["message"]
-
+                    "message": entry["message"],
                 }
             )
+    return output
 
+
+def change_entry(id, message):
+    entries = read_all_entries("sample_data/question.csv", HEADERS_QUESTIONS)
+
+    output = []
+    for entry in entries:
+        if int(entry["id"]) == id:
+            entry["message"] = message
+            output = entry
+
+    with open("sample_data/question.csv", mode="w", newline="\n") as file:
+        writer = csv.DictWriter(file, fieldnames=HEADERS_QUESTIONS)
+        writer.writeheader()
+
+        for index, entry in enumerate(entries):
+            writer.writerow(
+                {
+                    "id": index,
+                    "submission_time": entry["submission_time"],
+                    "view_number": entry["view_number"],
+                    "vote_number": entry["vote_number"],
+                    "title": entry["title"],
+                    "message": entry["message"],
+                }
+            )
     return output
 
 
@@ -112,11 +150,7 @@ def read_answers(id):
                     "submission_time": answer["submission_time"],
                     "vote_number": answer["vote_number"],
                     "question_id": answer["question_id"],
-                    "message": answer["message"]
-
+                    "message": answer["message"],
                 }
             )
     return output
-
-
-

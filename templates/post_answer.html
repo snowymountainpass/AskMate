@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post an answer</title>
+</head>
+<body>
+<form action="{{ url_for('add_answer',id=id) }}" method="POST">
+  <p>Posting an answer to question ID {{id}}</p>
+
+    <p>
+        <label for="message">Message</label>
+        <textarea name="message" id="message" cols="30" rows="10"></textarea>
+    </p>
+    <p><button type="submit">Submit</button></p>
+</form>
+</body>
+</html>
