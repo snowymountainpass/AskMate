@@ -14,10 +14,10 @@
   {% endif %}
 {% endwith %}
 <br>
-<a href={{ url_for('enter_question') }}>Post a question</a>
+<a href="{{ url_for('enter_question') }}" class="btn btn-primary">Post a question</a>
 <br><br>
 {% if entries %}
-<table>
+<table class="table">
     <thead>
         <tr>
             <th>Title</th>
@@ -35,8 +35,8 @@
                 </a>
             </td>
             <td>{{ e.message }}</td>
-            <td>{{ e.view_number }}</td>
-            <td>{{ e.submission_time}}</td>
+            <td align="center">{{ e.view_number }}</td>
+            <td align="center">{{ e.submission_time}}</td>
         </tr>
         {% endfor %}
     </tbody>

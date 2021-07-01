@@ -9,7 +9,7 @@ from sample_data import (
     change_entry,
     insert_answer,
     upvote_entry,
-    upvote_answer,
+    upvote_answer_in_db,
 
 )
 
@@ -153,11 +153,11 @@ def upvote_question(id):
     return redirect(url_for("get_entry", id=id))
 
 
-@app.route("/upvote-answer/<int:id>", methods=['POST'])
+@app.route("/upvote-answer/<int:id>", methods=['GET','POST'])
 def upvote_answer(id):
     print(f'UPVOTING ANSWER WITH ID {id}')
-    answer = upvote_answer(id)
-    return render_template("answer-upvoted.html")
+    question_id = upvote_answer_in_db(id)
+    return redirect(url_for("get_entry", id=question_id))
 
 
 if __name__ == "__main__":

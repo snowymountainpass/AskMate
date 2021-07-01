@@ -190,14 +190,15 @@ def read_answers(id):
     return output
 
 
-def upvote_answer(id):
+def upvote_answer_in_db(id):
     answers = read_all_entries("sample_data/answer.csv", HEADERS_ANSWERS)
+    print('IN UPVOTE_ANSWER, reading entries')
 
-    output = []
+    output = None
     for answer in answers:
         if int(answer["id"]) == id:
             answer["vote_number"] = int(answer["vote_number"]) + 1
-            output = answer
+            output = answer["question_id"]
 
     with open("sample_data/answer.csv", mode="w", newline="\n") as file:
         writer = csv.DictWriter(file, fieldnames=HEADERS_ANSWERS)
@@ -213,4 +214,5 @@ def upvote_answer(id):
                     "message": answer["message"],
                 }
             )
+    print('QUITING UPVOTE ANSWER')
     return output
