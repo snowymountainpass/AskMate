@@ -5,7 +5,6 @@ from sample_data import (
     read_entry,
     read_answers,
     HEADERS_QUESTIONS,
-    HEADERS_ANSWERS,
     change_entry,
     insert_answer,
     upvote_entry,

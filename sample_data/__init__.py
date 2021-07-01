@@ -3,7 +3,6 @@ import random
 import string
 import time
 
-FIELDNAMES = ["id", "submission_time", "view_number", "vote_number", "title", "message"]
 
 HEADERS_QUESTIONS = [
     "id",
