@@ -138,6 +138,33 @@ def change_entry(id, message):
     return output
 
 
+def upvote_entry(id):
+    entries = read_all_entries("sample_data/question.csv", HEADERS_QUESTIONS)
+
+    output = []
+    for entry in entries:
+        if int(entry["id"]) == id:
+            entry["vote_number"] = int(entry["vote_number"]) + 1
+            output = entry
+
+    with open("sample_data/question.csv", mode="w", newline="\n") as file:
+        writer = csv.DictWriter(file, fieldnames=HEADERS_QUESTIONS)
+        writer.writeheader()
+
+        for index, entry in enumerate(entries):
+            writer.writerow(
+                {
+                    "id": index,
+                    "submission_time": entry["submission_time"],
+                    "view_number": entry["view_number"],
+                    "vote_number": entry["vote_number"],
+                    "title": entry["title"],
+                    "message": entry["message"],
+                }
+            )
+    return output
+
+
 def read_answers(id):
     answers = read_all_entries("sample_data/answer.csv", HEADERS_ANSWERS)
     output = []
@@ -145,6 +172,32 @@ def read_answers(id):
     for answer in answers:
         if int(answer["question_id"]) == id:
             output.append(answer)
+
+    with open("sample_data/answer.csv", mode="w", newline="\n") as file:
+        writer = csv.DictWriter(file, fieldnames=HEADERS_ANSWERS)
+        writer.writeheader()
+
+        for index, answer in enumerate(answers):
+            writer.writerow(
+                {
+                    "id": index,
+                    "submission_time": answer["submission_time"],
+                    "vote_number": answer["vote_number"],
+                    "question_id": answer["question_id"],
+                    "message": answer["message"],
+                }
+            )
+    return output
+
+
+def upvote_answer(id):
+    answers = read_all_entries("sample_data/answer.csv", HEADERS_ANSWERS)
+
+    output = []
+    for answer in answers:
+        if int(answer["id"]) == id:
+            answer["vote_number"] = int(answer["vote_number"]) + 1
+            output = answer
 
     with open("sample_data/answer.csv", mode="w", newline="\n") as file:
         writer = csv.DictWriter(file, fieldnames=HEADERS_ANSWERS)

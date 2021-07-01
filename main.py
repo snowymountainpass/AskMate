@@ -6,7 +6,10 @@ from sample_data import (
     read_answers,
     HEADERS_QUESTIONS,
     HEADERS_ANSWERS,
-    change_entry, insert_answer,
+    change_entry,
+    insert_answer,
+    upvote_entry,
+    upvote_answer,
 
 )
 
@@ -27,7 +30,7 @@ def get_entry(id):
         answer_all = read_answers(id)
         answer = []
         for element in answer_all:
-            answer_headings = ["message", "submission_time", "vote_number"]
+            answer_headings = ["message", "submission_time", "vote_number", "answer_id"]
             current_information = []
             if element["question_id"] == str(id):
                 message_val = element["message"]
@@ -36,6 +39,8 @@ def get_entry(id):
                 current_information.append(sub_time)
                 vote_nr = element["vote_number"]
                 current_information.append(vote_nr)
+                answer_id = element["id"]
+                current_information.append(answer_id)
 
                 compile_answer = {answer_headings[i]: current_information[i] for i in range(len(answer_headings))}
                 answer.append(compile_answer)
@@ -48,6 +53,7 @@ def get_entry(id):
         message = entry["message"]
         view_count = entry["view_number"]
         submission_time = entry["submission_time"]
+        question_votes = entry["vote_number"]
 
         return render_template(
             "entry.html",
@@ -55,6 +61,7 @@ def get_entry(id):
             message=message,
             view_count=view_count,
             submission_time=submission_time,
+            question_votes=question_votes,
             id=id,
         )
     else:
@@ -62,6 +69,7 @@ def get_entry(id):
         message = entry["message"]
         view_count = entry["view_number"]
         submission_time = entry["submission_time"]
+        question_votes = entry["vote_number"]
 
         answer = answer
         print(f"This is what is passed to the html : {answer}")
@@ -72,6 +80,7 @@ def get_entry(id):
             message=message,
             view_count=view_count,
             submission_time=submission_time,
+            question_votes=question_votes,
             answer=answer,
             id=id,
         )
@@ -95,9 +104,9 @@ def edit_entry(id):
     message = request.form.get("message")
     if change_entry(id, message):
         flash("Question successfully edited")
-        return redirect(url_for("get_entry",id=id))
+        return redirect(url_for("get_entry", id=id))
     flash("Edit was not saved")
-    return redirect(url_for("get_entry",id=id))
+    return redirect(url_for("get_entry", id=id))
 
 
 @app.route("/post-question", methods=["GET"])
@@ -113,7 +122,7 @@ def adding():
 
     if bool(id):
         flash("Entry added")
-        return redirect(url_for("get_entry",id=id))
+        return redirect(url_for("get_entry", id=id))
 
     flash("Entry not added")
     return redirect(url_for("index"))
@@ -121,20 +130,34 @@ def adding():
 
 @app.route("/post-answer/<int:id>", methods=['GET'])
 def enter_answer(id):
-    return render_template("post_answer.html",id=id)
+    return render_template("post_answer.html", id=id)
 
 
 @app.route("/add-answer/<int:id>", methods=['POST'])
 def add_answer(id):
     message = request.form.get("message")
 
-    if insert_answer(id,message):
+    if insert_answer(id, message):
         flash("Answer added")
-        return redirect(url_for("get_entry",id=id))
+        return redirect(url_for("get_entry", id=id))
 
     flash("Answer not added")
-    return redirect(url_for("get_entry",id=id))
+    return redirect(url_for("get_entry", id=id))
 
+
+@app.route("/upvote-question/<int:id>", methods=['POST'])
+def upvote_question(id):
+    print(f'UPVOTING QUESTION WITH ID {id}')
+    entry = upvote_entry(id)
+
+    return redirect(url_for("get_entry", id=id))
+
+
+@app.route("/upvote-answer/<int:id>", methods=['POST'])
+def upvote_answer(id):
+    print(f'UPVOTING ANSWER WITH ID {id}')
+    answer = upvote_answer(id)
+    return render_template("answer-upvoted.html")
 
 
 if __name__ == "__main__":
