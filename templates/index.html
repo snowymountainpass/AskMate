@@ -1,0 +1,44 @@
+{% extends "base_template.html" %}
+
+{% block title %}Ask Mate{% endblock %}
+
+{% block content %}
+<h1>Welcome to Ask Mate</h1><br><br>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+<br>
+<a href={{ url_for('enter_question') }}>Post a question</a>
+<br><br>
+{% if entries %}
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Message</th>
+            <th>View count</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in entries %}
+        <tr>
+            <td>
+                <a href="{{ url_for( 'get_entry', id=e.id ) }}">
+                    {{ e.title }}
+                </a>
+            </td>
+            <td>{{ e.message }}</td>
+            <td>{{ e.view_number }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Nothing here</p>
+{% endif %} {% endblock %}
