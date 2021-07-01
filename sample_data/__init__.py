@@ -40,6 +40,30 @@ def read_all_entries(file, header):
     return output[1:]
 
 
+def insert_entry(title, message):
+    try:
+        count = len(read_all_entries("sample_data/question.csv", HEADERS_QUESTIONS))
+
+        with open("sample_data/question.csv", mode="a", newline="\n") as file:
+            writer = csv.DictWriter(file, fieldnames=FIELDNAMES)
+
+
+            writer.writerow(
+                {
+                    "id": count,
+                    "submission_time": generate_key(),
+                    "view_number": 1,
+                    "vote_number": 0,
+                    "title": title,
+                    "message": message
+                }
+            )
+        return True
+
+    except:
+        return False
+
+
 def read_entry(id):
     entries = read_all_entries("sample_data/question.csv", HEADERS_QUESTIONS)
 
@@ -72,8 +96,7 @@ def read_entry(id):
 def read_answers(id):
     answers = read_all_entries("sample_data/answer.csv", HEADERS_ANSWERS)
     output = []
-    for stuff in answers:
-        print(stuff)
+
     for answer in answers:
         if int(answer["question_id"]) == id:
             output.append(answer)
@@ -93,29 +116,7 @@ def read_answers(id):
 
                 }
             )
-    print(f'THIS IS FROM INIT :: {type(output)}')
     return output
 
 
-def insert_entry(title, message):
-    try:
-        count = len(read_all_entries("sample_data/question.csv", HEADERS_QUESTIONS))
 
-        with open("sample_data/question.csv", mode="a", newline="\n") as file:
-            writer = csv.DictWriter(file, fieldnames=FIELDNAMES)
-
-
-            writer.writerow(
-                {
-                    "id": count,
-                    "submission_time": generate_key(),
-                    "view_number": 1,
-                    "vote_number": 0,
-                    "title": title,
-                    "message": message
-                }
-            )
-        return True
-
-    except:
-        return False

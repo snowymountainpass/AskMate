@@ -14,23 +14,14 @@ def index():
 @app.route("/entry/<int:id>", methods=['GET'])
 def get_entry(id):
     entry = read_entry(id)
-    print(id)
-    print(f'ENTRY ID TYPE{type(id)}')
     try:
         answer_all = read_answers(id)
-        print(answer_all)
-        print(f'TYPE ANSWER_ALL L 22 {type(answer_all)}')
         answer = []
         for element in answer_all:
-            print(element)
-            print(f'ELEMENT AT L 26 {type(element)}')
-            if element['question_id'] == str(id):
-                answer.append(element)     # de preluat doar bucati din dictionare
-                print(answer)
-        #answer = [question for question in answer_all if question[3] == id]
-        print(answer)
+            if element['question_id'] == ' ' + str(id):
+                answer.append(element['message'])
     except TypeError:
-        print('hahahaha i crashed stuff')
+        print('hahahaha i crashed stuff @ accessing an entry')
         answer = None
 
     if not answer:
@@ -49,7 +40,8 @@ def get_entry(id):
         message = entry["message"]
         view_count = entry["view_number"]
 
-        answer = answer["message"]
+        answer = answer
+        print(f'This is what is passed to the html : {answer}')
 
         return render_template(
             "entry.html",
