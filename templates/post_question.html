@@ -7,12 +7,12 @@
 <body>
 <form action="{{ url_for('adding') }}" method="POST">
     <p>
-        <label for="title">Title</label>
-        <input type="text" id="title" name="title" />
+        <label for="title">Title</label><br>
+        <input type="text" id="title" name="title" placeholder="Enter your question."/>
     </p>
     <p>
-        <label for="message">Message</label>
-        <textarea name="message" id="message" cols="30" rows="10"></textarea>
+        <label for="message">Message</label><br>
+        <textarea name="message" id="message" cols="30" rows="10" spellcheck="true" placeholder="Enter your question."></textarea>
     </p>
     <p><button type="submit">Submit</button></p>
 </form>

@@ -1,3 +1,6 @@
 id,submission_time,vote_number,question_id,message
 0,15:57,0,0,This is an answer.
 1,16:00,0,0,"This is a pretty long answer, let's see what happens."
+2,16:28,20,1,Very helpful answer.
+3,16:29,35,1,Not so helpful but funny answer.
+4,16:29,2507,1,Answer that flames the user in a funny way.
