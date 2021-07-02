@@ -12,21 +12,29 @@ HEADERS_QUESTIONS = [
     "title",
     "message",
 ]
-HEADERS_ANSWERS = ["id", "submission_time", "vote_number", "question_id", "message"]
+HEADERS_ANSWERS = [
+    "id",
+    "submission_time",
+    "vote_number",
+    "question_id",
+    "message",
+]
 
 
 def generate_key():
-    new_id = []
-    for digit in range(5):
-        random_element = random.choice(string.digits)
-        new_id.append(random_element)
-    return int("".join(new_id))
+    return int("".join([random.choice(string.digits) for _ in range(5)]))
+    # new_id = []
+    # for digit in range(5):
+    #     random_element = random.choice(string.digits)
+    #     new_id.append(random_element)
+    # return int("".join(new_id))
 
 
 def get_time():
-    named_tuple = time.localtime()
-    current_time= time.strftime("%H:%M", named_tuple)
-    return current_time
+    return time.strftime("%H:%M", time.localtime())
+    # named_tuple = time.localtime()
+    # current_time = time.strftime("%H:%M", named_tuple)
+    # return current_time
 
 
 def read_all_entries(file, header):
@@ -166,11 +174,12 @@ def upvote_entry(id):
 
 def read_answers(id):
     answers = read_all_entries("sample_data/answer.csv", HEADERS_ANSWERS)
-    output = []
+    output = [answer for answer in answers if int(answer["question_id"]) == id]
+    # output = []
 
-    for answer in answers:
-        if int(answer["question_id"]) == id:
-            output.append(answer)
+    # for answer in answers:
+    #     if int(answer["question_id"]) == id:
+    #         output.append(answer)
 
     with open("sample_data/answer.csv", mode="w", newline="\n") as file:
         writer = csv.DictWriter(file, fieldnames=HEADERS_ANSWERS)
@@ -191,7 +200,7 @@ def read_answers(id):
 
 def upvote_answer_in_db(id):
     answers = read_all_entries("sample_data/answer.csv", HEADERS_ANSWERS)
-    print('IN UPVOTE_ANSWER, reading entries')
+    print("IN UPVOTE_ANSWER, reading entries")
 
     output = None
     for answer in answers:
@@ -213,5 +222,5 @@ def upvote_answer_in_db(id):
                     "message": answer["message"],
                 }
             )
-    print('QUITING UPVOTE ANSWER')
+    print("QUITING UPVOTE ANSWER")
     return output

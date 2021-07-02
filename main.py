@@ -9,7 +9,6 @@ from sample_data import (
     insert_answer,
     upvote_entry,
     upvote_answer_in_db,
-
 )
 
 app = Flask(__name__)
@@ -41,7 +40,10 @@ def get_entry(id):
                 answer_id = element["id"]
                 current_information.append(answer_id)
 
-                compile_answer = {answer_headings[i]: current_information[i] for i in range(len(answer_headings))}
+                compile_answer = {
+                    answer_headings[i]: current_information[i]
+                    for i in range(len(answer_headings))
+                }
                 answer.append(compile_answer)
     except TypeError:
         print("hahahaha i crashed stuff @ accessing an entry")
@@ -127,12 +129,12 @@ def adding():
     return redirect(url_for("index"))
 
 
-@app.route("/post-answer/<int:id>", methods=['GET'])
+@app.route("/post-answer/<int:id>", methods=["GET"])
 def enter_answer(id):
     return render_template("post_answer.html", id=id)
 
 
-@app.route("/add-answer/<int:id>", methods=['POST'])
+@app.route("/add-answer/<int:id>", methods=["POST"])
 def add_answer(id):
     message = request.form.get("message")
 
@@ -144,17 +146,17 @@ def add_answer(id):
     return redirect(url_for("get_entry", id=id))
 
 
-@app.route("/upvote-question/<int:id>", methods=['POST'])
+@app.route("/upvote-question/<int:id>", methods=["POST"])
 def upvote_question(id):
-    print(f'UPVOTING QUESTION WITH ID {id}')
+    print(f"UPVOTING QUESTION WITH ID {id}")
     entry = upvote_entry(id)
 
     return redirect(url_for("get_entry", id=id))
 
 
-@app.route("/upvote-answer/<int:id>", methods=['GET','POST'])
+@app.route("/upvote-answer/<int:id>", methods=["GET", "POST"])
 def upvote_answer(id):
-    print(f'UPVOTING ANSWER WITH ID {id}')
+    print(f"UPVOTING ANSWER WITH ID {id}")
     question_id = upvote_answer_in_db(id)
     return redirect(url_for("get_entry", id=question_id))
 
