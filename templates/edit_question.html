@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Post a question</title>
-</head>
-<body>
+{% extends "base_template.html" %}
+
+{% block title %}Editing entry {{ id }}{% endblock %}
+
+{% block content %}
 <form action="{{ url_for('edit_entry', id=id) }}" method="POST">
     <p>Editting current ID : {{id}}</p>
     <p>
@@ -17,5 +15,4 @@
     </p>
     <p><button type="submit">Submit</button></p>
 </form>
-</body>
-</html>
+{% endblock %}

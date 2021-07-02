@@ -1,21 +1,19 @@
-{% extends "base_template.html" %}
-
-{% block title %}Ask Mate{% endblock %}
-
-{% block content %}
-<h1>Welcome to Ask Mate</h1><br><br>
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
+{% extends "base_template.html" %} {% block title %}Ask Mate{% endblock %} {%
+block content %}
+<h1>Welcome to Ask Mate</h1>
+<br /><br />
+{% with messages = get_flashed_messages() %} {% if messages %}
+<ul class="flashes">
     {% for message in messages %}
-      <li>{{ message }}</li>
+    <li>{{ message }}</li>
     {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-<br>
-<a href="{{ url_for('enter_question') }}" class="btn btn-primary">Post a question</a>
-<br><br>
+</ul>
+{% endif %} {% endwith %}
+<br />
+<a href="{{ url_for('enter_question') }}" class="btn btn-primary"
+    >Post a question</a
+>
+<br /><br />
 {% if entries %}
 <table class="table">
     <thead>
