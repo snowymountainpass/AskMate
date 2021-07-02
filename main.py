@@ -73,7 +73,6 @@ def get_entry(id):
         question_votes = entry["vote_number"]
 
         answer = answer
-        xprint(f"This is what is passed to the html : {answer}")
 
         return render_template(
             "entry.html",
@@ -96,16 +95,13 @@ def editting(id):
 @app.route("/edit/<int:id>/", methods=["POST"])
 def edit_entry(id):
     entry = read_entry(id)
-    xprint(f"TYPE OF ENTRY{type(entry)}")
-    xprint(entry)
-    title = ""
-    if entry["id"] == str(id):
-        title = entry["title"]
-
+    # title = entry["title"] if entry["id"] == str(id) else ""
     message = request.form.get("message")
+
     if change_entry(id, message):
         flash("Question successfully edited")
         return redirect(url_for("get_entry", id=id))
+
     flash("Edit was not saved")
     return redirect(url_for("get_entry", id=id))
 
@@ -148,15 +144,12 @@ def add_answer(id):
 
 @app.route("/upvote-question/<int:id>", methods=["POST"])
 def upvote_question(id):
-    xprint(f"UPVOTING QUESTION WITH ID {id}")
-    entry = upvote_entry(id)
-
+    upvote_entry(id)
     return redirect(url_for("get_entry", id=id))
 
 
 @app.route("/upvote-answer/<int:id>", methods=["GET", "POST"])
 def upvote_answer(id):
-    xprint(f"UPVOTING ANSWER WITH ID {id}")
     question_id = upvote_answer_in_db(id)
     return redirect(url_for("get_entry", id=question_id))
 
