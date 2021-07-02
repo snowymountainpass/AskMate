@@ -200,7 +200,6 @@ def read_answers(id):
 
 def upvote_answer_in_db(id):
     answers = read_all_entries("sample_data/answer.csv", HEADERS_ANSWERS)
-    print("IN UPVOTE_ANSWER, reading entries")
 
     output = None
     for answer in answers:
@@ -222,5 +221,4 @@ def upvote_answer_in_db(id):
                     "message": answer["message"],
                 }
             )
-    print("QUITING UPVOTE ANSWER")
     return output
