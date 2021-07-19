@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
+from dotenv import load_dotenv
 from sample_data import (
     read_all_entries,
     insert_entry,
@@ -10,7 +11,7 @@ from sample_data import (
     upvote_entry,
     upvote_answer_in_db,
 )
-
+load_dotenv()
 app = Flask(__name__)
 app.secret_key = "alskua ekjegu keucyf iqek,rvgkfarg rkjegkjqaved"
 
