@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from dotenv import load_dotenv
+
+import data_manager
 from sample_data import (
     read_all_entries,
     insert_entry,
@@ -18,7 +20,9 @@ app.secret_key = "alskua ekjegu keucyf iqek,rvgkfarg rkjegkjqaved"
 
 @app.route("/")
 def index():
-    entries = read_all_entries("sample_data/question.csv", HEADERS_QUESTIONS)
+    # entries = read_all_entries("sample_data/question.csv", HEADERS_QUESTIONS)
+    # return render_template("index.html", entries=entries)
+    entries = data_manager.get_all_questions()
     return render_template("index.html", entries=entries)
 
 
