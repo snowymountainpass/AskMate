@@ -45,6 +45,25 @@ def upvote_question(cursor, id):
     """
     cursor.execute(query, {'id':id})
 
-# @database_common.connection_handler
-# def get_column(cursor, database, column):
-#     query
+
+@database_common.connection_handler
+def upvote_answer(cursor, id):
+    query = """
+    UPDATE answer
+    SET vote_number = vote_number + 1
+    WHERE id = %(id)s
+    """
+    cursor.execute(query, {'id':id})
+
+
+@database_common.connection_handler
+def pass_question_id(cursor, id):
+    query = """
+    SELECT question.id 
+    FROM question
+    INNER JOIN answer
+    ON question.id = answer.question_id
+    WHERE answer.question_id = %(id)s
+    """
+    cursor.execute(query, {'id':id})
+    return cursor.fetchall()

@@ -27,11 +27,8 @@ def index():
 @app.route("/entry/<int:id>", methods=["GET"])
 def get_entry(id):
     entry = data_manager.get_question_at_id(id)
-    print(entry)
-    print(type(entry))
     try:
         answers = data_manager.get_answers_for_question(id)
-        print(answers)
 
     except TypeError:
         print("hahahaha i crashed stuff @ accessing an entry")
@@ -111,8 +108,12 @@ def upvote_question(id):
 
 @app.route("/upvote-answer/<int:id>", methods=["GET", "POST"])
 def upvote_answer(id):
-    question_id = upvote_answer_in_db(id)
-    return redirect(url_for("get_entry", id=question_id))
+    data_manager.upvote_answer(id)
+    get_id = data_manager.pass_question_id(id)
+    for row in get_id:
+        pass_id = row['id']
+
+    return redirect(url_for("get_entry", id=pass_id))
 
 
 if __name__ == "__main__":
