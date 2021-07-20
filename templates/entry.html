@@ -4,52 +4,56 @@
 
 {% block content %}
 
-<figure>
-  <blockquote class="blockquote">
-    <div class="question_title"> <h2>{{ title }}</h2></div>
-  </blockquote>
-  <figcaption class="blockquote-footer">
-   Posted at {{ submission_time }} | Viewed {{ view_count }} times | <cite title="Source Title">Question ID {{id}}</cite>
-      <br>Number of upvotes {{ question_votes }}
-  </figcaption>
-  <div class="question_message">  <p class="lead">{{ message }}</p></div>
-</figure>
+    <figure>
+        {% for question in entry %}
+            <blockquote class="blockquote">
+                <div class="question_title"><h2>{{ question.title }}</h2></div>
+            </blockquote>
+            <figcaption class="blockquote-footer">
 
-<br><br>
+                Posted at {{ question.submission_time }} | Viewed {{ question.view_count }} times | <cite
+                    title="Source Title">Question ID {{ question.id }}</cite>
+                <br>Number of upvotes {{ question.vote_number }}
+            </figcaption>
+            <div class="question_message"><p class="lead">{{ question.message }}</p></div>
+            </figure>
 
-<form action="{{ url_for('upvote_question',id=id) }}" method="POST">
-    <button type="submit" class="btn btn-primary">Upvote post</button>
+            <br><br>
 
-<br><br><br>
-    <h2>Answers</h2><br>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Answer</th>
-            <th>Posted at</th>
-            <th>Number of votes</th>
-            <th>Answer ID</th>
-            <th>Vote an answer</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for element in answer%}
-        <tr>
-            <td>{{element.message}}</td>
-            <td align="center">{{element.submission_time}}</td>
-            <td align="center">{{element.vote_number}}</td>
-            <td align="center">{{element.answer_id}}</td>
-            <td><a href="{{ url_for('upvote_answer',id=element.answer_id) }}" class="btn btn-primary">Upvote answer</a>
-            </td>
-        </tr>
+            {#<form action="{{ url_for('upvote_question',id=entry.id) }}" method="POST">#}
+            {#    <button type="submit" class="btn btn-primary">Upvote post</button>#}
+
+            <br><br><br>
+            <h2>Answers</h2><br>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Answer</th>
+                    <th>Posted at</th>
+                    <th>Number of votes</th>
+                    <th>Answer ID</th>
+                    <th>Vote an answer</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for answer in answers %}
+                    <tr>
+                        <td>{{ answer.message }}</td>
+                        <td align="center">{{ answer.submission_time }}</td>
+                        <td align="center">{{ answer.vote_number }}</td>
+                        <td align="center">{{ answer.answer_id }}</td>
+                        <td><a href="{{ url_for('upvote_answer',id=answer.answer_id) }}" class="btn btn-primary">Upvote
+                            answer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            </form>
+            {#<a href="{{ url_for( 'editting', id=id ) }}" class="btn btn-primary">Edit question</a><br><br>#}
+            {#<a href="{{ url_for( 'enter_answer', id=id ) }}" class="btn btn-primary">Post an answer</a><br><br>#}
+            {#<a href="{{ url_for( 'index' ) }}" class="btn btn-primary">Back to list of questions</a>#}
         {% endfor %}
-        </tbody>
-    </table>
-
-</form>
-<a href="{{ url_for( 'editting', id=id ) }}" class="btn btn-primary">Edit question</a><br><br>
-<a href="{{ url_for( 'enter_answer', id=id ) }}" class="btn btn-primary">Post an answer</a><br><br>
-<a href="{{ url_for( 'index' ) }}" class="btn btn-primary">Back to list of questions</a>
-
 {% endblock %}
 
