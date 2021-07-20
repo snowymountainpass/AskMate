@@ -25,6 +25,7 @@ def index():
 
 @app.route("/entry/<int:id>", methods=["GET"])
 def get_entry(id):
+    data_manager.increase_question_viewcount(id)
     entry = data_manager.get_question_at_id(id)
     try:
         answers = data_manager.get_answers_for_question(id)

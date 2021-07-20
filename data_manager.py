@@ -46,6 +46,17 @@ def get_answers_for_question(cursor, id):
 
 
 @database_common.connection_handler
+def increase_question_viewcount(cursor, id):
+    query = """
+    UPDATE question
+    SET view_number = view_number + 1
+    WHERE id = %(id)s
+    """
+    cursor.execute(query, {'id':id})
+
+
+
+@database_common.connection_handler
 def upvote_question(cursor, id):
     query = """
     UPDATE question
