@@ -103,7 +103,9 @@ def add_answer(id):
 
 @app.route("/upvote-question/<int:id>", methods=["POST"])
 def upvote_question(id):
-    upvote_entry(id)
+    # upvote_entry(id)
+    data_manager.upvote_question(id)
+
     return redirect(url_for("get_entry", id=id))
 
 
