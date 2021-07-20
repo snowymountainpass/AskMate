@@ -67,3 +67,14 @@ def pass_question_id(cursor, id):
     """
     cursor.execute(query, {'id':id})
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def edit_question(cursor, id, message):
+    query = """
+    UPDATE question
+    SET message = %(message)s
+    WHERE id = %(id)s
+    """
+    cursor.execute(query, {'message':message, 'id':id})
+    return True

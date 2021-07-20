@@ -44,17 +44,17 @@ def get_entry(id):
 
 @app.route("/enter-edit/<int:id>", methods=["GET"])
 def editting(id):
-    entry = read_entry(id)
+    entry = data_manager.get_question_at_id(id)
     return render_template("edit_question.html", id=id, entry=entry)
 
 
 @app.route("/edit/<int:id>/", methods=["POST"])
 def edit_entry(id):
-    entry = read_entry(id)
+    entry = data_manager.get_question_at_id(id)
     # title = entry["title"] if entry["id"] == str(id) else ""
     message = request.form.get("message")
 
-    if change_entry(id, message):
+    if data_manager.edit_question(id, message):
         flash("Question successfully edited")
         return redirect(url_for("get_entry", id=id))
 
