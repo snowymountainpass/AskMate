@@ -57,6 +57,11 @@ def increase_question_viewcount(cursor, id):
 
 @database_common.connection_handler
 def delete_question(cursor, id):
+    answers_query = """
+    DELETE from answer
+    WHERE question_id = %(id)s
+    """
+    cursor.execute(answers_query, {'id': id})
     query = """
     DELETE FROM question
     WHERE id = %(id)s
