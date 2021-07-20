@@ -54,6 +54,8 @@
             <a href="{{ url_for( 'editting', id=question.id) }}" class="btn btn-primary">Edit question</a><br><br>
             {#<a href="{{ url_for( 'enter_answer', id=question.id ) }}" class="btn btn-primary">Post an answer</a><br><br>#}
             <a href="{{ url_for( 'index' ) }}" class="btn btn-primary">Back to list of questions</a>
+            <br><br><br><br><br><br><br><br>
+            <a href="{{ url_for('delete_question', id=question.id) }}" class="btn btn-primary">Delete the question</a>
         {% endfor %}
 
 {% endblock %}

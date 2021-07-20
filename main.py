@@ -67,6 +67,13 @@ def enter_question():
     return render_template("post_question.html")
 
 
+@app.route("/entry/<int:id>/delete")
+def delete_question(id):
+    data_manager.delete_question(id)
+    return redirect(url_for("index"))
+
+
+
 @app.route("/add", methods=["POST"])
 def add_new_question():
     title = request.form.get("title")
@@ -103,7 +110,6 @@ def add_answer(id):
 
 @app.route("/upvote-question/<int:id>", methods=["POST"])
 def upvote_question(id):
-    # upvote_entry(id)
     data_manager.upvote_question(id)
 
     return redirect(url_for("get_entry", id=id))
