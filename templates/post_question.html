@@ -3,7 +3,7 @@
 {% block title %}Post a new question{% endblock %}
 
 {% block content %}
-<form action="{{ url_for('adding') }}" method="POST">
+<form action="{{ url_for('add_new_question') }}" method="POST">
     <p>
         <label for="title">Title</label><br>
         <input type="text" id="title" name="title" placeholder="Enter your question."/>

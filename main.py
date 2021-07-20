@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 
 import data_manager
 from sample_data import (
-    read_all_entries,
     insert_entry,
     read_entry,
     read_answers,
@@ -20,7 +19,7 @@ app.secret_key = "alskua ekjegu keucyf iqek,rvgkfarg rkjegkjqaved"
 
 @app.route("/")
 def index():
-    entries = read_all_entries()
+    entries = data_manager.get_all_questions()
     return render_template("index.html", entries=entries)
 
 
@@ -68,12 +67,15 @@ def enter_question():
 
 
 @app.route("/add", methods=["POST"])
-def adding():
+def add_new_question():
     title = request.form.get("title")
     message = request.form.get("message")
-    id = insert_entry(title, message)
+    id_row = data_manager.inject_new_question(title, message)
+    for row in id_row:
+        id = row['id']
 
-    if bool(id):
+
+    if id_row:
         flash("Entry added")
         return redirect(url_for("get_entry", id=id))
 

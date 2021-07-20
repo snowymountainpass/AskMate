@@ -1,4 +1,13 @@
+import time
+import datetime
+
 import database_common
+
+
+def get_time():
+    return datetime.datetime.now()
+    # return time.strftime("%H:%M", time.localtime())
+
 
 
 @database_common.connection_handler
@@ -78,3 +87,21 @@ def edit_question(cursor, id, message):
     """
     cursor.execute(query, {'message':message, 'id':id})
     return True
+
+
+@database_common.connection_handler
+def inject_new_question(cursor, title, message):
+    get_time_of_posting = get_time()
+    query = """
+    INSERT INTO question
+    (submission_time, view_number, vote_number, title, message)
+    VALUES (%(time)s, 0, 0, %(title)s, %(message)s)
+    """
+    cursor.execute(query, {'time':get_time_of_posting, 'title':title, 'message':message})
+    get_id_query = """
+    SELECT id
+    FROM question
+    WHERE submission_time = %(time)s AND title = %(title)s AND message = %(message)s
+    """
+    cursor.execute(get_id_query, {'time':get_time_of_posting, 'title':title, 'message':message})
+    return cursor.fetchall()

@@ -37,14 +37,7 @@ def get_time():
     # current_time = time.strftime("%H:%M", named_tuple)
     # return current_time
 
-@database_common.connection_handler
-def read_all_entries(cursor):
-    query = """
-        SELECT * 
-        FROM question
-        """
-    cursor.execute(query)
-    return cursor.fetchall()
+
 
 
 def insert_entry(title, message):
