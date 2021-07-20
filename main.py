@@ -20,82 +20,28 @@ app.secret_key = "alskua ekjegu keucyf iqek,rvgkfarg rkjegkjqaved"
 
 @app.route("/")
 def index():
-    # entries = read_all_entries("sample_data/question.csv", HEADERS_QUESTIONS)
-    # return render_template("index.html", entries=entries)
     entries = read_all_entries()
     return render_template("index.html", entries=entries)
 
 
 @app.route("/entry/<int:id>", methods=["GET"])
 def get_entry(id):
-    # entry = read_entry(id)
     entry = data_manager.get_question_at_id(id)
-    print(type(id))
     print(entry)
     print(type(entry))
     try:
-        # answer_all = read_answers(id)
         answers = data_manager.get_answers_for_question(id)
         print(answers)
-        # answer = []
-        # for element in answer_all:
-        #     answer_headings = ["message", "submission_time", "vote_number", "answer_id"]
-        #     current_information = []
-        #     if element["question_id"] == str(id):
-        #         message_val = element["message"]
-        #         current_information.append(message_val)
-        #         sub_time = element["submission_time"]
-        #         current_information.append(sub_time)
-        #         vote_nr = element["vote_number"]
-        #         current_information.append(vote_nr)
-        #         answer_id = element["id"]
-        #         current_information.append(answer_id)
-        #
-        #         compile_answer = {
-        #             answer_headings[i]: current_information[i]
-        #             for i in range(len(answer_headings))
-        #         }
-        #         answer.append(compile_answer)
+
     except TypeError:
         print("hahahaha i crashed stuff @ accessing an entry")
         answers = None
 
     if not answers:
-        # title = entry["title"]
-        # message = entry["message"]
-        # view_count = entry["view_number"]
-        # submission_time = entry["submission_time"]
-        # question_votes = entry["vote_number"]
 
-        # return render_template(
-        #     "entry.html",
-        #     title=title,
-        #     message=message,
-        #     view_count=view_count,
-        #     submission_time=submission_time,
-        #     question_votes=question_votes,
-        #     id=id,
-        # )
         return render_template("entry.html", entry=entry)
     else:
-        # title = entry["title"]
-        # message = entry["message"]
-        # view_count = entry["view_number"]
-        # submission_time = entry["submission_time"]
-        # question_votes = entry["vote_number"]
-        #
-        # answer = answer
-        #
-        # return render_template(
-        #     "entry.html",
-        #     title=title,
-        #     message=message,
-        #     view_count=view_count,
-        #     submission_time=submission_time,
-        #     question_votes=question_votes,
-        #     answer=answer,
-        #     id=id,
-        # )
+
         return render_template("entry.html", entry=entry, answers=answers)
 
 

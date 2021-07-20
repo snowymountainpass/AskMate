@@ -24,11 +24,10 @@ def get_question_at_id(cursor, id):
 
 @database_common.connection_handler
 def get_answers_for_question(cursor, id):
-    print(type(id))
     query = """
-    SELECT *
+    SELECT answer.message, answer.submission_time, answer.vote_number, answer.id
     FROM answer
-    INNER JOIN question 
+    LEFT JOIN question 
         ON answer.question_id = question.id
     WHERE question_id = %(id)s
     """
