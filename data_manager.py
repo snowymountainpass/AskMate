@@ -5,7 +5,7 @@ import database_common
 
 
 def get_time():
-    return datetime.datetime.now()
+    return datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')
     # return time.strftime("%H:%M", time.localtime())
 
 
@@ -40,6 +40,7 @@ def get_answers_for_question(cursor, id):
     INNER JOIN question 
         ON answer.question_id = question.id
     WHERE question_id = %(id)s
+    ORDER BY answer.id
     """
     cursor.execute(query, {'id':id})
     return cursor.fetchall()
