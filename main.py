@@ -92,6 +92,12 @@ def delete_question(id):
     data_manager.delete_question(id)
     return redirect(url_for("index"))
 
+@app.route("/entry/<int:id>/delete-answer<int:q_id>")
+def delete_answer(id, q_id):
+    data_manager.delete_answer(id, q_id)
+    return redirect(url_for("get_entry", id=q_id))
+
+
 @app.route("/post-answer/<int:id>", methods=["GET"])
 def enter_answer(id):
     return render_template("post_answer.html", id=id)
