@@ -13,6 +13,7 @@ from sample_data import (
     upvote_entry,
     upvote_answer_in_db,
 )
+
 load_dotenv()
 app = Flask(__name__)
 app.secret_key = "alskua ekjegu keucyf iqek,rvgkfarg rkjegkjqaved"
@@ -41,6 +42,7 @@ def sort_asc_message():
     entries = data_manager.get_all_questions_mess_a()
     return render_template("index.html", entries=entries)
 
+
 @app.route("/s-a-views")
 def sort_asc_views():
     entries = data_manager.get_all_questions_views_a()
@@ -51,6 +53,7 @@ def sort_asc_views():
 def sort_asc_votes():
     entries = data_manager.get_all_questions_votes_a()
     return render_template("index.html", entries=entries)
+
 
 @app.route("/entry/<int:id>", methods=["GET"])
 def get_entry(id):
@@ -111,7 +114,6 @@ def add_new_question():
     for row in id_row:
         id = row['id']
 
-
     if id_row:
         flash("Entry added")
         return redirect(url_for("get_entry", id=id))
@@ -124,6 +126,7 @@ def add_new_question():
 def delete_question(id):
     data_manager.delete_question(id)
     return redirect(url_for("index"))
+
 
 @app.route("/entry/<int:id>/delete-answer<int:q_id>")
 def delete_answer(id, q_id):
@@ -155,7 +158,7 @@ def upvote_question(id):
     return redirect(url_for("get_entry", id=id))
 
 
-@app.route("/downvote-question/<int:id>", methods=["GET","POST"])
+@app.route("/downvote-question/<int:id>", methods=["GET", "POST"])
 def downvote_question(id):
     data_manager.downvote_question(id)
 
@@ -176,7 +179,6 @@ def downvote_answer(id, q_id):
     return redirect(url_for("get_entry", id=q_id))
 
 
-
 @app.route("/entry/<int:id>/comment", methods=["GET", "POST"])
 def add_comment_question(id):
     if request.method == 'POST':
@@ -188,5 +190,23 @@ def add_comment_question(id):
     return render_template('post_comment.html', id=id)
 
 
+@app.route("/edit-comment/<int:id><int:q_id>", methods=["GET", "POST"])
+def edit_comment_question(id, q_id):
+    this_comment = data_manager.get_comment(id)
+    print(this_comment)
+
+    if request.method == 'POST':
+        print(id)
+        comment_message = request.form.get("message")
+        print(id)
+        print(comment_message)
+        data_manager.edit_comment(id, comment_message)
+
+        return redirect(url_for("get_entry", id=q_id))
+    return render_template('edit_comment.html', id=id, comments=this_comment)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+

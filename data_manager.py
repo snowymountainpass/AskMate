@@ -20,6 +20,7 @@ def get_all_questions(cursor):
     cursor.execute(query)
     return cursor.fetchall()
 
+
 # @database_common.connection_handler
 # def TEST_SORTING(cursor, table, column, order):
 #     query = sql.SQL("""
@@ -237,5 +238,26 @@ def inject_question_comment(cursor, id, message):
     VALUES (%(question_id)s, Null, %(message)s, %(time)s, 0)
     
     """
-    cursor.execute(query, {'question_id':id, 'message': message, 'time': get_time_of_posting,})
+    cursor.execute(query, {'question_id': id, 'message': message, 'time': get_time_of_posting, })
 
+
+@database_common.connection_handler
+def get_comment(cursor, id):
+    query = """
+    SELECT *
+    FROM comment
+    WHERE id = %(id)s
+    """
+    cursor.execute(query, {'id': id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def edit_comment(cursor, id, message):
+    current_time = get_time()
+    query = """
+    UPDATE comment
+    SET message = %(message)s, submission_time = %(submission_time)s, edited_count = edited_count + 1
+    WHERE id = %(id)s
+    """
+    cursor.execute(query, {'message': message, 'id': id, 'submission_time': current_time, })

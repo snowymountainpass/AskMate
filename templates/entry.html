@@ -25,7 +25,9 @@
             <figure>
                 {% for comment in question_comments %}
                     <div class="question_comment"><p>{{ comment.message }}</p>
-                        <figcaption class="blockquote-footer">Posted at {{ comment.submission_time }}</figcaption>
+                        <figcaption class="blockquote-footer">Posted at {{ comment.submission_time }} | Edited {{ comment.edited_count }} times</figcaption>
+                        <a href="{{ url_for('edit_comment_question', id=comment.id, q_id=question.id) }}"
+                           class="btn btn-primary">Edit a comment</a>
 
 
                     </div>
