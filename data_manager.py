@@ -1,4 +1,3 @@
-import time
 import datetime
 
 import database_common
@@ -35,7 +34,7 @@ def get_question_at_id(cursor, id):
 @database_common.connection_handler
 def get_answers_for_question(cursor, id):
     query = """
-    SELECT answer.message, answer.submission_time, answer.vote_number, answer.id
+    SELECT answer.message, answer.submission_time, answer.vote_number, answer.id, answer.image
     FROM answer
     INNER JOIN question 
         ON answer.question_id = question.id
@@ -104,25 +103,26 @@ def pass_question_id(cursor, id):
 
 
 @database_common.connection_handler
-def edit_question(cursor, id, message):
+def edit_question(cursor, id, message, image):
     query = """
     UPDATE question
-    SET message = %(message)s
+    SET message = %(message)s,
+    image = %(image)s
     WHERE id = %(id)s
     """
-    cursor.execute(query, {'message':message, 'id':id})
+    cursor.execute(query, {'message':message, 'image':image, 'id':id})
     return True
 
 
 @database_common.connection_handler
-def inject_new_question(cursor, title, message):
+def inject_new_question(cursor, title, message, image):
     get_time_of_posting = get_time()
     query = """
     INSERT INTO question
-    (submission_time, view_number, vote_number, title, message)
-    VALUES (%(time)s, 0, 0, %(title)s, %(message)s)
+    (submission_time, view_number, vote_number, title, message, image)
+    VALUES (%(time)s, 0, 0, %(title)s, %(message)s, %(image)s)
     """
-    cursor.execute(query, {'time':get_time_of_posting, 'title':title, 'message':message})
+    cursor.execute(query, {'time':get_time_of_posting, 'title':title, 'message':message, 'image':image})
     get_id_query = """
     SELECT id
     FROM question

@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from dotenv import load_dotenv
+import base64
 
 import data_manager
 from sample_data import (
@@ -53,8 +54,9 @@ def edit_entry(id):
     entry = data_manager.get_question_at_id(id)
     # title = entry["title"] if entry["id"] == str(id) else ""
     message = request.form.get("message")
+    image = request.form.get("image")
 
-    if data_manager.edit_question(id, message):
+    if data_manager.edit_question(id, message, image):
         flash("Question successfully edited")
         return redirect(url_for("get_entry", id=id))
 
@@ -71,7 +73,8 @@ def enter_question():
 def add_new_question():
     title = request.form.get("title")
     message = request.form.get("message")
-    id_row = data_manager.inject_new_question(title, message)
+    image = request.form.get("image")
+    id_row = data_manager.inject_new_question(title, message, image)
     for row in id_row:
         id = row['id']
 
