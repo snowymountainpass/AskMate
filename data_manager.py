@@ -20,6 +20,61 @@ def get_all_questions(cursor):
 
 
 @database_common.connection_handler
+def get_all_questions_t_a(cursor):
+    query = """
+    SELECT * 
+    FROM question
+    ORDER BY title
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_all_questions_st_a(cursor):
+    query = """
+    SELECT * 
+    FROM question
+    ORDER BY submission_time
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_all_questions_mess_a(cursor):
+    query = """
+    SELECT * 
+    FROM question
+    ORDER BY message
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_all_questions_views_a(cursor):
+    query = """
+    SELECT * 
+    FROM question
+    ORDER BY view_number
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_all_questions_votes_a(cursor):
+    query = """
+    SELECT * 
+    FROM question
+    ORDER BY vote_number
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def get_question_at_id(cursor, id):
     query = """
     SELECT *

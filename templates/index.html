@@ -1,4 +1,67 @@
 {% extends "base_template.html" %} {% block title %}Ask Mate{% endblock %} {% block content %}
+    <style>
+        .dropbtn {
+            background-color: #3498DB;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropbtn:hover, .dropbtn:focus {
+            background-color: #2980B9;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            overflow: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown a:hover {
+            background-color: #ddd;
+        }
+
+        .show {
+            display: block;
+        }
+    </style>
+    <script>
+        function toggleShowDropdown() {
+            document.getElementById("dropdownList").classList.toggle("show");
+        }
+
+
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
     <h1>Welcome to Ask Mate</h1>
     <br/><br/>
     {% with messages = get_flashed_messages() %} {% if messages %}
@@ -10,9 +73,19 @@
     {% endif %} {% endwith %}
     <br/>
     <a href="{{ url_for('enter_question') }}" class="btn btn-primary"
-    >Post a question</a
-    >
+    >Post a question</a>
     <br/><br/>
+    <div class="dropdown">
+        <button onclick="toggleShowDropdown()" class="dropbtn">Sort by:</button>
+        <div id="dropdownList" class="dropdown-content">
+            <a href="{{ url_for('sort_asc_title') }}">Sort by title (ascending)</a>
+            <a href="{{ url_for('sort_asc_submissiontime') }}">Sort by submission time (ascending)</a>
+            <a href="{{ url_for('sort_asc_message') }}">Sort by message content (ascending)</a>
+            <a href="{{ url_for('sort_asc_views') }}">Sort by number of views (ascending)</a>
+            <a href="{{ url_for('sort_asc_votes') }}">Sort by number of votes (ascending)</a>
+        </div>
+
+    </div>
     {% if entries %}
         <table class="table">
             <thead>
@@ -37,6 +110,7 @@
                     <td align="center">{{ e.vote_number }}</td>
                     <td align="center">{{ e.submission_time }}</td>
                 </tr>
+
             {% endfor %}
             </tbody>
         </table>

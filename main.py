@@ -24,6 +24,34 @@ def index():
     return render_template("index.html", entries=entries)
 
 
+@app.route("/s-a-title")
+def sort_asc_title():
+    entries = data_manager.get_all_questions_t_a()
+    return render_template("index.html", entries=entries)
+
+
+@app.route("/s-a-submissiontime")
+def sort_asc_submissiontime():
+    entries = data_manager.get_all_questions_st_a()
+    return render_template("index.html", entries=entries)
+
+
+@app.route("/s-a-message")
+def sort_asc_message():
+    entries = data_manager.get_all_questions_mess_a()
+    return render_template("index.html", entries=entries)
+
+@app.route("/s-a-views")
+def sort_asc_views():
+    entries = data_manager.get_all_questions_views_a()
+    return render_template("index.html", entries=entries)
+
+
+@app.route("/s-a-votes")
+def sort_asc_votes():
+    entries = data_manager.get_all_questions_votes_a()
+    return render_template("index.html", entries=entries)
+
 @app.route("/entry/<int:id>", methods=["GET"])
 def get_entry(id):
     data_manager.increase_question_viewcount(id)
