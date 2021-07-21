@@ -22,14 +22,27 @@
                         alt={{ question.image }} width="120"/></p></div>
 
             </figure>
+            <figure>
+                {% for comment in question_comments %}
+                    <div class="question_comment"><p>{{ comment.message }}</p>
+                        <figcaption class="blockquote-footer">Posted at {{ comment.submission_time }}</figcaption>
+
+
+                    </div>
+                {% endfor %}
+            </figure>
+
+
 
             <br><br>
 
+            <a href="{{ url_for('add_comment_question', id=question.id) }}" class="btn btn-primary">Add a comment</a>
+            <br><br><br>
             <form action="{{ url_for('upvote_question',id=question.id) }}" method="POST">
             <button type="submit" class="btn btn-primary">Upvote post</button>
             <br><br><br>
             <a href="{{ url_for('downvote_question',id=question.id) }}" class="btn btn-primary">Downvote
-                        question</a>
+                question</a>
 
         {% endfor %}
         <h2>Answers</h2><br>
@@ -53,9 +66,11 @@
                     <td align="center">{{ answer.submission_time }}</td>
                     <td align="center">{{ answer.vote_number }}</td>
                     <td align="center">{{ answer.id }}</td>
-                    <td><a href="{{ url_for('upvote_answer',id=answer.id, q_id=answer.question_id) }}" class="btn btn-primary">Upvote
+                    <td><a href="{{ url_for('upvote_answer',id=answer.id, q_id=answer.question_id) }}"
+                           class="btn btn-primary">Upvote
                         answer</a>
-                    <td><a href="{{ url_for('downvote_answer',id=answer.id, q_id=answer.question_id) }}" class="btn btn-primary">Downvote
+                    <td><a href="{{ url_for('downvote_answer',id=answer.id, q_id=answer.question_id) }}"
+                           class="btn btn-primary">Downvote
                         answer</a>
                     <td align="center"><img src="static/{{ answer.image | default('no-image-available.png') }}"
                                             alt={{ answer.image }} width="120"></td>

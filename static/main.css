@@ -45,3 +45,13 @@
 
 .dropdown-content a:hover {background-color: #ddd}
 
+
+.question_comment {
+            background-color: #f3e55b;
+            color: black;
+            border: 2px solid #f3e55b;
+            margin: 1px;
+            padding: 15px;
+
+        }
+

@@ -56,19 +56,24 @@ def sort_asc_votes():
 def get_entry(id):
     data_manager.increase_question_viewcount(id)
     entry = data_manager.get_question_at_id(id)
+
     try:
         answers = data_manager.get_answers_for_question(id)
+        question_comments = data_manager.get_comments_for_question(id)
+        answer_comments = None
 
     except TypeError:
         print("hahahaha i crashed stuff @ accessing an entry")
         answers = None
+        question_comments = None
+        answer_comments = None
 
     if not answers:
 
         return render_template("entry.html", entry=entry)
     else:
 
-        return render_template("entry.html", entry=entry, answers=answers)
+        return render_template("entry.html", entry=entry, answers=answers, question_comments=question_comments)
 
 
 @app.route("/enter-edit/<int:id>", methods=["GET"])
@@ -171,6 +176,16 @@ def downvote_answer(id, q_id):
     return redirect(url_for("get_entry", id=q_id))
 
 
+
+@app.route("/entry/<int:id>/comment", methods=["GET", "POST"])
+def add_comment_question(id):
+    if request.method == 'POST':
+        comment_message = request.form.get("message")
+        data_manager.inject_question_comment(id, comment_message)
+
+        return redirect(url_for("get_entry", id=id))
+
+    return render_template('post_comment.html', id=id)
 
 
 if __name__ == "__main__":
