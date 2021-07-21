@@ -1,44 +1,45 @@
-{% extends "base_template.html" %} {% block title %}Ask Mate{% endblock %} {%
-block content %}
-<h1>Welcome to Ask Mate</h1>
-<br /><br />
-{% with messages = get_flashed_messages() %} {% if messages %}
-<ul class="flashes">
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %} {% endwith %}
-<br />
-<a href="{{ url_for('enter_question') }}" class="btn btn-primary"
+{% extends "base_template.html" %} {% block title %}Ask Mate{% endblock %} {% block content %}
+    <h1>Welcome to Ask Mate</h1>
+    <br/><br/>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+        <ul class="flashes">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %} {% endwith %}
+    <br/>
+    <a href="{{ url_for('enter_question') }}" class="btn btn-primary"
     >Post a question</a
->
-<br /><br />
-{% if entries %}
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Message</th>
-            <th>View count</th>
-            <th>Submitted at</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for e in entries %}
-        <tr>
-            <td>
-                <a href="{{ url_for( 'get_entry', id=e.id ) }}">
-                    {{ e.title }}
-                </a>
-            </td>
-            <td>{{ e.message }}</td>
-            <td align="center">{{ e.view_number }}</td>
-            <td align="center">{{ e.submission_time}}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>Nothing here</p>
-{% endif %} {% endblock %}
+    >
+    <br/><br/>
+    {% if entries %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Message</th>
+                <th>View count</th>
+                <th>Vote number</th>
+                <th>Submitted at</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for e in entries %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for( 'get_entry', id=e.id ) }}">
+                            {{ e.title }}
+                        </a>
+                    </td>
+                    <td>{{ e.message }}</td>
+                    <td align="center">{{ e.view_number }}</td>
+                    <td align="center">{{ e.vote_number }}</td>
+                    <td align="center">{{ e.submission_time }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nothing here</p>
+    {% endif %} {% endblock %}

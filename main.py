@@ -122,15 +122,26 @@ def upvote_question(id):
     return redirect(url_for("get_entry", id=id))
 
 
-@app.route("/upvote-answer/<int:id>", methods=["GET", "POST"])
-def upvote_answer(id):
-    data_manager.upvote_answer(id)
-    get_id = data_manager.pass_question_id(id)
-    pass_id = 0
-    for row in get_id:
-        pass_id = row['id']
+@app.route("/downvote-question/<int:id>", methods=["GET","POST"])
+def downvote_question(id):
+    data_manager.downvote_question(id)
 
-    return redirect(url_for("get_entry", id=pass_id))
+    return redirect(url_for("get_entry", id=id))
+
+
+@app.route("/upvote-answer/<int:id><int:q_id>", methods=["GET", "POST"])
+def upvote_answer(id, q_id):
+    data_manager.upvote_answer(id)
+
+    return redirect(url_for("get_entry", id=q_id))
+
+
+@app.route("/downvote-answer/<int:id><int:q_id>", methods=["GET", "POST"])
+def downvote_answer(id, q_id):
+    data_manager.downvote_answer(id)
+
+    return redirect(url_for("get_entry", id=q_id))
+
 
 
 

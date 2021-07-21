@@ -26,8 +26,11 @@
             <br><br>
 
             <form action="{{ url_for('upvote_question',id=question.id) }}" method="POST">
-            <button type="submit" class="btn btn-primary">Upvote post 1</button>
+            <button type="submit" class="btn btn-primary">Upvote post</button>
             <br><br><br>
+            <a href="{{ url_for('downvote_question',id=question.id) }}" class="btn btn-primary">Downvote
+                        question</a>
+
         {% endfor %}
         <h2>Answers</h2><br>
         <table class="table">
@@ -37,7 +40,8 @@
                 <th>Posted at</th>
                 <th>Number of votes</th>
                 <th>Answer ID</th>
-                <th>Vote an answer</th>
+                <th>Upvote answer</th>
+                <th>Downvote answer</th>
                 <th>Image</th>
                 <th>Delete answer</th>
             </tr>
@@ -49,12 +53,13 @@
                     <td align="center">{{ answer.submission_time }}</td>
                     <td align="center">{{ answer.vote_number }}</td>
                     <td align="center">{{ answer.id }}</td>
-                    <td><a href="{{ url_for('upvote_answer',id=answer.id) }}" class="btn btn-primary">Upvote
+                    <td><a href="{{ url_for('upvote_answer',id=answer.id, q_id=answer.question_id) }}" class="btn btn-primary">Upvote
+                        answer</a>
+                    <td><a href="{{ url_for('downvote_answer',id=answer.id, q_id=answer.question_id) }}" class="btn btn-primary">Downvote
                         answer</a>
                     <td align="center"><img src="static/{{ answer.image | default('no-image-available.png') }}"
                                             alt={{ answer.image }} width="120"></td>
                     </td>
-                    <td>{{ answer.question_id , answer.id }}</td>
                     <td><a href="{{ url_for('delete_answer',id=answer.id, q_id=answer.question_id) }}"
                            class="btn btn-primary">Delete answer</a></td>
                 </tr>

@@ -89,6 +89,16 @@ def upvote_question(cursor, id):
 
 
 @database_common.connection_handler
+def downvote_question(cursor, id):
+    query = """
+    UPDATE question
+    SET vote_number = vote_number - 1
+    WHERE id = %(id)s
+    """
+    cursor.execute(query, {'id': id})
+
+
+@database_common.connection_handler
 def upvote_answer(cursor, id):
     query = """
     UPDATE answer
@@ -99,16 +109,13 @@ def upvote_answer(cursor, id):
 
 
 @database_common.connection_handler
-def pass_question_id(cursor, id):
+def downvote_answer(cursor, id):
     query = """
-    SELECT question.id 
-    FROM question
-    INNER JOIN answer
-    ON question.id = answer.question_id
-    WHERE answer.question_id = %(id)s
+    UPDATE answer
+    SET vote_number = vote_number - 1
+    WHERE id = %(id)s
     """
     cursor.execute(query, {'id': id})
-    return cursor.fetchall()
 
 
 @database_common.connection_handler
