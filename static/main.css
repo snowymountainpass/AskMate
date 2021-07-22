@@ -88,7 +88,7 @@
 }
 
 button {
-    background-color: #04AA6D;
+    background-color: #ff4a03;
     color: white;
     padding: .375rem .75rem;
     line-height: 1.5;
@@ -107,6 +107,12 @@ button:hover {
 .cancelbtn, .deletebtn {
     float: left;
     width: 50%;
+    padding: .375rem .75rem;
+    border: 1px;
+    border-radius: .25rem;
+    cursor: pointer;
+    opacity: 0.9;
+    line-height: 1.5;
 }
 
 .cancelbtn {
@@ -177,4 +183,22 @@ hr {
     }
 }
 
+
+.button-submit {
+    background-color: #ff4a03;
+    color: white;
+    padding: 25px 25px 25px 25px;
+    line-height: 1.5;
+    margin-top: 50px;
+    border: 1px;
+    border-radius: .25rem;
+    cursor: pointer;
+    width: auto;
+    opacity: 0.9;
+}
+
+
+.entry-button-spaciate {
+    padding: 25px;
+}
 

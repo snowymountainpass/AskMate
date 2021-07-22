@@ -13,15 +13,21 @@
     {#    <p><button type="submit">Submit</button></p>#}
     {#</form>#}
     <form method="POST">
-        <p>Posting a comment to answer ID {{ id }}</p><br><br>
+        <div class="form-group">
+            <h4>Posting a comment to answer ID {{ id }}</h4>
+        </div>
 
-        <p>
-            <label for="message">Message</label><br>
-            <textarea name="message" id="message" cols="30" rows="10" placeholder="Enter your comment."
+
+        <div class="form-group">
+            <label class="form-check-label" for="message">Message</label>
+        </div>
+        <div class="form-group">
+            <textarea class="form-control" name="message" id="message" cols="30" rows="10" placeholder="Enter your comment."
                       spellcheck="true">{{ message }}</textarea>
-        </p>
-        <p>
-            <button type="submit">Submit</button>
-        </p>
+        </div>
+
+        <button type="submit" class="button-submit">Submit</button>
+
+
     </form>
 {% endblock %}

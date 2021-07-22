@@ -52,8 +52,8 @@ def get_entry(id):
     try:
         answers = data_manager.get_answers_for_question(id)
         question_comments = data_manager.get_comments_for_question(id)
-        print(question_comments)
-        answer_comments = None
+        answer_comments = data_manager.get_comments_for_answer(id)  # doesn't take for answer, takes for the whole question
+        print(answer_comments)
 
     except TypeError:
         print("hahahaha i crashed stuff @ accessing an entry")
@@ -61,7 +61,24 @@ def get_entry(id):
         question_comments = None
         answer_comments = None
 
-    return render_template("entry.html", entry=entry, answers=answers, question_comments=question_comments)
+    return render_template("entry.html", entry=entry, answers=answers, question_comments=question_comments, answer_comments=answer_comments)
+
+
+# @app.route('/entry/question-<int:id_question>/answer-<int:id_answer>/comments', methods=["GET", "POST"])
+# def get_comments(id_question, id_answer):
+#     headers = ["Answer", "Posted at", "Number of votes", "Answer ID"]
+#     entry = data_manager.get_question_by_id(id_question)
+#     entry_answers = data_manager.get_answers_by_question(id_question)
+#
+#     if request.method == "GET":
+#         if entry_answers is None:
+#             return render_template('entry.html', entry=entry, headers=headers)
+#         else:
+#             return render_template('entry.html', entry=entry, answers=entry_answers, headers=headers)
+#     elif request.method == "POST":
+#         comments = data_manager.get_comments_by_answer(id_answer, id_question)
+#         print(comments)
+#         return render_template('entry.html', entry=entry, answers=entry_answers, headers=headers, comments=comments)
 
 
 @app.route("/enter-edit/<int:id>", methods=["GET"])
@@ -100,7 +117,7 @@ def add_new_question():
         id = row['id']
 
     if id_row:
-        flash("Entry added")
+        flash("Success !")
         return redirect(url_for("get_entry", id=id))
 
     flash("Entry not added")

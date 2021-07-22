@@ -101,6 +101,9 @@ def get_answers_for_question(cursor, id):
     return cursor.fetchall()
 
 
+
+
+
 @database_common.connection_handler
 def get_message_from_answer(cursor,
                             id_answer):
@@ -122,11 +125,37 @@ def get_comments_for_question(cursor, id):
     FROM comment
     INNER JOIN question 
         ON comment.question_id = question.id
-    WHERE question_id = %(id)s
+    WHERE question_id = %(id)s AND answer_id IS NULL
     ORDER BY comment.id
     """
     cursor.execute(query, {'id': id})
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_comments_for_answer(cursor, id):
+    query = """
+    SELECT comment.id, comment.question_id, comment.answer_id, comment.message, comment.submission_time, edited_count
+    FROM comment
+    INNER JOIN question 
+        ON comment.question_id = question.id
+    WHERE question_id = %(id)s AND answer_id IS NOT NULL
+    ORDER BY comment.id
+    """
+    cursor.execute(query, {'id': id})
+    return cursor.fetchall()
+
+
+# @data_commons.connection_handler
+# def get_comments_by_answer(cursor, id_answer, id_question):
+#     query = """
+#     SELECT comment.message,comment.question_id,comment.answer_id,comment.submission_time
+#     FROM comment
+#     INNER JOIN answer ON comment.answer_id = answer.id
+#     WHERE comment.answer_id=%(id_answer)s AND comment.question_id = %(id_question)s
+#     """
+#     cursor.execute(query, {"id_answer": id_answer, "id_question": id_question})
+#     return cursor.fetchall()
 
 
 @database_common.connection_handler
