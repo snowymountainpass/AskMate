@@ -98,17 +98,17 @@
             </tr>
             </thead>
             <tbody>
-            {% for e in entries %}
+            {% for entry in entries %}
                 <tr>
                     <td>
-                        <a href="{{ url_for( 'get_entry', id=e.id ) }}">
-                            {{ e.title }}
+                        <a href="{{ url_for( 'get_entry', id=entry.id ) }}">
+                            {{ entry.title }}
                         </a>
                     </td>
-                    <td>{{ e.message }}</td>
-                    <td align="center">{{ e.view_number }}</td>
-                    <td align="center">{{ e.vote_number }}</td>
-                    <td align="center">{{ e.submission_time }}</td>
+                    <td>{{ entry.message }}</td>
+                    <td align="center">{{ entry.view_number }}</td>
+                    <td align="center">{{ entry.vote_number }}</td>
+                    <td align="center">{{ entry.submission_time }}</td>
                 </tr>
 
             {% endfor %}

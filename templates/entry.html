@@ -23,97 +23,129 @@
 
             </figure>
             <figure>
-                {% for comment in question_comments %}
-                    <div class="question_comment"><p>{{ comment.message }}</p>
-                        <figcaption class="blockquote-footer">Posted at {{ comment.submission_time }} |
-                            Edited {{ comment.edited_count }} times
-                        </figcaption>
-                        <a href="{{ url_for('edit_comment_question', id=comment.id, q_id=question.id) }}"
-                           class="btn btn-primary">Edit a comment</a>
+            {% for comment in question_comments %}
+                <div class="question_comment"><p>{{ comment.message }}</p>
+                    <figcaption class="blockquote-footer">Posted at {{ comment.submission_time }} |
+                        Edited {{ comment.edited_count }} times
+                    </figcaption>
+                    <a href="{{ url_for('edit_comment_question', id=comment.id, q_id=question.id) }}"
+                       class="btn btn-primary">Edit a comment</a>
 
-                        <button onclick="document.getElementById('id01').style.display='block'">Delete comment</button>
+                    <button onclick="document.getElementById('id01').style.display='block'">Delete comment</button>
 
-                        <div id="id01" class="modal">
+                    <div id="id01" class="modal">
                             <span onclick="document.getElementById('id01').style.display='none'" class="close"
                                   title="Close delete">&times;</span>
-                            <form class="modal-content" action="{{ url_for( 'index' ) }}">
-                                <div class="modal-container">
-                                    <h1>Delete comment</h1>
-                                    <p>Are you sure you want to delete the comment?</p>
-                                    <div class="clearfix">
-                                        {#                                        <button type="button" class="cancelbtn" formaction="{{ url_for( 'index' ) }}">Cancel</button>#}
-                                        {#                                        <button type="button" class="deletebtn" formaction="{{ url_for( 'index' ) }}">Delete</button>#}
-{#                                        <a href="{{ url_for( 'index' ) }}" class="cancelbtn">Cancel</a>#}
-                                        <a href="{{ question.id }}" class="cancelbtn">Cancel</a>
-                                        <a href="{{ url_for( 'delete_comment_question', id=comment.id, q_id=question.id ) }}" class="deletebtn">Delete</a>
-                                    </div>
+                        <form class="modal-content" action="{{ url_for( 'index' ) }}">
+                            <div class="modal-container">
+                                <h1>Delete comment</h1>
+                                <p>Are you sure you want to delete the comment?</p>
+                                <div class="clearfix">
+                                    <a href="{{ question.id }}" class="cancelbtn">Cancel</a>
+                                    <a href="{{ url_for( 'delete_comment_question', id=comment.id, q_id=question.id ) }}"
+                                       class="deletebtn">Delete</a>
                                 </div>
-                            </form>
-                        </div>
-
-
+                            </div>
+                        </form>
                     </div>
-                {% endfor %}
-            </figure>
-
-
-
-            <br><br>
-
-            <a href="{{ url_for('add_comment_question', id=question.id) }}" class="btn btn-primary">Add a comment</a>
-            <br><br><br>
-            <form action="{{ url_for('upvote_question',id=question.id) }}" method="POST">
-            <button type="submit" class="btn btn-primary">Upvote question</button>
-            <br><br><br>
-            <a href="{{ url_for('downvote_question',id=question.id) }}" class="btn btn-primary">Downvote
-                question</a>
-
-        {% endfor %}
-        <h2>Answers</h2><br>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Answer</th>
-                <th>Posted at</th>
-                <th>Number of votes</th>
-                <th>Answer ID</th>
-                <th>Upvote answer</th>
-                <th>Downvote answer</th>
-                <th>Image</th>
-                <th>Delete answer</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for answer in answers %}
-                <tr>
-                    <td>{{ answer.message }}</td>
-                    <td align="center">{{ answer.submission_time }}</td>
-                    <td align="center">{{ answer.vote_number }}</td>
-                    <td align="center">{{ answer.id }}</td>
-                    <td><a href="{{ url_for('upvote_answer',id=answer.id, q_id=answer.question_id) }}"
-                           class="btn btn-primary">Upvote
-                        answer</a>
-                    <td><a href="{{ url_for('downvote_answer',id=answer.id, q_id=answer.question_id) }}"
-                           class="btn btn-primary">Downvote
-                        answer</a>
-                    <td align="center"><img src="static/{{ answer.image | default('no-image-available.png') }}"
-                                            alt={{ answer.image }} width="120"></td>
-                    </td>
-                    <td><a href="{{ url_for('delete_answer',id=answer.id, q_id=answer.question_id) }}"
-                           class="btn btn-primary">Delete answer</a></td>
-                </tr>
+                </div>
             {% endfor %}
-            </tbody>
-        </table>
+        {% endfor %}
+        </figure>
 
-        </form>
+
+    <br><br>
     {% for question in entry %}
+        <a href="{{ url_for('add_comment_question', id=question.id) }}" class="btn btn-primary">Add a comment</a>
+        <br><br><br>
+        <form action="{{ url_for('upvote_question',id=question.id) }}" method="POST">
+        <button type="submit" class="btn btn-primary">Upvote question</button>
+        <a href="{{ url_for('downvote_question',id=question.id) }}" class="btn btn-primary">Downvote
+            question</a>
+        <br><br><br>
         <a href="{{ url_for( 'editting', id=question.id) }}" class="btn btn-primary">Edit question</a><br><br>
-        {#<a href="{{ url_for( 'enter_answer', id=question.id ) }}" class="btn btn-primary">Post an answer</a><br><br>#}
+    {% endfor %}
+
+
+<h2>Answers</h2><br>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Answer</th>
+        <th>Posted at</th>
+        <th>Number of votes</th>
+        <th>Answer ID</th>
+        <th>Upvote answer</th>
+        <th>Downvote answer</th>
+        <th>Image</th>
+        <th>Edit answer</th>
+        <th>Delete answer</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for answer in answers %}
+        <tr>
+            <td>{{ answer.message }}</td>
+            <td align="center">{{ answer.submission_time }}</td>
+            <td align="center">{{ answer.vote_number }}</td>
+            <td align="center">{{ answer.id }}</td>
+            {% for question in entry %}
+                <td>
+                    <a href="{{ url_for('upvote_answer',id=answer.id, q_id=answer.question_id) }}"
+                       class="btn btn-primary">Upvote
+                        answer</a>
+                <td>
+                    <a href="{{ url_for('downvote_answer',id=answer.id, q_id=answer.question_id) }}"
+                       class="btn btn-primary">Downvote
+                        answer</a>
+                <td align="center"><img
+                        src="static/{{ answer.image | default('no-image-available.png') }}"
+                        alt={{ answer.image }} width="120"></td>
+                </td>
+                <td><a href="{{ url_for('edit_answer',id_answer=answer.id,id_question=question.id) }}"
+                       class="btn btn-primary">Edit Answer</a>
+                </td>
+                <td>
+                    <a href="{{ url_for('delete_answer',id_answer=answer.id, id_question=answer.question_id) }}"
+                       class="btn btn-primary">Delete answer</a></td>
+                </tr>
+                <td><a href="{{ url_for('add_comment',id_answer=answer.id,id_question=question.id) }}"
+                                       class="btn btn-primary">Add Comment</a>
+                                </td>
+{#                                    <td align="center" style="vertical-align: middle">#}
+{#                                        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">Toggle popover1</a>#}
+{#                                    </td>#}
+            {% endfor %}
+    {% endfor %}
+    </tbody>
+</table>
+
+</form>
+
+    {% for question in entry %}
+        <a href="{{ url_for( 'add_answer', id_question=question.id ) }}" class="btn btn-primary">Post an answer</a>
+        <br>
+        <br>
         <a href="{{ url_for( 'index' ) }}" class="btn btn-primary">Back to list of questions</a>
         <br><br><br><br><br><br><br><br>
         <a href="{{ url_for('delete_question', id=question.id) }}" class="btn btn-primary">Delete the question</a>
     {% endfor %}
+    {#    <table class="table">#}
+    {#    <thead>#}
+    {#    <tr>#}
+    {#        <th class="text-center" style="vertical-align: middle">ID</th>#}
+    {#        <th class="text-center" style="vertical-align: middle">Comment message</th>#}
+    {#        <th class="text-center">Submission Time</th>#}
+    {#        <th class="text-center">Answer ID</th>#}
+    {#        <th class="text-center" style="vertical-align: middle">Question ID</th>#}
+    {#    </tr>#}
+    {#    </thead>#}
+    {##}
+    {#    <tbody>#}
+    {#    {% for comment in comments %}#}
+    {##}
+    {#    {% endfor %}#}
+    {#    </tbody>#}
 
 {% endblock %}
 

@@ -21,16 +21,6 @@ def get_all_questions(cursor):
     return cursor.fetchall()
 
 
-# @database_common.connection_handler
-# def TEST_SORTING(cursor, table, column, order):
-#     query = sql.SQL("""
-#     SELECT * FROM {table}
-#     ORDER BY {column} {order}
-#     """)
-#     cursor.execute(query, {'table':table, 'column':column, 'order':order})
-#     return cursor.fetchall()
-
-
 @database_common.connection_handler
 def get_all_questions_t_a(cursor):
     query = """
@@ -112,6 +102,20 @@ def get_answers_for_question(cursor, id):
 
 
 @database_common.connection_handler
+def get_message_from_answer(cursor,
+                            id_answer):
+    query = """
+    SELECT answer.message
+    FROM answer
+    INNER JOIN question 
+    ON answer.question_id = question.id
+    WHERE answer.id=%(id_answer)s
+    """
+    cursor.execute(query, {"id_answer": id_answer})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def get_comments_for_question(cursor, id):
     query = """
     SELECT comment.id, comment.message, comment.submission_time, edited_count
@@ -137,11 +141,18 @@ def increase_question_viewcount(cursor, id):
 
 @database_common.connection_handler
 def delete_question(cursor, id):
+    question_comments_query = """
+    DELETE FROM comment
+    WHERE question_id = %(id)s
+    """
+    cursor.execute(question_comments_query, {'id': id})
+
     answers_query = """
     DELETE FROM answer
     WHERE question_id = %(id)s
     """
     cursor.execute(answers_query, {'id': id})
+
     query = """
     DELETE FROM question
     WHERE id = %(id)s
@@ -230,6 +241,21 @@ def inject_new_question(cursor, title, message, image):
 
 
 @database_common.connection_handler
+def add_answer_to_question(cursor, id_question, message):
+    query = """
+    INSERT INTO answer (submission_time, vote_number, question_id, message)
+    VALUES (%(submission_time)s,%(vote_number)s,%(question_id)s,%(message)s)
+    """
+    cursor.execute(query, {
+        'submission_time': get_time(),
+        'vote_number': 0,
+        'question_id': id_question,
+        'message': message,
+        # 'image': applicant_details.get("image"),
+    })
+
+
+@database_common.connection_handler
 def inject_question_comment(cursor, id, message):
     get_time_of_posting = get_time()
     query = """
@@ -239,6 +265,21 @@ def inject_question_comment(cursor, id, message):
     
     """
     cursor.execute(query, {'question_id': id, 'message': message, 'time': get_time_of_posting, })
+
+
+@database_common.connection_handler
+def add_comment_to_answer(cursor, id_answer, id_question, comment_message):
+    query = """
+    INSERT INTO comment (question_id,answer_id,message,submission_time,edited_count)
+    VALUES (%(question_id)s,%(answer_id)s,%(message)s,%(submission_time)s,%(edited_count)s)    
+    """
+    cursor.execute(query, {
+        'question_id': id_question,
+        'answer_id': id_answer,
+        'message': comment_message,
+        'submission_time': get_time(),
+        'edited_count': 0,
+    })
 
 
 @database_common.connection_handler
@@ -269,4 +310,60 @@ def delete_comment(cursor, id):
         DELETE FROM comment
         WHERE id = %(id)s
         """
-    cursor.execute(query, {'id':id})
+    cursor.execute(query, {'id': id})
+
+
+@database_common.connection_handler
+def delete_answer_to_question(cursor, id_answer):
+    comment_query = """
+    DELETE FROM comment
+    WHERE answer_id = %(id_answer)s
+    """
+    cursor.execute(comment_query, {"id_answer": id_answer})
+    query = """
+    DELETE FROM answer
+    WHERE id=%(id_answer)s
+    """
+    cursor.execute(query, {"id_answer": id_answer})
+
+
+@database_common.connection_handler
+def edit_answer_to_question(cursor, id_answer, old_message, new_message):
+    query = """
+    UPDATE answer
+    SET message = %(new_message)s, submission_time = %(submission_time)s
+    WHERE id=%(id_answer)s AND message = %(old_message)s
+    """
+    cursor.execute(query, {"new_message": new_message, "submission_time": get_time(), "id_answer": id_answer,
+                           "old_message": old_message})
+
+
+@database_common.connection_handler
+def sort_answers(cursor, id_question, sort_by_criteria,
+                 display_order):  # https://pysql.tecladocode.com/section08/lectures/08_sql_string_composition/
+    query = """
+        SELECT *
+        FROM answer
+        INNER JOIN question 
+        ON answer.question_id = question.id
+        WHERE question.id = %(id_question)s
+        ORDER BY %(sort_by_criteria)s %(display_order)s
+        """
+
+    # %(sort_by_criteria)s %(display_order)s
+    cursor.execute(query,
+                   {'id_question': id_question,
+                    'sort_by_criteria': sort_by_criteria, })  # 'display_order': display_order
+
+
+@database_common.connection_handler
+def sort_answers_wip(cursor, id_question, sort_by_criteria,
+                     display_order):  # https://kb.objectrocket.com/postgresql/python-parameterized-sql-for-postgres-915
+    query = ""
+    query += "SELECT *"
+    query += "FROM answer"
+    query += "INNER JOIN question"
+    query += "ON answer.question_id = question.id"
+    query += "WHERE question.id = %id_question"
+    query += "ORDER BY %(sort_by_criteria)s %(display_order)s"
+    cursor.execute(query, (id_question, sort_by_criteria, display_order,))
