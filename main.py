@@ -165,14 +165,14 @@ def downvote_question(id):
     return redirect(url_for("get_entry", id=id))
 
 
-@app.route("/upvote-answer/<int:id><int:q_id>", methods=["GET", "POST"])
+@app.route("/upvote-answer/<int:id>-<int:q_id>", methods=["GET", "POST"])
 def upvote_answer(id, q_id):
     data_manager.upvote_answer(id)
 
     return redirect(url_for("get_entry", id=q_id))
 
 
-@app.route("/downvote-answer/<int:id><int:q_id>", methods=["GET", "POST"])
+@app.route("/downvote-answer/<int:id>-<int:q_id>", methods=["GET", "POST"])
 def downvote_answer(id, q_id):
     data_manager.downvote_answer(id)
 
@@ -190,7 +190,7 @@ def add_comment_question(id):
     return render_template('post_comment.html', id=id)
 
 
-@app.route("/edit-comment/<int:id><int:q_id>", methods=["GET", "POST"])
+@app.route("/edit-comment/<int:id>-<int:q_id>", methods=["GET", "POST"])
 def edit_comment_question(id, q_id):
     this_comment = data_manager.get_comment(id)
     print(this_comment)
@@ -204,6 +204,13 @@ def edit_comment_question(id, q_id):
 
         return redirect(url_for("get_entry", id=q_id))
     return render_template('edit_comment.html', id=id, comments=this_comment)
+
+
+@app.route("/entry/<int:id>-<int:q_id>/delete", methods=["GET", "POST"])
+def delete_comment_question(id, q_id):
+    data_manager.delete_comment(id)
+    return redirect(url_for("get_entry", id=q_id))
+
 
 
 if __name__ == "__main__":

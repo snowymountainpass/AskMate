@@ -261,3 +261,12 @@ def edit_comment(cursor, id, message):
     WHERE id = %(id)s
     """
     cursor.execute(query, {'message': message, 'id': id, 'submission_time': current_time, })
+
+
+@database_common.connection_handler
+def delete_comment(cursor, id):
+    query = """
+        DELETE FROM comment
+        WHERE id = %(id)s
+        """
+    cursor.execute(query, {'id':id})

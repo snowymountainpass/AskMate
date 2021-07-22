@@ -25,9 +25,31 @@
             <figure>
                 {% for comment in question_comments %}
                     <div class="question_comment"><p>{{ comment.message }}</p>
-                        <figcaption class="blockquote-footer">Posted at {{ comment.submission_time }} | Edited {{ comment.edited_count }} times</figcaption>
+                        <figcaption class="blockquote-footer">Posted at {{ comment.submission_time }} |
+                            Edited {{ comment.edited_count }} times
+                        </figcaption>
                         <a href="{{ url_for('edit_comment_question', id=comment.id, q_id=question.id) }}"
                            class="btn btn-primary">Edit a comment</a>
+
+                        <button onclick="document.getElementById('id01').style.display='block'">Delete comment</button>
+
+                        <div id="id01" class="modal">
+                            <span onclick="document.getElementById('id01').style.display='none'" class="close"
+                                  title="Close delete">&times;</span>
+                            <form class="modal-content" action="{{ url_for( 'index' ) }}">
+                                <div class="modal-container">
+                                    <h1>Delete comment</h1>
+                                    <p>Are you sure you want to delete the comment?</p>
+                                    <div class="clearfix">
+                                        {#                                        <button type="button" class="cancelbtn" formaction="{{ url_for( 'index' ) }}">Cancel</button>#}
+                                        {#                                        <button type="button" class="deletebtn" formaction="{{ url_for( 'index' ) }}">Delete</button>#}
+{#                                        <a href="{{ url_for( 'index' ) }}" class="cancelbtn">Cancel</a>#}
+                                        <a href="{{ question.id }}" class="cancelbtn">Cancel</a>
+                                        <a href="{{ url_for( 'delete_comment_question', id=comment.id, q_id=question.id ) }}" class="deletebtn">Delete</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
 
 
                     </div>
@@ -41,7 +63,7 @@
             <a href="{{ url_for('add_comment_question', id=question.id) }}" class="btn btn-primary">Add a comment</a>
             <br><br><br>
             <form action="{{ url_for('upvote_question',id=question.id) }}" method="POST">
-            <button type="submit" class="btn btn-primary">Upvote post</button>
+            <button type="submit" class="btn btn-primary">Upvote question</button>
             <br><br><br>
             <a href="{{ url_for('downvote_question',id=question.id) }}" class="btn btn-primary">Downvote
                 question</a>
