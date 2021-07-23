@@ -5,22 +5,22 @@ import psycopg2.extras
 
 
 def get_connection_string():
-    user_name = os.environ.get('PSQL_USER_NAME')
-    password = os.environ.get('PSQL_PASSWORD')
-    host = os.environ.get('PSQL_HOST')
-    database_name = os.environ.get('PSQL_DB_NAME')
+    user_name = os.environ.get("PSQL_USER_NAME")
+    password = os.environ.get("PSQL_PASSWORD")
+    host = os.environ.get("PSQL_HOST")
+    database_name = os.environ.get("PSQL_DB_NAME")
 
     env_variables_defined = user_name and password and host and database_name
 
     if env_variables_defined:
-        return 'postgresql://{user_name}:{password}@{host}/{database_name}'.format(
+        return "postgresql://{user_name}:{password}@{host}/{database_name}".format(
             user_name=user_name,
             password=password,
             host=host,
-            database_name=database_name
+            database_name=database_name,
         )
     else:
-        raise KeyError('Some necessary environment variable(s) are not defined')
+        raise KeyError("Some necessary environment variable(s) are not defined")
 
 
 def open_database():
@@ -29,7 +29,7 @@ def open_database():
         connection = psycopg2.connect(connection_string)
         connection.autocommit = True
     except psycopg2.DatabaseError as exception:
-        print('Database connection problem')
+        print("Database connection problem")
         raise exception
     return connection
 

@@ -10,38 +10,40 @@ app.secret_key = "alskua ekjegu keucyf iqek,rvgkfarg rkjegkjqaved"
 
 @app.route("/")
 def index():
-    entries = data_manager.get_all_questions()
+    criterion = request.args.get("criterion", "id")
+    direction = request.args.get("direction", "asc")
+    entries = data_manager.get_all_questions(criterion, direction)
     return render_template("index.html", entries=entries)
 
 
-@app.route("/s-a-title")
-def sort_asc_title():
-    entries = data_manager.get_all_questions_t_a()
-    return render_template("index.html", entries=entries)
+# @app.route("/s-a-title")
+# def sort_asc_title():
+#     entries = data_manager.get_all_questions_t_a()
+#     return render_template("index.html", entries=entries)
 
 
-@app.route("/s-a-submissiontime")
-def sort_asc_submissiontime():
-    entries = data_manager.get_all_questions_st_a()
-    return render_template("index.html", entries=entries)
+# @app.route("/s-a-submissiontime")
+# def sort_asc_submissiontime():
+#     entries = data_manager.get_all_questions_st_a()
+#     return render_template("index.html", entries=entries)
 
 
-@app.route("/s-a-message")
-def sort_asc_message():
-    entries = data_manager.get_all_questions_mess_a()
-    return render_template("index.html", entries=entries)
+# @app.route("/s-a-message")
+# def sort_asc_message():
+#     entries = data_manager.get_all_questions_mess_a()
+#     return render_template("index.html", entries=entries)
 
 
-@app.route("/s-a-views")
-def sort_asc_views():
-    entries = data_manager.get_all_questions_views_a()
-    return render_template("index.html", entries=entries)
+# @app.route("/s-a-views")
+# def sort_asc_views():
+#     entries = data_manager.get_all_questions_views_a()
+#     return render_template("index.html", entries=entries)
 
 
-@app.route("/s-a-votes")
-def sort_asc_votes():
-    entries = data_manager.get_all_questions_votes_a()
-    return render_template("index.html", entries=entries)
+# @app.route("/s-a-votes")
+# def sort_asc_votes():
+#     entries = data_manager.get_all_questions_votes_a()
+#     return render_template("index.html", entries=entries)
 
 
 @app.route("/entry/<int:id>", methods=["GET", "POST"])
@@ -52,7 +54,9 @@ def get_entry(id):
     try:
         answers = data_manager.get_answers_for_question(id)
         question_comments = data_manager.get_comments_for_question(id)
-        answer_comments = data_manager.get_comments_for_answer(id)  # doesn't take for answer, takes for the whole question
+        answer_comments = data_manager.get_comments_for_answer(
+            id
+        )  # doesn't take for answer, takes for the whole question
         print(answer_comments)
 
     except TypeError:
@@ -61,7 +65,13 @@ def get_entry(id):
         question_comments = None
         answer_comments = None
 
-    return render_template("entry.html", entry=entry, answers=answers, question_comments=question_comments, answer_comments=answer_comments)
+    return render_template(
+        "entry.html",
+        entry=entry,
+        answers=answers,
+        question_comments=question_comments,
+        answer_comments=answer_comments,
+    )
 
 
 # @app.route('/entry/question-<int:id_question>/answer-<int:id_answer>/comments', methods=["GET", "POST"])
@@ -114,7 +124,7 @@ def add_new_question():
     image = request.form.get("image")
     id_row = data_manager.inject_new_question(title, message, image)
     for row in id_row:
-        id = row['id']
+        id = row["id"]
 
     if id_row:
         flash("Success !")
@@ -137,7 +147,7 @@ def add_answer(id_question):
     elif request.method == "POST":
         message = request.form.get("message")
         data_manager.add_answer_to_question(id_question, message)
-        return redirect(url_for('get_entry', id=id_question))
+        return redirect(url_for("get_entry", id=id_question))
 
 
 @app.route("/delete-answer/<int:id_question>/<int:id_answer>", methods=["GET", "POST"])
@@ -146,10 +156,13 @@ def delete_answer(id_answer, id_question):
     return redirect(url_for("get_entry", id=id_question))
 
 
-@app.route("/edit-answer/question-<int:id_question>/answer-<int:id_answer>", methods=["GET", "POST"])
+@app.route(
+    "/edit-answer/question-<int:id_question>/answer-<int:id_answer>",
+    methods=["GET", "POST"],
+)
 def edit_answer(id_answer, id_question):
     old_message = data_manager.get_message_from_answer(id_answer)
-    old_message = old_message[0].get('message')
+    old_message = old_message[0].get("message")
 
     if request.method == "GET":
         return render_template("post_answer.html", id=id_question, message=old_message)
@@ -166,7 +179,7 @@ def add_comment(id_answer, id_question):
     elif request.method == "POST":
         comment_message = request.form.get("message")
         data_manager.add_comment_to_answer(id_answer, id_question, comment_message)
-        return redirect(url_for('get_entry', id=id_question))
+        return redirect(url_for("get_entry", id=id_question))
 
 
 @app.route("/upvote-question/<int:id>", methods=["POST"])
@@ -199,13 +212,13 @@ def downvote_answer(id, q_id):
 
 @app.route("/entry/<int:id>/comment", methods=["GET", "POST"])
 def add_comment_question(id):
-    if request.method == 'POST':
+    if request.method == "POST":
         comment_message = request.form.get("message")
         data_manager.inject_question_comment(id, comment_message)
 
         return redirect(url_for("get_entry", id=id))
 
-    return render_template('post_comment.html', id=id)
+    return render_template("post_comment.html", id=id)
 
 
 @app.route("/edit-comment/<int:id>-<int:q_id>", methods=["GET", "POST"])
@@ -213,7 +226,7 @@ def edit_comment_question(id, q_id):
     this_comment = data_manager.get_comment(id)
     print(this_comment)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         print(id)
         comment_message = request.form.get("message")
         print(id)
@@ -221,7 +234,7 @@ def edit_comment_question(id, q_id):
         data_manager.edit_comment(id, comment_message)
 
         return redirect(url_for("get_entry", id=q_id))
-    return render_template('edit_comment.html', id=id, comments=this_comment)
+    return render_template("edit_comment.html", id=id, comments=this_comment)
 
 
 @app.route("/entry/<int:id>-<int:q_id>/delete", methods=["GET", "POST"])

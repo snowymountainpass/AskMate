@@ -35,11 +35,20 @@
     <div class="dropdown">
         <button onclick="toggleShowDropdown()" class="dropbtn">Sort by:</button>
         <div id="dropdownList" class="dropdown-content">
-            <a href="{{ url_for('sort_asc_title') }}">Sort by title (ascending)</a>
-            <a href="{{ url_for('sort_asc_submissiontime') }}">Sort by submission time (ascending)</a>
-            <a href="{{ url_for('sort_asc_message') }}">Sort by message content (ascending)</a>
-            <a href="{{ url_for('sort_asc_views') }}">Sort by number of views (ascending)</a>
-            <a href="{{ url_for('sort_asc_votes') }}">Sort by number of votes (ascending)</a>
+            <a href="{{ url_for('index', criterion='title', direction='asc') }}">Sort by title (ascending)</a>
+            <a href="{{ url_for('index', criterion='title', direction='desc') }}">Sort by title (descending)</a>
+            
+            <a href="{{ url_for('index', criterion='submission_time', direction='asc') }}">Sort by submission time (ascending)</a>
+            <a href="{{ url_for('index', criterion='submission_time', direction='desc') }}">Sort by submission time (descending)</a>
+            
+            <a href="{{ url_for('index', criterion='message', direction='asc') }}">Sort by message (ascending)</a>
+            <a href="{{ url_for('index', criterion='message', direction='desc') }}">Sort by message (descending)</a>
+            
+            <a href="{{ url_for('index', criterion='view_number', direction='asc') }}">Sort by view number (ascending)</a>
+            <a href="{{ url_for('index', criterion='view_number', direction='desc') }}">Sort by view number (descending)</a>
+            
+            <a href="{{ url_for('index', criterion='vote_number', direction='asc') }}">Sort by vote number (ascending)</a>
+            <a href="{{ url_for('index', criterion='vote_number', direction='desc') }}">Sort by vote number (descending)</a>
         </div>
 
     </div>

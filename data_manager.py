@@ -6,73 +6,77 @@ import database_common
 
 
 def get_time():
-    return datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')
+    return datetime.datetime.now().strftime("%Y-%m-%d  %H:%M:%S")
 
 
 @database_common.connection_handler
-def get_all_questions(cursor):
-    query = """
-    SELECT * 
-    FROM question
-    ORDER BY id
-    """
+def get_all_questions(cursor, criterion, direction):
+    criteria = ["id", "title", "submission_time", "message", "view_number", "vote_number"]
+    directions = ["asc", "desc"]
+
+    if criterion in criteria and direction in directions:
+        query = f"""
+        SELECT * 
+        FROM question
+        ORDER BY {criterion} {direction}
+        """
     cursor.execute(query)
     return cursor.fetchall()
 
 
-@database_common.connection_handler
-def get_all_questions_t_a(cursor):
-    query = """
-    SELECT * 
-    FROM question
-    ORDER BY title
-    """
-    cursor.execute(query)
-    return cursor.fetchall()
+# @database_common.connection_handler
+# def get_all_questions_t_a(cursor):
+#     query = """
+#     SELECT * 
+#     FROM question
+#     ORDER BY title
+#     """
+#     cursor.execute(query)
+#     return cursor.fetchall()
 
 
-@database_common.connection_handler
-def get_all_questions_st_a(cursor):
-    query = """
-    SELECT * 
-    FROM question
-    ORDER BY submission_time
-    """
-    cursor.execute(query)
-    return cursor.fetchall()
+# @database_common.connection_handler
+# def get_all_questions_st_a(cursor):
+#     query = """
+#     SELECT * 
+#     FROM question
+#     ORDER BY submission_time
+#     """
+#     cursor.execute(query)
+#     return cursor.fetchall()
 
 
-@database_common.connection_handler
-def get_all_questions_mess_a(cursor):
-    query = """
-    SELECT * 
-    FROM question
-    ORDER BY message
-    """
-    cursor.execute(query)
-    return cursor.fetchall()
+# @database_common.connection_handler
+# def get_all_questions_mess_a(cursor):
+#     query = """
+#     SELECT * 
+#     FROM question
+#     ORDER BY message
+#     """
+#     cursor.execute(query)
+#     return cursor.fetchall()
 
 
-@database_common.connection_handler
-def get_all_questions_views_a(cursor):
-    query = """
-    SELECT * 
-    FROM question
-    ORDER BY view_number
-    """
-    cursor.execute(query)
-    return cursor.fetchall()
+# @database_common.connection_handler
+# def get_all_questions_views_a(cursor):
+#     query = """
+#     SELECT * 
+#     FROM question
+#     ORDER BY view_number
+#     """
+#     cursor.execute(query)
+#     return cursor.fetchall()
 
 
-@database_common.connection_handler
-def get_all_questions_votes_a(cursor):
-    query = """
-    SELECT * 
-    FROM question
-    ORDER BY vote_number
-    """
-    cursor.execute(query)
-    return cursor.fetchall()
+# @database_common.connection_handler
+# def get_all_questions_votes_a(cursor):
+#     query = """
+#     SELECT * 
+#     FROM question
+#     ORDER BY vote_number
+#     """
+#     cursor.execute(query)
+#     return cursor.fetchall()
 
 
 @database_common.connection_handler
@@ -82,7 +86,7 @@ def get_question_at_id(cursor, id):
     FROM question
     WHERE id = %(id)s
     """
-    cursor.execute(query, {'id': id})
+    cursor.execute(query, {"id": id})
     return cursor.fetchall()
 
 
@@ -96,7 +100,7 @@ def get_answers_for_question(cursor, id):
     WHERE question_id = %(id)s
     ORDER BY answer.id
     """
-    cursor.execute(query, {'id': id})
+    cursor.execute(query, {"id": id})
     return cursor.fetchall()
 
 
@@ -123,7 +127,7 @@ def get_comments_for_question(cursor, id):
     WHERE question_id = %(id)s AND answer_id IS NULL
     ORDER BY comment.id
     """
-    cursor.execute(query, {'id': id})
+    cursor.execute(query, {"id": id})
     return cursor.fetchall()
 
 
@@ -137,7 +141,7 @@ def get_comments_for_answer(cursor, id):
     WHERE question_id = %(id)s AND answer_id IS NOT NULL
     ORDER BY comment.id
     """
-    cursor.execute(query, {'id': id})
+    cursor.execute(query, {"id": id})
     return cursor.fetchall()
 
 
@@ -160,7 +164,7 @@ def increase_question_viewcount(cursor, id):
     SET view_number = view_number + 1
     WHERE id = %(id)s
     """
-    cursor.execute(query, {'id': id})
+    cursor.execute(query, {"id": id})
 
 
 @database_common.connection_handler
@@ -169,19 +173,19 @@ def delete_question(cursor, id):
     DELETE FROM comment
     WHERE question_id = %(id)s
     """
-    cursor.execute(question_comments_query, {'id': id})
+    cursor.execute(question_comments_query, {"id": id})
 
     answers_query = """
     DELETE FROM answer
     WHERE question_id = %(id)s
     """
-    cursor.execute(answers_query, {'id': id})
+    cursor.execute(answers_query, {"id": id})
 
     query = """
     DELETE FROM question
     WHERE id = %(id)s
     """
-    cursor.execute(query, {'id': id})
+    cursor.execute(query, {"id": id})
 
 
 @database_common.connection_handler
@@ -191,7 +195,7 @@ def delete_answer(cursor, id, question_id):
     WHERE question_id = %(question_id)s AND
     id = %(id)s
     """
-    cursor.execute(query, {'question_id': question_id, 'id': id})
+    cursor.execute(query, {"question_id": question_id, "id": id})
 
 
 @database_common.connection_handler
@@ -201,7 +205,7 @@ def upvote_question(cursor, id):
     SET vote_number = vote_number + 1
     WHERE id = %(id)s
     """
-    cursor.execute(query, {'id': id})
+    cursor.execute(query, {"id": id})
 
 
 @database_common.connection_handler
@@ -211,7 +215,7 @@ def downvote_question(cursor, id):
     SET vote_number = vote_number - 1
     WHERE id = %(id)s
     """
-    cursor.execute(query, {'id': id})
+    cursor.execute(query, {"id": id})
 
 
 @database_common.connection_handler
@@ -221,7 +225,7 @@ def upvote_answer(cursor, id):
     SET vote_number = vote_number + 1
     WHERE id = %(id)s
     """
-    cursor.execute(query, {'id': id})
+    cursor.execute(query, {"id": id})
 
 
 @database_common.connection_handler
@@ -231,7 +235,7 @@ def downvote_answer(cursor, id):
     SET vote_number = vote_number - 1
     WHERE id = %(id)s
     """
-    cursor.execute(query, {'id': id})
+    cursor.execute(query, {"id": id})
 
 
 @database_common.connection_handler
@@ -242,7 +246,7 @@ def edit_question(cursor, id, message, image):
     image = %(image)s
     WHERE id = %(id)s
     """
-    cursor.execute(query, {'message': message, 'image': image, 'id': id})
+    cursor.execute(query, {"message": message, "image": image, "id": id})
     return True
 
 
@@ -254,13 +258,23 @@ def inject_new_question(cursor, title, message, image):
     (submission_time, view_number, vote_number, title, message, image)
     VALUES (%(time)s, 0, 0, %(title)s, %(message)s, %(image)s)
     """
-    cursor.execute(query, {'time': get_time_of_posting, 'title': title, 'message': message, 'image': image})
+    cursor.execute(
+        query,
+        {
+            "time": get_time_of_posting,
+            "title": title,
+            "message": message,
+            "image": image,
+        },
+    )
     get_id_query = """
     SELECT id
     FROM question
     WHERE submission_time = %(time)s AND title = %(title)s AND message = %(message)s
     """
-    cursor.execute(get_id_query, {'time': get_time_of_posting, 'title': title, 'message': message})
+    cursor.execute(
+        get_id_query, {"time": get_time_of_posting, "title": title, "message": message}
+    )
     return cursor.fetchall()
 
 
@@ -270,13 +284,16 @@ def add_answer_to_question(cursor, id_question, message):
     INSERT INTO answer (submission_time, vote_number, question_id, message)
     VALUES (%(submission_time)s,%(vote_number)s,%(question_id)s,%(message)s)
     """
-    cursor.execute(query, {
-        'submission_time': get_time(),
-        'vote_number': 0,
-        'question_id': id_question,
-        'message': message,
-        # 'image': applicant_details.get("image"),
-    })
+    cursor.execute(
+        query,
+        {
+            "submission_time": get_time(),
+            "vote_number": 0,
+            "question_id": id_question,
+            "message": message,
+            # 'image': applicant_details.get("image"),
+        },
+    )
 
 
 @database_common.connection_handler
@@ -288,7 +305,14 @@ def inject_question_comment(cursor, id, message):
     VALUES (%(question_id)s, Null, %(message)s, %(time)s, 0)
     
     """
-    cursor.execute(query, {'question_id': id, 'message': message, 'time': get_time_of_posting, })
+    cursor.execute(
+        query,
+        {
+            "question_id": id,
+            "message": message,
+            "time": get_time_of_posting,
+        },
+    )
 
 
 @database_common.connection_handler
@@ -297,13 +321,16 @@ def add_comment_to_answer(cursor, id_answer, id_question, comment_message):
     INSERT INTO comment (question_id,answer_id,message,submission_time,edited_count)
     VALUES (%(question_id)s,%(answer_id)s,%(message)s,%(submission_time)s,%(edited_count)s)    
     """
-    cursor.execute(query, {
-        'question_id': id_question,
-        'answer_id': id_answer,
-        'message': comment_message,
-        'submission_time': get_time(),
-        'edited_count': 0,
-    })
+    cursor.execute(
+        query,
+        {
+            "question_id": id_question,
+            "answer_id": id_answer,
+            "message": comment_message,
+            "submission_time": get_time(),
+            "edited_count": 0,
+        },
+    )
 
 
 @database_common.connection_handler
@@ -313,7 +340,7 @@ def get_comment(cursor, id):
     FROM comment
     WHERE id = %(id)s
     """
-    cursor.execute(query, {'id': id})
+    cursor.execute(query, {"id": id})
     return cursor.fetchall()
 
 
@@ -325,7 +352,14 @@ def edit_comment(cursor, id, message):
     SET message = %(message)s, submission_time = %(submission_time)s, edited_count = edited_count + 1
     WHERE id = %(id)s
     """
-    cursor.execute(query, {'message': message, 'id': id, 'submission_time': current_time, })
+    cursor.execute(
+        query,
+        {
+            "message": message,
+            "id": id,
+            "submission_time": current_time,
+        },
+    )
 
 
 @database_common.connection_handler
@@ -334,7 +368,7 @@ def delete_comment(cursor, id):
         DELETE FROM comment
         WHERE id = %(id)s
         """
-    cursor.execute(query, {'id': id})
+    cursor.execute(query, {"id": id})
 
 
 @database_common.connection_handler
@@ -358,13 +392,21 @@ def edit_answer_to_question(cursor, id_answer, old_message, new_message):
     SET message = %(new_message)s, submission_time = %(submission_time)s
     WHERE id=%(id_answer)s AND message = %(old_message)s
     """
-    cursor.execute(query, {"new_message": new_message, "submission_time": get_time(), "id_answer": id_answer,
-                           "old_message": old_message})
+    cursor.execute(
+        query,
+        {
+            "new_message": new_message,
+            "submission_time": get_time(),
+            "id_answer": id_answer,
+            "old_message": old_message,
+        },
+    )
 
 
 @database_common.connection_handler
-def sort_answers(cursor, id_question, sort_by_criteria,
-                 display_order):  # https://pysql.tecladocode.com/section08/lectures/08_sql_string_composition/
+def sort_answers(
+    cursor, id_question, sort_by_criteria, display_order
+):  # https://pysql.tecladocode.com/section08/lectures/08_sql_string_composition/
     query = """
         SELECT *
         FROM answer
@@ -375,14 +417,19 @@ def sort_answers(cursor, id_question, sort_by_criteria,
         """
 
     # %(sort_by_criteria)s %(display_order)s
-    cursor.execute(query,
-                   {'id_question': id_question,
-                    'sort_by_criteria': sort_by_criteria, })  # 'display_order': display_order
+    cursor.execute(
+        query,
+        {
+            "id_question": id_question,
+            "sort_by_criteria": sort_by_criteria,
+        },
+    )  # 'display_order': display_order
 
 
 @database_common.connection_handler
-def sort_answers_wip(cursor, id_question, sort_by_criteria,
-                     display_order):  # https://kb.objectrocket.com/postgresql/python-parameterized-sql-for-postgres-915
+def sort_answers_wip(
+    cursor, id_question, sort_by_criteria, display_order
+):  # https://kb.objectrocket.com/postgresql/python-parameterized-sql-for-postgres-915
     query = ""
     query += "SELECT *"
     query += "FROM answer"
@@ -390,4 +437,11 @@ def sort_answers_wip(cursor, id_question, sort_by_criteria,
     query += "ON answer.question_id = question.id"
     query += "WHERE question.id = %id_question"
     query += "ORDER BY %(sort_by_criteria)s %(display_order)s"
-    cursor.execute(query, (id_question, sort_by_criteria, display_order,))
+    cursor.execute(
+        query,
+        (
+            id_question,
+            sort_by_criteria,
+            display_order,
+        ),
+    )
