@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from dotenv import load_dotenv
+import os
 
 import data_manager
 
 load_dotenv()
 app = Flask(__name__)
 app.secret_key = "alskua ekjegu keucyf iqek,rvgkfarg rkjegkjqaved"
+app.config["UPLOAD_FOLDER"] = os.path.join(".", "static", "images")
 
 
 @app.route("/")
@@ -16,36 +18,6 @@ def index():
     return render_template("index.html", entries=entries)
 
 
-# @app.route("/s-a-title")
-# def sort_asc_title():
-#     entries = data_manager.get_all_questions_t_a()
-#     return render_template("index.html", entries=entries)
-
-
-# @app.route("/s-a-submissiontime")
-# def sort_asc_submissiontime():
-#     entries = data_manager.get_all_questions_st_a()
-#     return render_template("index.html", entries=entries)
-
-
-# @app.route("/s-a-message")
-# def sort_asc_message():
-#     entries = data_manager.get_all_questions_mess_a()
-#     return render_template("index.html", entries=entries)
-
-
-# @app.route("/s-a-views")
-# def sort_asc_views():
-#     entries = data_manager.get_all_questions_views_a()
-#     return render_template("index.html", entries=entries)
-
-
-# @app.route("/s-a-votes")
-# def sort_asc_votes():
-#     entries = data_manager.get_all_questions_votes_a()
-#     return render_template("index.html", entries=entries)
-
-
 @app.route("/entry/<int:id>", methods=["GET", "POST"])
 def get_entry(id):
     data_manager.increase_question_viewcount(id)
@@ -54,9 +26,7 @@ def get_entry(id):
     try:
         answers = data_manager.get_answers_for_question(id)
         question_comments = data_manager.get_comments_for_question(id)
-        answer_comments = data_manager.get_comments_for_answer(
-            id
-        )  # doesn't take for answer, takes for the whole question
+        answer_comments = data_manager.get_comments_for_answer(id)
         print(answer_comments)
 
     except TypeError:
@@ -121,8 +91,14 @@ def enter_question():
 def add_new_question():
     title = request.form.get("title")
     message = request.form.get("message")
-    image = request.form.get("image")
-    id_row = data_manager.inject_new_question(title, message, image)
+    savepath = os.path.join(app.config.get("UPLOAD_FOLDER"), "no-image-available.png")
+
+    if "image" in request.files:
+        image = request.files.get("image")
+        savepath = os.path.join(app.config.get("UPLOAD_FOLDER"), image.filename)
+        image.save(savepath)
+
+    id_row = data_manager.inject_new_question(title, message, savepath)
     for row in id_row:
         id = row["id"]
 

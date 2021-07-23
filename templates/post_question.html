@@ -3,24 +3,43 @@
 {% block title %}Post a new question{% endblock %}
 
 {% block content %}
-<form action="{{ url_for('add_new_question') }}" method="POST">
-    <div class="form-group">
 
-        <label for="title" class="form-check-label">Title</label><br>
-        <input type="text" class="form-control" id="title" name="title" placeholder="Enter your question." align=""/>
+<form
+    action="{{ url_for('add_new_question') }}"
+    method="POST"
+    enctype="multipart/form-data"
+>
+    <div class="form-group">
+        <label for="title" class="form-check-label">Title</label><br />
+        <input
+            type="text"
+            class="form-control"
+            id="title"
+            name="title"
+            placeholder="Enter your question."
+        />
     </div>
 
     <div class="form-group">
-        <label for="message">Message</label><br>
-        <textarea class="form-control" name="message" id="message" cols="150" rows="10" spellcheck="true" placeholder="Enter your question."></textarea>
+        <label for="message">Message</label><br />
+        <textarea
+            class="form-control"
+            name="message"
+            id="message"
+            cols="150"
+            rows="10"
+            spellcheck="true"
+            placeholder="Enter your question."
+        ></textarea>
     </div>
 
     <div class="form-group">
-        <label for="image">Add image link</label><br>
-        <textarea class="form-control" name="image" id="image" cols="100" rows="1" placeholder="Enter image link"></textarea>
+        <label for="image">Add image link</label><br />
+        <input class="form-control" name="image" id="image" type="file" />
     </div>
+    
     <div class="form-group">
-    <button class="button-submit" type="submit">Submit</button>
+        <button class="button-submit" type="submit">Submit</button>
     </div>
 </form>
 
