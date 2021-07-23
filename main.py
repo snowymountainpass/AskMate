@@ -7,7 +7,11 @@ import data_manager
 load_dotenv()
 app = Flask(__name__)
 app.secret_key = "alskua ekjegu keucyf iqek,rvgkfarg rkjegkjqaved"
-app.config["UPLOAD_FOLDER"] = os.path.join(".", "static", "images")
+app.config["UPLOAD_FOLDER"] = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)),
+    "static",
+    "images",
+)
 
 
 @app.route("/")
