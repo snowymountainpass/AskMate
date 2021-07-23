@@ -130,29 +130,6 @@ def delete_question(id):
     return redirect(url_for("index"))
 
 
-# @app.route("/entry/<int:id>/delete-answer<int:q_id>")
-# def delete_answer(id, q_id):
-#     data_manager.delete_answer(id, q_id)
-#     return redirect(url_for("get_entry", id=q_id))
-
-
-# @app.route("/post-answer/<int:id>", methods=["GET"])
-# def enter_answer(id):
-#     return render_template("post_answer.html", id=id)
-#
-#
-# @app.route("/add-answer/<int:id>", methods=["POST"])
-# def add_answer(id):
-#     message = request.form.get("message")
-#
-#     if insert_answer(id, message):
-#         flash("Answer added")
-#         return redirect(url_for("get_entry", id=id))
-#
-#     flash("Answer not added")
-#     return redirect(url_for("get_entry", id=id))
-
-
 @app.route("/add-answer/question-<int:id_question>", methods=["GET", "POST"])
 def add_answer(id_question):
     if request.method == "GET":
@@ -173,9 +150,7 @@ def delete_answer(id_answer, id_question):
 def edit_answer(id_answer, id_question):
     old_message = data_manager.get_message_from_answer(id_answer)
     old_message = old_message[0].get('message')
-    # print(old_message)
-    # print(old_message[0])
-    # print(old_message[0].get('message')) #CUM SE POATE RETURNA STRIC O VALOARE => NU UN REALDICTROW ????????????
+
     if request.method == "GET":
         return render_template("post_answer.html", id=id_question, message=old_message)
     elif request.method == "POST":

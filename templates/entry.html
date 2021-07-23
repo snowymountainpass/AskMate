@@ -211,11 +211,8 @@
 
 
     {% for question in entry %}
-        {#        <a href="{{ url_for( 'add_answer', id_question=question.id ) }}" class="btn btn-primary">Post an answer</a>#}
-        <br>
-        <br>
         <a href="{{ url_for( 'index' ) }}" class="btn btn-primary">Back to list of questions</a>
-        <br><br><br><br><br><br><br><br>
+
 
     {% endfor %}
     {#    <table class="table">#}
