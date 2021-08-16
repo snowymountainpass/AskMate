@@ -5,6 +5,9 @@ import os
 
 import data_manager
 
+
+
+
 load_dotenv()
 app = Flask(__name__)
 app.secret_key = "alskua ekjegu keucyf iqek,rvgkfarg rkjegkjqaved"
@@ -15,12 +18,49 @@ app.config["UPLOAD_FOLDER"] = os.path.join(
 )
 
 
+users = {"alex": "1234", "laura": "2468", "cipi": "1357"}
+
 @app.route("/")
 def index():
     criterion = request.args.get("criterion", "id")
     direction = request.args.get("direction", "asc")
     entries = data_manager.get_all_questions(criterion, direction)
-    return render_template("index.html", entries=entries)
+    user = session.get("user")
+    return render_template("index.html", entries=entries, user=user)
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    global users
+
+    if request.method == "POST":
+        users[request.form.get("user")] = request.form.get("pass")
+        session["user"] = request.form.get("user")
+
+        return redirect(url_for("index"))
+
+    return render_template("register.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    global users
+
+    if request.method == "POST":
+        u = request.form.get("user")
+        p = request.form.get("pass")
+
+        if u in users.keys() and users[u] == p:
+            session["user"] = u
+
+        return redirect(url_for("index"))
+
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
 
 
 @app.route("/entry/<int:id>", methods=["GET", "POST"])

@@ -1,0 +1,31 @@
+{% extends "base_template.html" %}
+
+{% block nav %}
+<ul>
+    {% if user %}
+        <li>{{ user }}</li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    {% else %}
+        <li><a href="{{ url_for('register') }}">Register</a></li>
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+    {% endif %}
+</ul>
+{% endblock %}
+
+{% block content %}
+
+<form action="{{ url_for('register') }}" method="POST">
+    <p>
+        <label for="user">Username</label>
+        <input type="text" id="user" name="user">
+    </p>
+    <p>
+        <label for="pass">Password</label>
+        <input type="password" id="pass" name="pass">
+    </p>
+    <p>
+        <button type="submit">Register</button>
+    </p>
+</form>
+
+{% endblock %}

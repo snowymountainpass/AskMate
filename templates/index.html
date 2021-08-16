@@ -1,85 +1,104 @@
 {% extends "base_template.html" %} {% block title %}Ask Mate{% endblock %} {% block content %}
 
-    <script>
-        function toggleShowDropdown() {
-            document.getElementById("dropdownList").classList.toggle("show");
-        }
+<script>
+    function toggleShowDropdown() {
+        document.getElementById("dropdownList").classList.toggle("show");
+    }
 
 
-        window.onclick = function (event) {
-            if (!event.target.matches('.dropbtn')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                var i;
-                for (i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
                 }
             }
         }
-    </script>
-    <h1>Welcome to Ask Mate</h1>
-    <br/><br/>
-    {% with messages = get_flashed_messages() %} {% if messages %}
-        <ul class="flashes">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %} {% endwith %}
-    <br/>
-    <a href="{{ url_for('enter_question') }}" class="btn btn-primary"
-    >Post a question</a>
-    <br/><br/>
-    <div class="dropdown">
-        <button onclick="toggleShowDropdown()" class="dropbtn">Sort by:</button>
-        <div id="dropdownList" class="dropdown-content">
-            <a href="{{ url_for('index', criterion='title', direction='asc') }}">Sort by title (ascending)</a>
-            <a href="{{ url_for('index', criterion='title', direction='desc') }}">Sort by title (descending)</a>
-            
-            <a href="{{ url_for('index', criterion='submission_time', direction='asc') }}">Sort by submission time (ascending)</a>
-            <a href="{{ url_for('index', criterion='submission_time', direction='desc') }}">Sort by submission time (descending)</a>
-            
-            <a href="{{ url_for('index', criterion='message', direction='asc') }}">Sort by message (ascending)</a>
-            <a href="{{ url_for('index', criterion='message', direction='desc') }}">Sort by message (descending)</a>
-            
-            <a href="{{ url_for('index', criterion='view_number', direction='asc') }}">Sort by view number (ascending)</a>
-            <a href="{{ url_for('index', criterion='view_number', direction='desc') }}">Sort by view number (descending)</a>
-            
-            <a href="{{ url_for('index', criterion='vote_number', direction='asc') }}">Sort by vote number (ascending)</a>
-            <a href="{{ url_for('index', criterion='vote_number', direction='desc') }}">Sort by vote number (descending)</a>
-        </div>
-
-    </div>
-    {% if entries %}
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Title</th>
-                <th>Message</th>
-                <th>View count</th>
-                <th>Vote number</th>
-                <th>Submitted at</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for entry in entries %}
-                <tr>
-                    <td>
-                        <a href="{{ url_for( 'get_entry', id=entry.id ) }}">
-                            {{ entry.title }}
-                        </a>
-                    </td>
-                    <td>{{ entry.message }}</td>
-                    <td align="center">{{ entry.view_number }}</td>
-                    <td align="center">{{ entry.vote_number }}</td>
-                    <td align="center">{{ entry.submission_time }}</td>
-                </tr>
-
-            {% endfor %}
-            </tbody>
-        </table>
+    }
+</script>
+<h1>Welcome to Ask Mate</h1>
+<br/><br/>
+<ul>
+    {% if user %}
+    <li>{{ user }}</li>
+    <li><a href="{{ url_for('logout') }}">Logout</a></li>
     {% else %}
-        <p>Nothing here</p>
-    {% endif %} {% endblock %}
+    <li><a href="{{ url_for('register') }}">Register</a></li>
+    <li><a href="{{ url_for('login') }}">Login</a></li>
+    {% endif %}
+</ul>
+
+{% if user %}
+<p>Welcome back, {{ user }}</p>
+{% else %}
+<p>Browsing anonymously</p>
+{% endif %}
+
+
+{% with messages = get_flashed_messages() %} {% if messages %}
+<ul class="flashes">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %} {% endwith %}
+<br/>
+<a href="{{ url_for('enter_question') }}" class="btn btn-primary"
+>Post a question</a>
+<br/><br/>
+<div class="dropdown">
+    <button onclick="toggleShowDropdown()" class="dropbtn">Sort by:</button>
+    <div id="dropdownList" class="dropdown-content">
+        <a href="{{ url_for('index', criterion='title', direction='asc') }}">Sort by title (ascending)</a>
+        <a href="{{ url_for('index', criterion='title', direction='desc') }}">Sort by title (descending)</a>
+
+        <a href="{{ url_for('index', criterion='submission_time', direction='asc') }}">Sort by submission time
+            (ascending)</a>
+        <a href="{{ url_for('index', criterion='submission_time', direction='desc') }}">Sort by submission time
+            (descending)</a>
+
+        <a href="{{ url_for('index', criterion='message', direction='asc') }}">Sort by message (ascending)</a>
+        <a href="{{ url_for('index', criterion='message', direction='desc') }}">Sort by message (descending)</a>
+
+        <a href="{{ url_for('index', criterion='view_number', direction='asc') }}">Sort by view number (ascending)</a>
+        <a href="{{ url_for('index', criterion='view_number', direction='desc') }}">Sort by view number (descending)</a>
+
+        <a href="{{ url_for('index', criterion='vote_number', direction='asc') }}">Sort by vote number (ascending)</a>
+        <a href="{{ url_for('index', criterion='vote_number', direction='desc') }}">Sort by vote number (descending)</a>
+    </div>
+
+</div>
+{% if entries %}
+<table class="table">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Message</th>
+        <th>View count</th>
+        <th>Vote number</th>
+        <th>Submitted at</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entry in entries %}
+    <tr>
+        <td>
+            <a href="{{ url_for( 'get_entry', id=entry.id ) }}">
+                {{ entry.title }}
+            </a>
+        </td>
+        <td>{{ entry.message }}</td>
+        <td align="center">{{ entry.view_number }}</td>
+        <td align="center">{{ entry.vote_number }}</td>
+        <td align="center">{{ entry.submission_time }}</td>
+    </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Nothing here</p>
+{% endif %} {% endblock %}
