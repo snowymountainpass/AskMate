@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from dotenv import load_dotenv
 import os
+
 
 import data_manager
 
@@ -32,6 +33,7 @@ def get_entry(id):
         question_comments = data_manager.get_comments_for_question(id)
         answer_comments = data_manager.get_comments_for_answer(id)
         print(answer_comments)
+        print(question_comments)
 
     except TypeError:
         print("hahahaha i crashed stuff @ accessing an entry")
