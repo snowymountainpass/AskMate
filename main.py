@@ -25,19 +25,20 @@ def index():
     direction = request.args.get("direction", "asc")
     entries = data_manager.get_all_questions(criterion, direction)
     user = session.get("user")
+    print(user)
     return render_template("index.html", entries=entries, user=user)
 
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    global users
-
-    if request.method == "POST":
-        users[request.form.get("user")] = request.form.get("pass")
-        session["user"] = request.form.get("user")
-
-        return redirect(url_for("index"))
-
-    return render_template("register.html")
+# @app.route("/register", methods=["GET", "POST"])
+# def register():
+#     global users
+#
+#     if request.method == "POST":
+#         users[request.form.get("user")] = request.form.get("pass")
+#         session["user"] = request.form.get("user")
+#
+#         return redirect(url_for("index"))
+#
+#     return render_template("register.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -281,8 +282,14 @@ def register_user():
     if request.method == "POST":
         username = request.form.get("user")
         password = request.form.get("pass")
-        data_manager.register_new_user(username, password)
-        return redirect(url_for('index'))
+        if not data_manager.check_existing_username(username):
+            data_manager.register_new_user(username, password)
+            return redirect(url_for('index'))
+        else:
+            flash("Username is already taken !")
+            return redirect(url_for("register_user"))
+
+
 
     return render_template("register.html")
 
