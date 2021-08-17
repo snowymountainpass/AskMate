@@ -18,10 +18,10 @@
     <div class="question_message">
         <p class="lead">{{ question.message }}</p>
         <p>
-            {% if question.image %}
+            {% if question.image != 'None' and question.image != '<null>' %}
             <img src="{{ url_for('static', filename=question.image) }}" alt={{ question.image }} width="120"/>
             {% else %}
-            User has not uploaded an image
+                User has not uploaded an image
             {% endif %}
         </p>
     </div>
@@ -83,10 +83,10 @@
 <div class="entry-button-spaciate">
     <a href="{{ url_for( 'editting', question_id=question.id) }}" class="btn btn-primary">Edit question</a>
 
-    <button onclick="document.getElementById('id01').style.display='block'">Delete question</button>
+    <button onclick="document.getElementById('id03').style.display='block'">Delete question</button>
 
-    <div id="id01" class="modal">
-        <span onclick="document.getElementById('id01').style.display='none'" class="close"
+    <div id="id03" class="modal">
+        <span onclick="document.getElementById('id03').style.display='none'" class="close"
               title="Close delete">&times;</span>
         <form class="modal-content" action="{{ url_for( 'index' ) }}">
             <div class="modal-container">
