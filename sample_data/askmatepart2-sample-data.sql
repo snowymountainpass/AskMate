@@ -64,17 +64,25 @@ CREATE TABLE tag (
 -- create table "user"
 -- (
 -- 	user_id serial,
+-- 	password text,
 -- 	registration_date text,
 -- 	asked_questions text,
 -- 	answers text,
 -- 	comments_question text,
 -- 	reputation int,
--- 	password text,
 -- 	comments_answer text
 -- );
 --
 -- create unique index user_user_id_uindex
 -- 	on "user" (user_id);
+
+-- alter table "user"
+-- 	add username text;
+--
+-- create unique index user_username_uindex
+-- 	on "user" (username);
+
+-- alter table "user" alter column username set not null;
 --
 -- alter table "user"
 -- 	add constraint user_pk
