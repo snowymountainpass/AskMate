@@ -369,7 +369,7 @@ def delete_comment_question(cursor, comment_id, question_id):
         WHERE id = %(comment_id)s AND 
         question_id = %(question_id)s
         """
-    cursor.execute(query, {"id": comment_id, "question_id":question_id})
+    cursor.execute(query, {"comment_id": comment_id, "question_id":question_id})
 
 
 @database_common.connection_handler
