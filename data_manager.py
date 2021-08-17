@@ -416,7 +416,7 @@ def edit_answer_to_question(cursor, id_answer, old_message, new_message):
 
 @database_common.connection_handler
 def sort_answers(
-    cursor, id_question, sort_by_criteria, display_order
+        cursor, id_question, sort_by_criteria, display_order
 ):  # https://pysql.tecladocode.com/section08/lectures/08_sql_string_composition/
     query = """
         SELECT *
@@ -439,7 +439,7 @@ def sort_answers(
 
 @database_common.connection_handler
 def sort_answers_wip(
-    cursor, id_question, sort_by_criteria, display_order
+        cursor, id_question, sort_by_criteria, display_order
 ):  # https://kb.objectrocket.com/postgresql/python-parameterized-sql-for-postgres-915
     query = ""
     query += "SELECT *"
@@ -456,3 +456,25 @@ def sort_answers_wip(
             display_order,
         ),
     )
+
+
+@database_common.connection_handler
+def show_users(cursor):
+    query = """
+    SELECT username,registration_date,reputation
+    FROM "user"
+    ORDER BY username ASC;
+    """
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def register_new_user(cursor, user_name, pass_word):
+    query = """
+    INSERT INTO "user" (username,registration_date,asked_questions,answers,comments_question,comments_answer,password,reputation) 
+    VALUES (%(user_name)s,%(time)s,'default_question','default_answer',
+    'default_comments_question','default_comments_answer', %(pass_word)s,0)
+    """
+    cursor.execute(query, {"user_name": user_name, "time": get_time(), "pass_word": pass_word})

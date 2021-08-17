@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from dotenv import load_dotenv
 import os
 
-
 import data_manager
 
 
@@ -269,6 +268,23 @@ def delete_comment_question(comment_id, question_id):
 def delete_comment_answer(comment_id, answer_id, question_id):
     data_manager.delete_comment_answer(comment_id, answer_id, question_id)
     return redirect(url_for("get_entry", question_id=question_id))
+
+
+@app.route("/users", methods=["GET"])
+def show_users():
+    entries = data_manager.show_users()
+    return render_template("users.html", entries=entries)
+
+
+@app.route("/register_user", methods=["GET", "POST"])
+def register_user():
+    if request.method == "POST":
+        username = request.form.get("user")
+        password = request.form.get("pass")
+        data_manager.register_new_user(username, password)
+        return redirect(url_for('index'))
+
+    return render_template("register.html")
 
 
 if __name__ == "__main__":
