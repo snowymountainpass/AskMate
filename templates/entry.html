@@ -37,7 +37,7 @@
             Posted at {{ comment.submission_time }} |
             Edited {{ comment.edited_count }} times
         </figcaption>
-        <a href="{{ url_for('edit_comment_question', id=comment.id, q_id=question.id) }}" class="btn btn-primary">Edit a
+        <a href="{{ url_for('edit_comment_question', comment_id=comment.id, question_id=question.id) }}" class="btn btn-primary">Edit a
             comment</a>
 
         <button onclick="document.getElementById('id01').style.display='block'">Delete comment</button>
@@ -54,7 +54,7 @@
                     <div class="clearfix">
                         <a href="{{ question.id }}" class="cancelbtn">Cancel</a>
                         <a
-                                href="{{ url_for( 'delete_comment_question', id=comment.id, q_id=question.id ) }}"
+                                href="{{ url_for( 'delete_comment_question', comment_id=comment.id, question_id=question.id ) }}"
                                 class="deletebtn"
                         >Delete</a>
                     </div>
@@ -68,20 +68,20 @@
 
 {% for question in entry %}
 <div class="entry-button-spaciate">
-    <a href="{{ url_for('add_comment_question', id=question.id) }}" class="btn btn-primary">Add a comment</a>
+    <a href="{{ url_for('add_comment_question', question_id=question.id) }}" class="btn btn-primary">Add a comment</a>
 </div>
 
-<form action="{{ url_for('upvote_question',id=question.id) }}" method="POST">
+<form action="{{ url_for('upvote_question',question_id=question.id) }}" method="POST">
     <div class="entry-button-spaciate">
         <button type="submit" class="btn btn-primary">Upvote question</button>
-        <a href="{{ url_for('downvote_question',id=question.id) }}" class="btn btn-primary">Downvote
+        <a href="{{ url_for('downvote_question',question_id=question.id) }}" class="btn btn-primary">Downvote
             question</a>
     </div>
 </form>
 
 
 <div class="entry-button-spaciate">
-    <a href="{{ url_for( 'editting', id=question.id) }}" class="btn btn-primary">Edit question</a>
+    <a href="{{ url_for( 'editting', question_id=question.id) }}" class="btn btn-primary">Edit question</a>
 
     <button onclick="document.getElementById('id01').style.display='block'">Delete question</button>
 
@@ -94,7 +94,7 @@
                 <p>Are you sure you want to delete the question?</p>
                 <div class="clearfix">
                     <a href="{{ question.id }}" class="cancelbtn">Cancel</a>
-                    <a href="{{ url_for('delete_question', id=question.id) }}" class="deletebtn">Delete</a>
+                    <a href="{{ url_for('delete_question', question_id=question.id) }}" class="deletebtn">Delete</a>
                 </div>
             </div>
         </form>
@@ -127,25 +127,25 @@
         <td align="center">{{ answer.id }}</td>
         {% for question in entry %}
         <td>
-            <a href="{{ url_for('upvote_answer',id=answer.id, q_id=answer.question_id) }}"
+            <a href="{{ url_for('upvote_answer',answer_id=answer.id, question_id=answer.question_id) }}"
                class="btn btn-primary">Upvote
                 answer</a>
         <td>
-            <a href="{{ url_for('downvote_answer',id=answer.id, q_id=answer.question_id) }}"
+            <a href="{{ url_for('downvote_answer',answer_id=answer.id, question_id=answer.question_id) }}"
                class="btn btn-primary">Downvote
                 answer</a>
         <td align="center"><img
                 src="static/{{ answer.image | default('no-image-available.png') }}"
                 alt={{ answer.image }} width="120"></td>
         </td>
-        <td><a href="{{ url_for('edit_answer',id_answer=answer.id,id_question=question.id) }}"
+        <td><a href="{{ url_for('edit_answer',answer_id=answer.id,question_id=question.id) }}"
                class="btn btn-primary">Edit Answer</a>
         </td>
         <td>
-            <a href="{{ url_for('delete_answer',id_answer=answer.id, id_question=answer.question_id) }}"
+            <a href="{{ url_for('delete_answer',answer_id=answer.id, question_id=answer.question_id) }}"
                class="btn btn-primary">Delete answer</a></td>
     </tr>
-    <td><a href="{{ url_for('add_comment',id_answer=answer.id,id_question=question.id) }}"
+    <td><a href="{{ url_for('add_comment',answer_id=answer.id,question_id=question.id) }}"
            class="btn btn-primary">Add Comment</a>
     </td>
     {% endfor %}
@@ -155,7 +155,7 @@
 </table>
 
 {% for question in entry %}
-<a href="{{ url_for( 'add_answer', id_question=question.id ) }}" class="btn btn-primary">Post an answer</a>
+<a href="{{ url_for( 'add_answer', question_id=question.id ) }}" class="btn btn-primary">Post an answer</a>
 {% endfor %}
 
 
@@ -187,10 +187,10 @@
             <td align="center">{{ comment.edited_count }}</td>
 
             <td>
-                <button onclick="document.getElementById('id01').style.display='block'">Delete comment</button>
+                <button onclick="document.getElementById('id02').style.display='block'">Delete comment</button>
 
-                <div id="id01" class="modal">
-                    <span onclick="document.getElementById('id01').style.display='none'" class="close"
+                <div id="id02" class="modal">
+                    <span onclick="document.getElementById('id02').style.display='none'" class="close"
                           title="Close delete">&times;</span>
                     <form class="modal-content" action="{{ url_for( 'index' ) }}">
                         <div class="modal-container">
@@ -198,7 +198,7 @@
                             <p>Are you sure you want to delete the comment?</p>
                             <div class="clearfix">
                                 <a href="{{ comment.question_id }}" class="cancelbtn">Cancel</a>
-                                <a href="{{ comment.question_id }}" class="deletebtn">Delete</a>
+                                <a href="{{ url_for( 'delete_comment_answer', comment_id=comment.id, answer_id=comment.answer_id, question_id=comment.question_id) }}" class="deletebtn">Delete</a>
                             </div>
                         </div>
                     </form>

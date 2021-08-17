@@ -4,7 +4,7 @@
 {% block content %}
     {% for question in entry %}
 
-        <form action="{{ url_for('edit_entry', id=question.id) }}" method="POST">
+        <form action="{{ url_for('edit_entry', question_id=question.id) }}" method="POST">
             <div class="form-group">
                 <h2>Editting current ID : {{ question.id }}</h2>
             </div>

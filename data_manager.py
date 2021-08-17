@@ -363,12 +363,23 @@ def edit_comment(cursor, id, message):
 
 
 @database_common.connection_handler
-def delete_comment(cursor, id):
+def delete_comment_question(cursor, comment_id, question_id):
     query = """
         DELETE FROM comment
-        WHERE id = %(id)s
+        WHERE id = %(comment_id)s AND 
+        question_id = %(question_id)s
         """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"id": comment_id, "question_id":question_id})
+
+
+@database_common.connection_handler
+def delete_comment_answer(cursor, comment_id, answer_id, question_id):
+    query = """
+        DELETE FROM comment
+        WHERE id = %(comment_id)s AND 
+        answer_id = %(answer_id)s
+        """
+    cursor.execute(query, {"comment_id": comment_id, "answer_id": answer_id})
 
 
 @database_common.connection_handler

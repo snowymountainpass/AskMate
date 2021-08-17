@@ -86,7 +86,7 @@
     {% for entry in entries %}
     <tr>
         <td>
-            <a href="{{ url_for( 'get_entry', id=entry.id ) }}">
+            <a href="{{ url_for( 'get_entry', question_id=entry.id ) }}">
                 {{ entry.title }}
             </a>
         </td>

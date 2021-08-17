@@ -1,5 +1,4 @@
 {% extends "base_template.html" %}
-{{ id }}
 {% block title %}Add a comment{% endblock %}
 
 {% block content %}
@@ -14,7 +13,11 @@
     {#</form>#}
     <form method="POST">
         <div class="form-group">
-            <h4>Posting a comment to answer ID {{ id }}</h4>
+            {% if answer_id %}
+                <h4>Posting a comment to answer ID {{ answer_id }}</h4>
+            {% elif question_id %}
+                <h4>Posting a comment to question ID {{ question_id }}</h4>
+            {% endif %}
         </div>
 
 
