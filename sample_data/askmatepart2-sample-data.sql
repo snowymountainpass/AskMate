@@ -61,6 +61,48 @@ CREATE TABLE tag (
 );
 
 
+-- create table "user"
+-- (
+-- 	user_id serial,
+-- 	registration_date text,
+-- 	asked_questions text,
+-- 	answers text,
+-- 	comments_question text,
+-- 	reputation int,
+-- 	password text,
+-- 	comments_answer text
+-- );
+--
+-- create unique index user_user_id_uindex
+-- 	on "user" (user_id);
+--
+-- alter table "user"
+-- 	add constraint user_pk
+-- 		primary key (user_id);
+
+-- alter table answer
+-- 	add answer_user_id int;
+
+-- alter table answer
+-- 	add constraint fk_answer_user_id
+-- 		foreign key (answer_user_id) references "user";
+
+
+-- alter table question
+-- 	add question_user_id int;
+
+-- alter table question
+-- 	add constraint fk_question_user_id
+-- 		foreign key (question_user_id) references "user";
+
+-- alter table comment
+-- 	add comment_user_id int;
+
+-- alter table comment
+-- 	add constraint fk_comment_user_id
+-- 		foreign key (comment_user_id) references "user";
+
+
 ALTER TABLE ONLY answer
     ADD CONSTRAINT pk_answer_id PRIMARY KEY (id);
 
