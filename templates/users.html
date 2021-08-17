@@ -1,0 +1,31 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+    {% if entries %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>Username</td>
+                    <td>Registration date</td>
+                    <td>No. of asked questions</td>
+                    <td>No. of answers</td>
+                    <td>No. of comments</td>
+                    <td>Reputation</td>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for entry in entries %}
+                    <tr>
+                        <td>{{ entry.username }}</td>
+                        <td>{{ entry.registration_date }}</td>
+                        <td>{{ entry.number_asked_questions }}</td>
+                        <td>{{ entry.number_answers }}</td>
+                        <td>{{ entry.number_comments }}</td>
+                        <td>{{ entry.reputation }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
