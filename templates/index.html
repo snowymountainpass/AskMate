@@ -16,12 +16,16 @@
                     openDropdown.classList.remove('show');
                 }
             }
-        }
+        }}
     </script>
     <h1>Welcome to Ask Mate</h1>
 
-
+    {% if user %}
+        <li>{{ user }}</li>
+    {% endif %}
     <a href="{{ url_for('register_user')}}">Register New User</a>
+    <br>
+    <a href="{{ url_for('login_user')}}">Login User</a>
     <br>
     <a href="{{ url_for('show_users')}}">Go to User List</a>
 
@@ -34,8 +38,7 @@
         </ul>
     {% endif %} {% endwith %}
     <br/>
-    <a href="{{ url_for('enter_question') }}" class="btn btn-primary"
-    >Post a question</a>
+    <a href="{{ url_for('enter_question') }}" class="btn btn-primary">Post a question</a>
     <br/><br/>
     <div class="dropdown">
         <button onclick="toggleShowDropdown()" class="dropbtn">Sort by:</button>

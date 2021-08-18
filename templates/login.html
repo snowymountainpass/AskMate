@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{{ url_for('login') }}" method="POST">
+<form action="{{ url_for('login_user') }}" method="POST">
     <p>
         <label for="user">Username</label>
         <input type="text" id="user" name="user" />

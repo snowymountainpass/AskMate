@@ -467,3 +467,22 @@ def register_new_user(cursor, user_name, pass_word):
     'default_comments_question','default_comments_answer', %(pass_word)s,0)
     """
     cursor.execute(query, {"user_name": user_name, "time": get_time(), "pass_word": pass_word})
+
+
+@database_common.connection_handler
+def login(cursor, user_name):
+    query = """
+    SELECT password
+    FROM "user"
+    WHERE username=%(user_name)s
+    """
+    cursor.execute(query, {"user_name": user_name})
+
+@database_common.connection_handler
+def user_id_return(cursor, user_name,pass_word):
+    query="""
+    SELECT user_id
+    FROM "user"
+    WHERE username==%(user_name)s AND password==%(pass_word)s 
+    """
+    cursor.excute(query,{"user_name": user_name,"pass_word": pass_word})
