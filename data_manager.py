@@ -489,3 +489,25 @@ def check_existing_username(cursor, user_name):
     """
     cursor.execute(query, {"user_name": user_name})
     return cursor.fetchall()
+
+
+
+@database_common.connection_handler
+def login(cursor, user_name):
+    query = """
+    SELECT password
+    FROM "user"
+    WHERE username = %(user_name)s
+    """
+    cursor.execute(query, {"user_name": user_name})
+    return cursor.fetchall()
+
+@database_common.connection_handler
+def user_id_return(cursor, user_name, pass_word):
+    query="""
+    SELECT user_id
+    FROM "user"
+    WHERE username = %(user_name)s AND password = %(pass_word)s 
+    """
+    cursor.execute(query,{"user_name": user_name,"pass_word": pass_word})
+    return cursor.fetchall()

@@ -41,20 +41,20 @@ def index():
 #     return render_template("register.html")
 
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    global users
-
-    if request.method == "POST":
-        u = request.form.get("user")
-        p = request.form.get("pass")
-
-        if u in users.keys() and users[u] == p:
-            session["user"] = u
-
-        return redirect(url_for("index"))
-
-    return render_template("login.html")
+# @app.route("/login", methods=["GET", "POST"])
+# def login():
+#     global users
+#
+#     if request.method == "POST":
+#         u = request.form.get("user")
+#         p = request.form.get("pass")
+#
+#         if u in users.keys() and users[u] == p:
+#             session["user"] = u
+#
+#         return redirect(url_for("index"))
+#
+#     return render_template("login.html")
 
 
 @app.route("/logout")
@@ -292,6 +292,25 @@ def register_user():
 
 
     return render_template("register.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login_user():
+    if request.method == "POST":
+        username = request.form.get("user")
+        password = request.form.get("pass")
+        for element in data_manager.login(username):
+            db_password = element["password"]
+
+        if password == db_password:
+            # session["user_id"] = data_manager.user_id_return(username, password)
+            for userid in data_manager.user_id_return(username, password):
+                db_user_id = userid["user_id"]
+            session["user_id"] = db_user_id
+            return redirect(url_for('index'))
+        else:
+            flash("Invalid credentials !")
+    return render_template("login.html")
 
 
 if __name__ == "__main__":
