@@ -238,6 +238,9 @@ def downvote_question(question_id):
 @app.route("/upvote-answer/<int:answer_id>-<int:question_id>", methods=["GET", "POST"])
 def upvote_answer(answer_id, question_id):
     data_manager.upvote_answer(answer_id)
+    for element in data_manager.get_answer_user_id(answer_id):
+        get_user_id_from_answer = element["answer_user_id"]
+    data_manager.increase_user_reputation(get_user_id_from_answer)
 
     return redirect(url_for("get_entry", question_id=question_id))
 
@@ -245,6 +248,9 @@ def upvote_answer(answer_id, question_id):
 @app.route("/downvote-answer/<int:answer_id>-<int:question_id>", methods=["GET", "POST"])
 def downvote_answer(answer_id, question_id):
     data_manager.downvote_answer(answer_id)
+    for element in data_manager.get_answer_user_id(answer_id):
+        get_user_id_from_answer = element["answer_user_id"]
+    data_manager.decrease_user_reputation(get_user_id_from_answer)
 
     return redirect(url_for("get_entry", question_id=question_id))
 

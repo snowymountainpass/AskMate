@@ -270,6 +270,17 @@ def downvote_answer(cursor, id):
     """
     cursor.execute(query, {"id": id})
 
+@database_common.connection_handler
+def get_answer_user_id(cursor, id):
+    query = """
+        SELECT answer_user_id
+        FROM answer
+        WHERE id = %(id)s
+        """
+    cursor.execute(query, {"id": id})
+    return cursor.fetchall()
+
+
 
 @database_common.connection_handler
 def edit_question(cursor, id, message, image):
