@@ -209,6 +209,16 @@ def upvote_question(cursor, id):
     cursor.execute(query, {"id": id})
 
 @database_common.connection_handler
+def downvote_question(cursor, id):
+    query = """
+    UPDATE question
+    SET vote_number = vote_number - 1
+    WHERE id = %(id)s
+    """
+    cursor.execute(query, {"id": id})
+
+
+@database_common.connection_handler
 def get_question_user_id(cursor, id):
     query = """
         SELECT question_user_id
@@ -218,6 +228,7 @@ def get_question_user_id(cursor, id):
     cursor.execute(query, {"id": id})
     return cursor.fetchall()
 
+
 @database_common.connection_handler
 def increase_user_reputation(cursor, user_id):
     query = """
@@ -225,7 +236,8 @@ def increase_user_reputation(cursor, user_id):
     SET reputation = reputation + 10
     WHERE user_id = %(user_id)s
     """
-    cursor.execute(query, {"user_id":user_id})
+    cursor.execute(query, {"user_id": user_id})
+
 
 @database_common.connection_handler
 def decrease_user_reputation(cursor, user_id):
@@ -234,21 +246,7 @@ def decrease_user_reputation(cursor, user_id):
     SET reputation = reputation - 2
     WHERE user_id = %(user_id)s
     """
-    cursor.execute(query, {"user_id":user_id})
-
-
-
-
-
-
-@database_common.connection_handler
-def downvote_question(cursor, id):
-    query = """
-    UPDATE question
-    SET vote_number = vote_number - 1
-    WHERE id = %(id)s
-    """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"user_id": user_id})
 
 
 @database_common.connection_handler
@@ -270,6 +268,7 @@ def downvote_answer(cursor, id):
     """
     cursor.execute(query, {"id": id})
 
+
 @database_common.connection_handler
 def get_answer_user_id(cursor, id):
     query = """
@@ -279,7 +278,6 @@ def get_answer_user_id(cursor, id):
         """
     cursor.execute(query, {"id": id})
     return cursor.fetchall()
-
 
 
 @database_common.connection_handler
@@ -309,8 +307,8 @@ def inject_new_question(cursor, title, message, image, username, user_id):
             "title": title,
             "message": message,
             "image": image,
-            "username":username,
-            "user_id":user_id,
+            "username": username,
+            "user_id": user_id,
         },
     )
     get_id_query = """
@@ -338,8 +336,8 @@ def add_answer_to_question(cursor, id_question, message, username, user_id):
             "question_id": id_question,
             "message": message,
             # 'image': applicant_details.get("image"),
-            "username":username,
-            "user_id":user_id,
+            "username": username,
+            "user_id": user_id,
         },
     )
 
@@ -359,8 +357,8 @@ def inject_question_comment(cursor, id, message, username, user_id):
             "question_id": id,
             "message": message,
             "time": get_time_of_posting,
-            "username":username,
-            "user_id":user_id,
+            "username": username,
+            "user_id": user_id,
         },
     )
 
@@ -379,8 +377,8 @@ def add_comment_to_answer(cursor, id_answer, id_question, comment_message, usern
             "message": comment_message,
             "submission_time": get_time(),
             "edited_count": 0,
-            "username":username,
-            "user_id":user_id,
+            "username": username,
+            "user_id": user_id,
         },
     )
 
@@ -421,7 +419,7 @@ def delete_comment_question(cursor, comment_id, question_id):
         WHERE id = %(comment_id)s AND 
         question_id = %(question_id)s
         """
-    cursor.execute(query, {"comment_id": comment_id, "question_id":question_id})
+    cursor.execute(query, {"comment_id": comment_id, "question_id": question_id})
 
 
 @database_common.connection_handler
@@ -543,7 +541,6 @@ def check_existing_username(cursor, user_name):
     return cursor.fetchall()
 
 
-
 @database_common.connection_handler
 def login(cursor, user_name):
     query = """
@@ -554,12 +551,13 @@ def login(cursor, user_name):
     cursor.execute(query, {"user_name": user_name})
     return cursor.fetchall()
 
+
 @database_common.connection_handler
 def user_id_return(cursor, user_name, pass_word):
-    query="""
+    query = """
     SELECT user_id
     FROM "user"
     WHERE username = %(user_name)s AND password = %(pass_word)s 
     """
-    cursor.execute(query,{"user_name": user_name,"pass_word": pass_word})
+    cursor.execute(query, {"user_name": user_name, "pass_word": pass_word})
     return cursor.fetchall()
