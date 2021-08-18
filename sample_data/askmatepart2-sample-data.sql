@@ -110,6 +110,15 @@ CREATE TABLE tag (
 -- 	add constraint fk_comment_user_id
 -- 		foreign key (comment_user_id) references "user";
 
+-- alter table answer
+-- 	add answer_username text;
+--
+-- alter table comment
+-- 	add comment_username text;
+--
+-- alter table question
+-- 	add question_username text;
+
 
 ALTER TABLE ONLY answer
     ADD CONSTRAINT pk_answer_id PRIMARY KEY (id);

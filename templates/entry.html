@@ -9,7 +9,7 @@
                 <div class="question_title"><h2>{{ question.title }}</h2></div>
             </blockquote>
             <figcaption class="blockquote-footer">
-                Posted at {{ question.submission_time }} |
+                Posted at {{ question.submission_time }} by {{ question.question_username }} |
                 Viewed {{ question.view_number }} times |
                 <cite title="Source Title">Question ID {{ question.id }}</cite>
                 <br>
@@ -34,6 +34,7 @@
             {% for comment in question_comments %}
                 <div class="question_comment">
                     <p>{{ comment.message }}</p>
+                <p>Posted by {{ comment.comment_username }}</p>
                     <figcaption class="blockquote-footer">
                         Posted at {{ comment.submission_time }} |
                         Edited {{ comment.edited_count }} times
@@ -136,7 +137,7 @@
         <tbody>
         {% for answer in answers %}
             <tr>
-                <td>{{ answer.message }}</td>
+                <td>{{ answer.message }} <br> Posted by {{ answer.answer_username }}</td>
                 <td align="center">{{ answer.submission_time }}</td>
                 <td align="center">{{ answer.vote_number }}</td>
                 <td align="center">{{ answer.id }}</td>
@@ -187,7 +188,7 @@
                                     <tr>
                                         <td align="center">{{ comment.id }}</td>
                                         <td align="center">{{ comment.answer_id }}</td>
-                                        <td align="center">{{ comment.message }}</td>
+                                        <td align="center">{{ comment.message }} <br> Posted by {{ comment.comment_username }}</td>
                                         <td align="center">{{ comment.submission_time }}</td>
                                         <td align="center">{{ comment.question_id }}</td>
                                         {% if user_id and user_id == comment.comment_user_id %}

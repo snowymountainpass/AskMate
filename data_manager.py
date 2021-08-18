@@ -93,7 +93,7 @@ def get_question_at_id(cursor, id):
 @database_common.connection_handler
 def get_answers_for_question(cursor, id):
     query = """
-    SELECT answer.id, answer.submission_time, answer.vote_number, answer.question_id, answer.message, answer.image, answer.answer_user_id
+    SELECT answer.id, answer.submission_time, answer.vote_number, answer.question_id, answer.message, answer.image, answer.answer_user_id, answer.answer_username
     FROM answer
     INNER JOIN question 
         ON answer.question_id = question.id
@@ -120,7 +120,7 @@ def get_message_from_answer(cursor, id_answer):
 @database_common.connection_handler
 def get_comments_for_question(cursor, id):
     query = """
-    SELECT comment.id, comment.message, comment.submission_time, edited_count, comment.comment_user_id
+    SELECT comment.id, comment.message, comment.submission_time, edited_count, comment.comment_user_id, comment.comment_username
     FROM comment
     INNER JOIN question 
         ON comment.question_id = question.id
@@ -134,7 +134,7 @@ def get_comments_for_question(cursor, id):
 @database_common.connection_handler
 def get_comments_for_answer(cursor, id):
     query = """
-    SELECT comment.id, comment.question_id, comment.answer_id, comment.message, comment.submission_time, edited_count, comment.comment_user_id
+    SELECT comment.id, comment.question_id, comment.answer_id, comment.message, comment.submission_time, edited_count, comment.comment_user_id, comment.comment_username
     FROM comment
     INNER JOIN question 
         ON comment.question_id = question.id
