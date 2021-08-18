@@ -38,13 +38,13 @@
                         Posted at {{ comment.submission_time }} |
                         Edited {{ comment.edited_count }} times
                     </figcaption>
-                    {% if user_id == comment.comment_user_id %}
+                    {% if user_id and user_id == comment.comment_user_id %}
                         <a href="{{ url_for('edit_comment_question', comment_id=comment.id, question_id=question.id) }}"
                            class="btn btn-primary">Edit a
                             comment</a>
                     {% endif %}
 
-                    {% if user_id == comment.comment_user_id %}
+                    {% if user_id and user_id == comment.comment_user_id %}
                         <button onclick="document.getElementById('id01').style.display='block'">Delete comment</button>
                         <div id="id01" class="modal">
             <span
@@ -80,7 +80,7 @@
                     comment</a>
             </div>
 
-            {% if user_id !=question.question_user_id %}
+            {% if user_id and user_id != question.question_user_id %}
 
                 <form action="{{ url_for('upvote_question',question_id=question.id) }}" method="POST">
                     <div class="entry-button-spaciate">
@@ -92,7 +92,7 @@
             {% endif %}
         {% endif %}
 
-        {% if user_id == question.question_user_id %}
+        {% if user_id and user_id == question.question_user_id %}
             <div class="entry-button-spaciate">
                 <a href="{{ url_for( 'editting', question_id=question.id) }}" class="btn btn-primary">Edit question</a>
 
@@ -142,7 +142,7 @@
                 <td align="center">{{ answer.id }}</td>
                 {% for question in entry %}
                     {% if username %}
-                        {% if user_id != answer.answer_user_id %}
+                        {% if user_id and user_id != answer.answer_user_id %}
                             <td>
                                 <a href="{{ url_for('upvote_answer',answer_id=answer.id, question_id=answer.question_id) }}"
                                    class="btn btn-primary">Upvote
@@ -156,7 +156,7 @@
                                 src="static/{{ answer.image | default('no-image-available.png') }}"
                                 alt={{ answer.image }} width="120"></td>
                         </td>
-                        {% if user_id == answer.answer_user_id %}
+                        {% if user_id and user_id == answer.answer_user_id %}
 
                             <td><a href="{{ url_for('edit_answer',answer_id=answer.id,question_id=question.id) }}"
                                    class="btn btn-primary">Edit Answer</a>
@@ -190,14 +190,14 @@
                                         <td align="center">{{ comment.message }}</td>
                                         <td align="center">{{ comment.submission_time }}</td>
                                         <td align="center">{{ comment.question_id }}</td>
-                                        {% if user_id == comment.comment_user_id %}
+                                        {% if user_id and user_id == comment.comment_user_id %}
                                             <td><a href="{{ comment.question_id }}" class="btn btn-primary">Edit
                                                 Comment</a>
                                             </td>
                                         {% endif %}
                                         <td align="center">{{ comment.edited_count }}</td>
 
-                                        {% if user_id == comment.comment_user_id %}
+                                        {% if user_id and user_id == comment.comment_user_id %}
 
                                             <td>
                                                 <button onclick="document.getElementById('id02').style.display='block'">
