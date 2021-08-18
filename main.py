@@ -26,7 +26,6 @@ def index():
     entries = data_manager.get_all_questions(criterion, direction)
     username = session.get("username")
     user_id = session.get("user_id")
-    print(username)
     return render_template("index.html", entries=entries, username=username)
 
 # @app.route("/register", methods=["GET", "POST"])
@@ -67,15 +66,11 @@ def get_entry(question_id):
     entry = data_manager.get_question_at_id(question_id)
     username = session.get("username")
     user_id = session.get("user_id")
-    print(username)
-    print(user_id)
 
     try:
         answers = data_manager.get_answers_for_question(question_id)
         question_comments = data_manager.get_comments_for_question(question_id)
         answer_comments = data_manager.get_comments_for_answer(question_id)
-        print(answer_comments)
-        print(question_comments)
 
     except TypeError:
         print("hahahaha i crashed stuff @ accessing an entry")
@@ -222,12 +217,20 @@ def add_comment(answer_id, question_id):
 def upvote_question(question_id):
     data_manager.upvote_question(question_id)
 
+    for element in data_manager.get_question_user_id(question_id):
+        get_user_id_from_question = element["question_user_id"]
+        print(get_user_id_from_question)
+    data_manager.increase_user_reputation(get_user_id_from_question)
+
     return redirect(url_for("get_entry", question_id=question_id))
 
 
 @app.route("/downvote-question/<int:question_id>", methods=["GET", "POST"])
 def downvote_question(question_id):
     data_manager.downvote_question(question_id)
+    for element in data_manager.get_question_user_id(question_id):
+        get_user_id_from_question = element["question_user_id"]
+    data_manager.decrease_user_reputation(get_user_id_from_question)
 
     return redirect(url_for("get_entry", question_id=question_id))
 

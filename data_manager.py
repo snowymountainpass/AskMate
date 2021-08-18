@@ -205,7 +205,40 @@ def upvote_question(cursor, id):
     SET vote_number = vote_number + 1
     WHERE id = %(id)s
     """
+
     cursor.execute(query, {"id": id})
+
+@database_common.connection_handler
+def get_question_user_id(cursor, id):
+    query = """
+        SELECT question_user_id
+        FROM question
+        WHERE id = %(id)s
+        """
+    cursor.execute(query, {"id": id})
+    return cursor.fetchall()
+
+@database_common.connection_handler
+def increase_user_reputation(cursor, user_id):
+    query = """
+    UPDATE "user" 
+    SET reputation = reputation + 10
+    WHERE user_id = %(user_id)s
+    """
+    cursor.execute(query, {"user_id":user_id})
+
+@database_common.connection_handler
+def decrease_user_reputation(cursor, user_id):
+    query = """
+    UPDATE "user" 
+    SET reputation = reputation - 2
+    WHERE user_id = %(user_id)s
+    """
+    cursor.execute(query, {"user_id":user_id})
+
+
+
+
 
 
 @database_common.connection_handler
