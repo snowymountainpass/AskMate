@@ -3,7 +3,7 @@
 
 {% block content %}
     {% for comment in comments %}
-        <form action="{{ url_for('edit_comment_question', comment_id=comment_id, question_id=comment.question_id) }}" method="POST">
+        <form action="{{ url_for('edit_comment', comment_id=comment_id, question_id=comment.question_id) }}" method="POST">
         <div class="form-group">
         <h4>Editting current comment ID : {{ comment.id }} from question with ID {{ comment.question_id }}
         </h4>

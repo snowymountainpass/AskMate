@@ -141,14 +141,18 @@ def enter_question():
 def add_new_question():
     title = request.form.get("title")
     message = request.form.get("message")
+    username = session.get("username")
+    user_id = session.get("user_id")
     savepath = os.path.join(app.config.get("UPLOAD_FOLDER"), "no-image-available.png")
 
     if "image" in request.files:
         image = request.files.get("image")
         savepath = os.path.join(app.config.get("UPLOAD_FOLDER"), image.filename)
         image.save(savepath)
+    else:
+        image = "No image"
 
-    id_row = data_manager.inject_new_question(title, message, savepath)
+    id_row = data_manager.inject_new_question(title, message, savepath, username, user_id)
     for row in id_row:
         question_id = row["id"]
 
@@ -168,11 +172,14 @@ def delete_question(question_id):
 
 @app.route("/add-answer/question-<int:question_id>", methods=["GET", "POST"])
 def add_answer(question_id):
+
     if request.method == "GET":
         return render_template("post_answer.html", question_id=question_id)
     elif request.method == "POST":
         message = request.form.get("message")
-        data_manager.add_answer_to_question(question_id, message)
+        username = session.get("username")
+        user_id = session.get("user_id")
+        data_manager.add_answer_to_question(question_id, message, username, user_id)
         return redirect(url_for("get_entry", question_id=question_id))
 
 
@@ -204,7 +211,10 @@ def add_comment(answer_id, question_id):
         return render_template("post_comment.html", answer_id=answer_id)
     elif request.method == "POST":
         comment_message = request.form.get("message")
-        data_manager.add_comment_to_answer(answer_id, question_id, comment_message)
+        username = session.get("username")
+        user_id = session.get("user_id")
+
+        data_manager.add_comment_to_answer(answer_id, question_id, comment_message, username, user_id)
         return redirect(url_for("get_entry", question_id=question_id))
 
 
@@ -240,7 +250,10 @@ def downvote_answer(answer_id, question_id):
 def add_comment_question(question_id):
     if request.method == "POST":
         comment_message = request.form.get("message")
-        data_manager.inject_question_comment(question_id, comment_message)
+        username = session.get("username")
+        user_id = session.get("user_id")
+
+        data_manager.inject_question_comment(question_id, comment_message, username, user_id)
 
         return redirect(url_for("get_entry", question_id=question_id))
 
@@ -248,7 +261,7 @@ def add_comment_question(question_id):
 
 
 @app.route("/edit-comment/<int:comment_id>-<int:question_id>", methods=["GET", "POST"])
-def edit_comment_question(comment_id, question_id):
+def edit_comment(comment_id, question_id):
     this_comment = data_manager.get_comment(comment_id)
 
     if request.method == "POST":

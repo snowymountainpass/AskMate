@@ -34,13 +34,13 @@
             {% for comment in question_comments %}
                 <div class="question_comment">
                     <p>{{ comment.message }}</p>
-                <p>Posted by {{ comment.comment_username }}</p>
+                    <p>Posted by {{ comment.comment_username }}</p>
                     <figcaption class="blockquote-footer">
                         Posted at {{ comment.submission_time }} |
                         Edited {{ comment.edited_count }} times
                     </figcaption>
                     {% if user_id and user_id == comment.comment_user_id %}
-                        <a href="{{ url_for('edit_comment_question', comment_id=comment.id, question_id=question.id) }}"
+                        <a href="{{ url_for('edit_comment', comment_id=comment.id, question_id=question.id) }}"
                            class="btn btn-primary">Edit a
                             comment</a>
                     {% endif %}
@@ -188,13 +188,19 @@
                                     <tr>
                                         <td align="center">{{ comment.id }}</td>
                                         <td align="center">{{ comment.answer_id }}</td>
-                                        <td align="center">{{ comment.message }} <br> Posted by {{ comment.comment_username }}</td>
+                                        <td align="center">{{ comment.message }} <br> Posted
+                                            by {{ comment.comment_username }}</td>
                                         <td align="center">{{ comment.submission_time }}</td>
                                         <td align="center">{{ comment.question_id }}</td>
                                         {% if user_id and user_id == comment.comment_user_id %}
-                                            <td><a href="{{ comment.question_id }}" class="btn btn-primary">Edit
-                                                Comment</a>
+                                            <td>
+                                                <a href="{{ url_for('edit_comment', comment_id=comment.id, question_id=question.id) }}"
+                                                   class="btn btn-primary">Edit
+                                                    Comment</a>
                                             </td>
+
+
+
                                         {% endif %}
                                         <td align="center">{{ comment.edited_count }}</td>
 
@@ -234,7 +240,7 @@
                     {% if username %}
 
                         <td>
-                            <a href="{{ url_for('add_comment',answer_id=answer.id,question_id=question.id, comment_user_id=user_id) }}"
+                            <a href="{{ url_for('add_comment',answer_id=answer.id,question_id=question.id) }}"
                                class="btn btn-primary">Add Comment</a>
                         </td>
                     {% endif %}
@@ -245,7 +251,7 @@
     </table>
     {% if username %}
         {% for question in entry %}
-            <a href="{{ url_for( 'add_answer', question_id=question.id, answer_user_id=user_id ) }}"
+            <a href="{{ url_for( 'add_answer', question_id=question.id) }}"
                class="btn btn-primary">Post an answer</a>
         {% endfor %}
     {% endif %}

@@ -251,12 +251,12 @@ def edit_question(cursor, id, message, image):
 
 
 @database_common.connection_handler
-def inject_new_question(cursor, title, message, image):
+def inject_new_question(cursor, title, message, image, username, user_id):
     get_time_of_posting = get_time()
     query = """
     INSERT INTO question
-    (submission_time, view_number, vote_number, title, message, image)
-    VALUES (%(time)s, 0, 0, %(title)s, %(message)s, %(image)s)
+    (submission_time, view_number, vote_number, title, message, image, question_username, question_user_id)
+    VALUES (%(time)s, 0, 0, %(title)s, %(message)s, %(image)s, %(username)s, %(user_id)s)
     """
     cursor.execute(
         query,
@@ -265,6 +265,8 @@ def inject_new_question(cursor, title, message, image):
             "title": title,
             "message": message,
             "image": image,
+            "username":username,
+            "user_id":user_id,
         },
     )
     get_id_query = """
@@ -279,10 +281,10 @@ def inject_new_question(cursor, title, message, image):
 
 
 @database_common.connection_handler
-def add_answer_to_question(cursor, id_question, message):
+def add_answer_to_question(cursor, id_question, message, username, user_id):
     query = """
-    INSERT INTO answer (submission_time, vote_number, question_id, message)
-    VALUES (%(submission_time)s,%(vote_number)s,%(question_id)s,%(message)s)
+    INSERT INTO answer (submission_time, vote_number, question_id, message, answer_username, answer_user_id)
+    VALUES (%(submission_time)s,%(vote_number)s,%(question_id)s,%(message)s, %(username)s, %(user_id)s)
     """
     cursor.execute(
         query,
@@ -292,17 +294,19 @@ def add_answer_to_question(cursor, id_question, message):
             "question_id": id_question,
             "message": message,
             # 'image': applicant_details.get("image"),
+            "username":username,
+            "user_id":user_id,
         },
     )
 
 
 @database_common.connection_handler
-def inject_question_comment(cursor, id, message):
+def inject_question_comment(cursor, id, message, username, user_id):
     get_time_of_posting = get_time()
     query = """
     INSERT INTO comment
-    (question_id, answer_id, message, submission_time, edited_count)
-    VALUES (%(question_id)s, Null, %(message)s, %(time)s, 0)
+    (question_id, answer_id, message, submission_time, edited_count, comment_username, comment_user_id)
+    VALUES (%(question_id)s, Null, %(message)s, %(time)s, 0, %(username)s, %(user_id)s)
     
     """
     cursor.execute(
@@ -311,15 +315,17 @@ def inject_question_comment(cursor, id, message):
             "question_id": id,
             "message": message,
             "time": get_time_of_posting,
+            "username":username,
+            "user_id":user_id,
         },
     )
 
 
 @database_common.connection_handler
-def add_comment_to_answer(cursor, id_answer, id_question, comment_message):
+def add_comment_to_answer(cursor, id_answer, id_question, comment_message, username, user_id):
     query = """
-    INSERT INTO comment (question_id,answer_id,message,submission_time,edited_count)
-    VALUES (%(question_id)s,%(answer_id)s,%(message)s,%(submission_time)s,%(edited_count)s)    
+    INSERT INTO comment (question_id,answer_id,message,submission_time,edited_count, comment_username, comment_user_id)
+    VALUES (%(question_id)s,%(answer_id)s,%(message)s,%(submission_time)s,%(edited_count)s, %(username)s, %(user_id)s)    
     """
     cursor.execute(
         query,
@@ -329,6 +335,8 @@ def add_comment_to_answer(cursor, id_answer, id_question, comment_message):
             "message": comment_message,
             "submission_time": get_time(),
             "edited_count": 0,
+            "username":username,
+            "user_id":user_id,
         },
     )
 
