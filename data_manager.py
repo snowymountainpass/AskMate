@@ -80,68 +80,73 @@ def get_all_questions(cursor, criterion, direction):
 
 
 @database_common.connection_handler
-def get_question_at_id(cursor, id):
+def get_question_at_id(cursor, id, username, user_id):
     query = """
     SELECT *
     FROM question
-    WHERE id = %(id)s
+    JOIN "user" u on u.user_id = question.user_id
+    WHERE id = %(id)s AND username = %(username)s AND user_id = %(user_id)s
     """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"id": id, "username": username, "user_id": user_id})
     return cursor.fetchall()
 
 
 @database_common.connection_handler
-def get_answers_for_question(cursor, id):
+def get_answers_for_question(cursor, id, username, user_id):
     query = """
     SELECT answer.id, answer.submission_time, answer.vote_number, answer.question_id, answer.message, answer.image
     FROM answer
     INNER JOIN question 
         ON answer.question_id = question.id
-    WHERE question_id = %(id)s
+    INNER JOIN "user" u on u.user_id = answer.user_id
+    WHERE question_id = %(id)s AND username = %(username)s AND user_id = %(user_id)s
     ORDER BY answer.id
     """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"id": id, "username": username, "user_id": user_id})
     return cursor.fetchall()
 
 
 @database_common.connection_handler
-def get_message_from_answer(cursor, id_answer):
+def get_message_from_answer(cursor, id_answer, username, user_id):
     query = """
     SELECT answer.message
     FROM answer
     INNER JOIN question 
     ON answer.question_id = question.id
-    WHERE answer.id=%(id_answer)s
+    JOIN "user" u on u.user_id = answer.user_id
+    WHERE answer.id=%(id_answer)s AND username = %(username)s AND user_id = %(user_id)s
     """
-    cursor.execute(query, {"id_answer": id_answer})
+    cursor.execute(query, {"id_answer": id_answer, "username": username, "user_id": user_id})
     return cursor.fetchall()
 
 
 @database_common.connection_handler
-def get_comments_for_question(cursor, id):
+def get_comments_for_question(cursor, id, username, user_id):
     query = """
     SELECT comment.id, comment.message, comment.submission_time, edited_count
     FROM comment
     INNER JOIN question 
         ON comment.question_id = question.id
-    WHERE question_id = %(id)s AND answer_id IS NULL
+    join "user" u on u.user_id = comment.user_id
+    WHERE question_id = %(id)s AND answer_id IS NULL AND username = %(username)s AND user_id = %(user_id)s
     ORDER BY comment.id
     """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"id": id, "username": username, "user_id": user_id})
     return cursor.fetchall()
 
 
 @database_common.connection_handler
-def get_comments_for_answer(cursor, id):
+def get_comments_for_answer(cursor, id, username, user_id):
     query = """
     SELECT comment.id, comment.question_id, comment.answer_id, comment.message, comment.submission_time, edited_count
     FROM comment
     INNER JOIN question 
         ON comment.question_id = question.id
-    WHERE question_id = %(id)s AND answer_id IS NOT NULL
+    JOIN "user" u on u.user_id = question.user_id
+    WHERE question_id = %(id)s AND answer_id IS NOT NULL AND username = %(username)s AND user_id = %(user_id)s
     ORDER BY comment.id
     """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"id": id, "username": username, "user_id": user_id})
     return cursor.fetchall()
 
 
@@ -168,95 +173,95 @@ def increase_question_viewcount(cursor, id):
 
 
 @database_common.connection_handler
-def delete_question(cursor, id):
+def delete_question(cursor, id, user_id):
     question_comments_query = """
     DELETE FROM comment
-    WHERE question_id = %(id)s
+    WHERE question_id = %(id)s AND user_id = %(user_id)s
     """
-    cursor.execute(question_comments_query, {"id": id})
+    cursor.execute(question_comments_query, {"id": id, "user_id": user_id})
 
     answers_query = """
     DELETE FROM answer
-    WHERE question_id = %(id)s
+    WHERE question_id = %(id)s AND user_id = %(user_id)s
     """
-    cursor.execute(answers_query, {"id": id})
+    cursor.execute(answers_query, {"id": id, "user_id": user_id})
 
     query = """
     DELETE FROM question
-    WHERE id = %(id)s
+    WHERE id = %(id)s AND user_id = %(user_id)s
     """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"id": id, "user_id": user_id})
 
 
 @database_common.connection_handler
-def delete_answer(cursor, id, question_id):
+def delete_answer(cursor, id, question_id, user_id):
     query = """
     DELETE FROM answer
     WHERE question_id = %(question_id)s AND
-    id = %(id)s
+    id = %(id)s AND user_id = %(user_id)s
     """
-    cursor.execute(query, {"question_id": question_id, "id": id})
+    cursor.execute(query, {"question_id": question_id, "id": id, "user_id": user_id})
 
 
 @database_common.connection_handler
-def upvote_question(cursor, id):
+def upvote_question(cursor, id, user_id):
     query = """
     UPDATE question
     SET vote_number = vote_number + 1
-    WHERE id = %(id)s
+    WHERE id = %(id)s AND user_id != %(user_id)s
     """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"id": id, "user_id": user_id})
 
 
 @database_common.connection_handler
-def downvote_question(cursor, id):
+def downvote_question(cursor, id, user_id):
     query = """
     UPDATE question
     SET vote_number = vote_number - 1
-    WHERE id = %(id)s
+    WHERE id = %(id)s AND user_id != %(user_id)s
     """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"id": id, "user_id": user_id})
 
 
 @database_common.connection_handler
-def upvote_answer(cursor, id):
+def upvote_answer(cursor, id, user_id):
     query = """
     UPDATE answer
     SET vote_number = vote_number + 1
-    WHERE id = %(id)s
+    WHERE id = %(id)s AND user_id != %(user_id)s
     """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"id": id, "user_id": user_id})
 
 
 @database_common.connection_handler
-def downvote_answer(cursor, id):
+def downvote_answer(cursor, id, user_id):
     query = """
     UPDATE answer
     SET vote_number = vote_number - 1
-    WHERE id = %(id)s
+    WHERE id = %(id)s AND user_id=%(user_id)s
     """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"id": id, "user_id": user_id})
 
 
 @database_common.connection_handler
-def edit_question(cursor, id, message, image):
+def edit_question(cursor, id, message, image, user_id):
     query = """
     UPDATE question
     SET message = %(message)s,
     image = %(image)s
-    WHERE id = %(id)s
+    WHERE id = %(id)s AND user_id=%(user_id)s
     """
-    cursor.execute(query, {"message": message, "image": image, "id": id})
+    cursor.execute(query, {"message": message, "image": image, "id": id, "user_id": user_id})
     return True
 
 
 @database_common.connection_handler
-def inject_new_question(cursor, title, message, image):
+def inject_new_question(cursor, title, message, image, user_id):
     get_time_of_posting = get_time()
     query = """
     INSERT INTO question
-    (submission_time, view_number, vote_number, title, message, image)
-    VALUES (%(time)s, 0, 0, %(title)s, %(message)s, %(image)s)
+    (submission_time, view_number, vote_number, title, message, image,user_id)
+    VALUES (%(time)s, 0, 0, %(title)s, %(message)s, %(image)s,%(user_id)s)
     """
     cursor.execute(
         query,
@@ -265,24 +270,25 @@ def inject_new_question(cursor, title, message, image):
             "title": title,
             "message": message,
             "image": image,
+            "user_id": user_id
         },
     )
     get_id_query = """
     SELECT id
     FROM question
-    WHERE submission_time = %(time)s AND title = %(title)s AND message = %(message)s
+    WHERE submission_time = %(time)s AND title = %(title)s AND message = %(message)s AND user_id=%(user_id)s
     """
     cursor.execute(
-        get_id_query, {"time": get_time_of_posting, "title": title, "message": message}
+        get_id_query, {"time": get_time_of_posting, "title": title, "message": message, "user_id": user_id}
     )
     return cursor.fetchall()
 
 
 @database_common.connection_handler
-def add_answer_to_question(cursor, id_question, message):
+def add_answer_to_question(cursor, id_question, message, user_id):
     query = """
-    INSERT INTO answer (submission_time, vote_number, question_id, message)
-    VALUES (%(submission_time)s,%(vote_number)s,%(question_id)s,%(message)s)
+    INSERT INTO answer (submission_time, vote_number, question_id, message,user_id)
+    VALUES (%(submission_time)s,%(vote_number)s,%(question_id)s,%(message)s,%(user_id)s)
     """
     cursor.execute(
         query,
@@ -291,18 +297,19 @@ def add_answer_to_question(cursor, id_question, message):
             "vote_number": 0,
             "question_id": id_question,
             "message": message,
+            "user_id": user_id,
             # 'image': applicant_details.get("image"),
         },
     )
 
 
 @database_common.connection_handler
-def inject_question_comment(cursor, id, message):
+def inject_question_comment(cursor, id, message, user_id):
     get_time_of_posting = get_time()
     query = """
     INSERT INTO comment
-    (question_id, answer_id, message, submission_time, edited_count)
-    VALUES (%(question_id)s, Null, %(message)s, %(time)s, 0)
+    (question_id, answer_id, message, submission_time, edited_count,user_id)
+    VALUES (%(question_id)s, Null, %(message)s, %(time)s, 0,%(user_id)s)
     
     """
     cursor.execute(
@@ -311,15 +318,16 @@ def inject_question_comment(cursor, id, message):
             "question_id": id,
             "message": message,
             "time": get_time_of_posting,
+            "user_id": user_id,
         },
     )
 
 
 @database_common.connection_handler
-def add_comment_to_answer(cursor, id_answer, id_question, comment_message):
+def add_comment_to_answer(cursor, id_answer, id_question, comment_message, user_id):
     query = """
-    INSERT INTO comment (question_id,answer_id,message,submission_time,edited_count)
-    VALUES (%(question_id)s,%(answer_id)s,%(message)s,%(submission_time)s,%(edited_count)s)    
+    INSERT INTO comment (question_id,answer_id,message,submission_time,edited_count,user_id)
+    VALUES (%(question_id)s,%(answer_id)s,%(message)s,%(submission_time)s,%(edited_count)s,%(user_id)s)    
     """
     cursor.execute(
         query,
@@ -329,28 +337,29 @@ def add_comment_to_answer(cursor, id_answer, id_question, comment_message):
             "message": comment_message,
             "submission_time": get_time(),
             "edited_count": 0,
+            "user_id": user_id,
         },
     )
 
 
 @database_common.connection_handler
-def get_comment(cursor, id):
+def get_comment(cursor, id, user_id):
     query = """
     SELECT *
     FROM comment
-    WHERE id = %(id)s
+    WHERE id = %(id)s AND user_id=%(user_id)s
     """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"id": id, "user_id": user_id})
     return cursor.fetchall()
 
 
 @database_common.connection_handler
-def edit_comment(cursor, id, message):
+def edit_comment(cursor, id, message, user_id):
     current_time = get_time()
     query = """
     UPDATE comment
     SET message = %(message)s, submission_time = %(submission_time)s, edited_count = edited_count + 1
-    WHERE id = %(id)s
+    WHERE id = %(id)s AND user_id = %(user_id)s
     """
     cursor.execute(
         query,
@@ -358,39 +367,40 @@ def edit_comment(cursor, id, message):
             "message": message,
             "id": id,
             "submission_time": current_time,
+            "user_id": user_id,
         },
     )
 
 
 @database_common.connection_handler
-def delete_comment(cursor, id):
+def delete_comment(cursor, id, user_id):
     query = """
         DELETE FROM comment
-        WHERE id = %(id)s
+        WHERE id = %(id)s AND user_id = %(user_id)s
         """
-    cursor.execute(query, {"id": id})
+    cursor.execute(query, {"id": id, "user_id": user_id})
 
 
 @database_common.connection_handler
-def delete_answer_to_question(cursor, id_answer):
+def delete_answer_to_question(cursor, id_answer,user_id):
     comment_query = """
     DELETE FROM comment
-    WHERE answer_id = %(id_answer)s
+    WHERE answer_id = %(id_answer)s AND user_id=%(user_id)s
     """
-    cursor.execute(comment_query, {"id_answer": id_answer})
+    cursor.execute(comment_query, {"id_answer": id_answer,"user_id":user_id})
     query = """
     DELETE FROM answer
-    WHERE id=%(id_answer)s
+    WHERE id=%(id_answer)s AND user_id=%(user_id)s
     """
-    cursor.execute(query, {"id_answer": id_answer})
+    cursor.execute(query, {"id_answer": id_answer,"user_id":user_id})
 
 
 @database_common.connection_handler
-def edit_answer_to_question(cursor, id_answer, old_message, new_message):
+def edit_answer_to_question(cursor, id_answer, old_message, new_message,user_id):
     query = """
     UPDATE answer
     SET message = %(new_message)s, submission_time = %(submission_time)s
-    WHERE id=%(id_answer)s AND message = %(old_message)s
+    WHERE id=%(id_answer)s AND message = %(old_message)s AND user_id=%(user_id)s
     """
     cursor.execute(
         query,
@@ -399,6 +409,7 @@ def edit_answer_to_question(cursor, id_answer, old_message, new_message):
             "submission_time": get_time(),
             "id_answer": id_answer,
             "old_message": old_message,
+            "user_id":user_id,
         },
     )
 
@@ -474,15 +485,29 @@ def login(cursor, user_name):
     query = """
     SELECT password
     FROM "user"
-    WHERE username=%(user_name)s
+    WHERE username = %(user_name)s
     """
     cursor.execute(query, {"user_name": user_name})
+    return cursor.fetchall()
+
 
 @database_common.connection_handler
-def user_id_return(cursor, user_name,pass_word):
-    query="""
+def user_id_return(cursor, user_name, pass_word):
+    query = """
     SELECT user_id
     FROM "user"
-    WHERE username==%(user_name)s AND password==%(pass_word)s 
+    WHERE username = %(user_name)s AND password = %(pass_word)s 
     """
-    cursor.excute(query,{"user_name": user_name,"pass_word": pass_word})
+    cursor.execute(query, {"user_name": user_name, "pass_word": pass_word})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_user_details(cursor, userid):
+    query = """
+    SELECT *
+    FROM "user"
+    WHERE user_id=%(user_id)s
+    """
+    cursor.execute(query, {"user_id": userid})
+    return cursor.fetchall()

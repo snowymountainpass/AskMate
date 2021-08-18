@@ -13,27 +13,28 @@ app.config["UPLOAD_FOLDER"] = os.path.join(
     "images",
 )
 
-users = {"alex": "1234", "laura": "2468", "cipi": "1357"}
-
 
 @app.route("/")
 def index():
     criterion = request.args.get("criterion", "id")
     direction = request.args.get("direction", "asc")
     entries = data_manager.get_all_questions(criterion, direction)
-    user = session.get("user_id")
-    return render_template("index.html", entries=entries, user=user)
+    username = session.get("username")
+
+    return render_template("index.html", entries=entries, username=username)
 
 
 @app.route("/entry/<int:id>", methods=["GET", "POST"])
 def get_entry(id):
     data_manager.increase_question_viewcount(id)
-    entry = data_manager.get_question_at_id(id)
+    user_id = session.get("user_id")
+    username = session.get("username")
+    entry = data_manager.get_question_at_id(id, username, user_id)
 
     try:
-        answers = data_manager.get_answers_for_question(id)
-        question_comments = data_manager.get_comments_for_question(id)
-        answer_comments = data_manager.get_comments_for_answer(id)
+        answers = data_manager.get_answers_for_question(id, username, user_id)
+        question_comments = data_manager.get_comments_for_question(id, username, user_id)
+        answer_comments = data_manager.get_comments_for_answer(id, username, user_id)
         print(answer_comments)
         print(question_comments)
 
@@ -50,23 +51,6 @@ def get_entry(id):
         question_comments=question_comments,
         answer_comments=answer_comments,
     )
-
-
-# @app.route('/entry/question-<int:id_question>/answer-<int:id_answer>/comments', methods=["GET", "POST"])
-# def get_comments(id_question, id_answer):
-#     headers = ["Answer", "Posted at", "Number of votes", "Answer ID"]
-#     entry = data_manager.get_question_by_id(id_question)
-#     entry_answers = data_manager.get_answers_by_question(id_question)
-#
-#     if request.method == "GET":
-#         if entry_answers is None:
-#             return render_template('entry.html', entry=entry, headers=headers)
-#         else:
-#             return render_template('entry.html', entry=entry, answers=entry_answers, headers=headers)
-#     elif request.method == "POST":
-#         comments = data_manager.get_comments_by_answer(id_answer, id_question)
-#         print(comments)
-#         return render_template('entry.html', entry=entry, answers=entry_answers, headers=headers, comments=comments)
 
 
 @app.route("/enter-edit/<int:id>", methods=["GET"])
@@ -100,13 +84,14 @@ def add_new_question():
     title = request.form.get("title")
     message = request.form.get("message")
     savepath = os.path.join(app.config.get("UPLOAD_FOLDER"), "no-image-available.png")
+    user_id = session.get("user_id")
 
     if "image" in request.files:
         image = request.files.get("image")
         savepath = os.path.join(app.config.get("UPLOAD_FOLDER"), image.filename)
         image.save(savepath)
 
-    id_row = data_manager.inject_new_question(title, message, savepath)
+    id_row = data_manager.inject_new_question(title, message, savepath,user_id)
     for row in id_row:
         id = row["id"]
 
@@ -140,10 +125,8 @@ def delete_answer(id_answer, id_question):
     return redirect(url_for("get_entry", id=id_question))
 
 
-@app.route(
-    "/edit-answer/question-<int:id_question>/answer-<int:id_answer>",
-    methods=["GET", "POST"],
-)
+@app.route("/edit-answer/question-<int:id_question>/answer-<int:id_answer>",
+           methods=["GET", "POST"], )
 def edit_answer(id_answer, id_question):
     old_message = data_manager.get_message_from_answer(id_answer)
     old_message = old_message[0].get("message")
@@ -249,10 +232,33 @@ def login_user():
     if request.method == "POST":
         username = request.form.get("user")
         password = request.form.get("pass")
-        if password == data_manager.login(username):
-            session["user_id"] = data_manager.user_id_return
+        for element in data_manager.login(username):
+            db_password = element["password"]
+
+        if password == db_password:
+            # session["user_id"] = data_manager.user_id_return(username, password)
+            for userid in data_manager.user_id_return(username, password):
+                db_user_id = userid["user_id"]
+            session["user_id"] = db_user_id
+            session["username"] = username
             return redirect(url_for('index'))
+        else:
+            flash("Invalid credentials !")
     return render_template("login.html")
+
+
+@app.route("/user/user_name")
+def show_user_details():
+    user_id = session.get("user_id")
+    user_name = session.get("username")
+    user_details = data_manager.get_user_details(user_id)
+    return render_template("user_details.html", username=user_name, user_details=user_details)
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":

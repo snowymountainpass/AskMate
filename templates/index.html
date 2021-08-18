@@ -19,17 +19,26 @@
         }}
     </script>
     <h1>Welcome to Ask Mate</h1>
-
-    {% if user %}
-        <li>{{ user }}</li>
-    {% endif %}
-    <a href="{{ url_for('register_user')}}">Register New User</a>
-    <br>
-    <a href="{{ url_for('login_user')}}">Login User</a>
-    <br>
-    <a href="{{ url_for('show_users')}}">Go to User List</a>
-
     <br/><br/>
+    <ul>
+    {% if username %}
+{#    <li>{{ username }}</li>#}
+    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    {% else %}
+    <li><a href="{{ url_for('register_user') }}">Register</a></li>
+    <li><a href="{{ url_for('login_user') }}">Login</a></li>
+    {% endif %}
+    </ul>
+
+    {% if username %}
+    <p>Welcome back, {{ username }}</p>
+        <li><a href="{{ url_for('show_users') }}">Show all users</a></li>
+        <li><a href="{{ url_for('show_user_details',user_id=user_id,user_name=username) }}">Go to personal page</a></li>
+    {% else %}
+    <p>Browsing anonymously</p>
+    {% endif %}
+
+
     {% with messages = get_flashed_messages() %} {% if messages %}
         <ul class="flashes">
             {% for message in messages %}
