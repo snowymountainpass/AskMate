@@ -22,8 +22,8 @@
 <h1>Welcome to Ask Mate</h1>
 <br/><br/>
 <ul>
-    {% if user %}
-    <li>{{ user }}</li>
+    {% if username %}
+    <li>{{ username }}</li>
     <li><a href="{{ url_for('logout') }}">Logout</a></li>
     {% else %}
     <li><a href="{{ url_for('register_user') }}">Register</a></li>
@@ -31,8 +31,8 @@
     {% endif %}
 </ul>
 
-{% if user %}
-<p>Welcome back, {{ user }}</p>
+{% if username %}
+<p>Welcome back, {{ username }}</p>
 {% else %}
 <p>Browsing anonymously</p>
 {% endif %}

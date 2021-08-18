@@ -24,9 +24,10 @@ def index():
     criterion = request.args.get("criterion", "id")
     direction = request.args.get("direction", "asc")
     entries = data_manager.get_all_questions(criterion, direction)
-    user = session.get("user")
-    print(user)
-    return render_template("index.html", entries=entries, user=user)
+    username = session.get("username")
+    user_id = session.get("user_id")
+    print(username)
+    return render_template("index.html", entries=entries, username=username)
 
 # @app.route("/register", methods=["GET", "POST"])
 # def register():
@@ -57,16 +58,17 @@ def index():
 #     return render_template("login.html")
 
 
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("index"))
+
 
 
 @app.route("/entry/<int:question_id>", methods=["GET", "POST"])
 def get_entry(question_id):
     data_manager.increase_question_viewcount(question_id)
     entry = data_manager.get_question_at_id(question_id)
+    username = session.get("username")
+    user_id = session.get("user_id")
+    print(username)
+    print(user_id)
 
     try:
         answers = data_manager.get_answers_for_question(question_id)
@@ -87,6 +89,8 @@ def get_entry(question_id):
         answers=answers,
         question_comments=question_comments,
         answer_comments=answer_comments,
+        username=username,
+        user_id=user_id,
     )
 
 
@@ -246,13 +250,9 @@ def add_comment_question(question_id):
 @app.route("/edit-comment/<int:comment_id>-<int:question_id>", methods=["GET", "POST"])
 def edit_comment_question(comment_id, question_id):
     this_comment = data_manager.get_comment(comment_id)
-    print(this_comment)
 
     if request.method == "POST":
-        print(comment_id)
         comment_message = request.form.get("message")
-        print(comment_id)
-        print(comment_message)
         data_manager.edit_comment(comment_id, comment_message)
 
         return redirect(url_for("get_entry", question_id=question_id))
@@ -307,10 +307,17 @@ def login_user():
             for userid in data_manager.user_id_return(username, password):
                 db_user_id = userid["user_id"]
             session["user_id"] = db_user_id
+            session["username"] = username
             return redirect(url_for('index'))
         else:
             flash("Invalid credentials !")
     return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":

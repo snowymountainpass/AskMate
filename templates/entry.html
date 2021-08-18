@@ -3,268 +3,309 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<figure>
-    {% for question in entry %}
-    <blockquote class="blockquote">
-        <div class="question_title"><h2>{{ question.title }}</h2></div>
-    </blockquote>
-    <figcaption class="blockquote-footer">
-        Posted at {{ question.submission_time }} |
-        Viewed {{ question.view_number }} times |
-        <cite title="Source Title">Question ID {{ question.id }}</cite>
-        <br>
-        Number of upvotes {{ question.vote_number }}
-    </figcaption>
-    <div class="question_message">
-        <p class="lead">{{ question.message }}</p>
-        <p>
-            {% if question.image != 'None' and question.image != '<null>' %}
-            <img src="{{ url_for('static', filename=question.image) }}" alt={{ question.image }} width="120"/>
-            {% else %}
-                User has not uploaded an image
-            {% endif %}
-        </p>
-    </div>
-    {% endfor %}
-</figure>
+    <figure>
+        {% for question in entry %}
+            <blockquote class="blockquote">
+                <div class="question_title"><h2>{{ question.title }}</h2></div>
+            </blockquote>
+            <figcaption class="blockquote-footer">
+                Posted at {{ question.submission_time }} |
+                Viewed {{ question.view_number }} times |
+                <cite title="Source Title">Question ID {{ question.id }}</cite>
+                <br>
+                Number of upvotes {{ question.vote_number }}
+            </figcaption>
+            <div class="question_message">
+                <p class="lead">{{ question.message }}</p>
+                <p>
+                    {% if question.image != 'None' and question.image != '<null>' %}
+                        <img src="{{ url_for('static', filename=question.image) }}"
+                             alt={{ question.image }} width="120"/>
+                    {% else %}
+                        User has not uploaded an image
+                    {% endif %}
+                </p>
+            </div>
+        {% endfor %}
+    </figure>
 
-<figure>
-    {% for question in entry %}
-    {% for comment in question_comments %}
-    <div class="question_comment">
-        <p>{{ comment.message }}</p>
-        <figcaption class="blockquote-footer">
-            Posted at {{ comment.submission_time }} |
-            Edited {{ comment.edited_count }} times
-        </figcaption>
-        <a href="{{ url_for('edit_comment_question', comment_id=comment.id, question_id=question.id) }}" class="btn btn-primary">Edit a
-            comment</a>
+    <figure>
+        {% for question in entry %}
+            {% for comment in question_comments %}
+                <div class="question_comment">
+                    <p>{{ comment.message }}</p>
+                    <figcaption class="blockquote-footer">
+                        Posted at {{ comment.submission_time }} |
+                        Edited {{ comment.edited_count }} times
+                    </figcaption>
+                    {% if user_id == comment.comment_user_id %}
+                        <a href="{{ url_for('edit_comment_question', comment_id=comment.id, question_id=question.id) }}"
+                           class="btn btn-primary">Edit a
+                            comment</a>
+                    {% endif %}
 
-        <button onclick="document.getElementById('id01').style.display='block'">Delete comment</button>
-        <div id="id01" class="modal">
+                    {% if user_id == comment.comment_user_id %}
+                        <button onclick="document.getElementById('id01').style.display='block'">Delete comment</button>
+                        <div id="id01" class="modal">
             <span
                     onclick="document.getElementById('id01').style.display='none'"
                     class="close"
                     title="Close delete"
             >&times;</span>
-            <form class="modal-content" action="{{ url_for( 'index' ) }}">
-                <div class="modal-container">
-                    <h1>Delete comment</h1>
-                    <p>Are you sure you want to delete the comment?</p>
-                    <div class="clearfix">
-                        <a href="{{ question.id }}" class="cancelbtn">Cancel</a>
-                        <a
-                                href="{{ url_for( 'delete_comment_question', comment_id=comment.id, question_id=question.id ) }}"
-                                class="deletebtn"
-                        >Delete</a>
-                    </div>
+                            <form class="modal-content" action="{{ url_for( 'index' ) }}">
+                                <div class="modal-container">
+                                    <h1>Delete comment</h1>
+                                    <p>Are you sure you want to delete the comment?</p>
+                                    <div class="clearfix">
+                                        <a href="{{ question.id }}" class="cancelbtn">Cancel</a>
+                                        <a
+                                                href="{{ url_for( 'delete_comment_question', comment_id=comment.id, question_id=question.id ) }}"
+                                                class="deletebtn"
+                                        >Delete</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    {% endif %}
                 </div>
-            </form>
-        </div>
-    </div>
-    {% endfor %}
-    {% endfor %}
-</figure>
+            {% endfor %}
+        {% endfor %}
+    </figure>
 
-{% for question in entry %}
-<div class="entry-button-spaciate">
-    <a href="{{ url_for('add_comment_question', question_id=question.id) }}" class="btn btn-primary">Add a comment</a>
-</div>
+    {% for question in entry %}
+        {% if username %}
+            <div class="entry-button-spaciate">
+                <a href="{{ url_for('add_comment_question', question_id=question.id, username=username, user_id=user_id) }}"
+                   class="btn btn-primary">Add a
+                    comment</a>
+            </div>
 
-<form action="{{ url_for('upvote_question',question_id=question.id) }}" method="POST">
-    <div class="entry-button-spaciate">
-        <button type="submit" class="btn btn-primary">Upvote question</button>
-        <a href="{{ url_for('downvote_question',question_id=question.id) }}" class="btn btn-primary">Downvote
-            question</a>
-    </div>
-</form>
+            {% if user_id !=question.question_user_id %}
 
+                <form action="{{ url_for('upvote_question',question_id=question.id) }}" method="POST">
+                    <div class="entry-button-spaciate">
+                        <button type="submit" class="btn btn-primary">Upvote question</button>
+                        <a href="{{ url_for('downvote_question',question_id=question.id) }}" class="btn btn-primary">Downvote
+                            question</a>
+                    </div>
+                </form>
+            {% endif %}
+        {% endif %}
 
-<div class="entry-button-spaciate">
-    <a href="{{ url_for( 'editting', question_id=question.id) }}" class="btn btn-primary">Edit question</a>
+        {% if user_id == question.question_user_id %}
+            <div class="entry-button-spaciate">
+                <a href="{{ url_for( 'editting', question_id=question.id) }}" class="btn btn-primary">Edit question</a>
 
-    <button onclick="document.getElementById('id03').style.display='block'">Delete question</button>
+                <button onclick="document.getElementById('id03').style.display='block'">Delete question</button>
 
-    <div id="id03" class="modal">
+                <div id="id03" class="modal">
         <span onclick="document.getElementById('id03').style.display='none'" class="close"
               title="Close delete">&times;</span>
-        <form class="modal-content" action="{{ url_for( 'index' ) }}">
-            <div class="modal-container">
-                <h1>Delete question</h1>
-                <p>Are you sure you want to delete the question?</p>
-                <div class="clearfix">
-                    <a href="{{ question.id }}" class="cancelbtn">Cancel</a>
-                    <a href="{{ url_for('delete_question', question_id=question.id) }}" class="deletebtn">Delete</a>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-{% endfor %}
-
-
-<h2>Answers</h2>
-<table class="table">
-    <thead>
-    <tr>
-        <th>Answer</th>
-        <th>Posted at</th>
-        <th>Number of votes</th>
-        <th>Answer ID</th>
-        <th>Upvote answer</th>
-        <th>Downvote answer</th>
-        <th>Image</th>
-        <th>Edit answer</th>
-        <th>Delete answer</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for answer in answers %}
-    <tr>
-        <td>{{ answer.message }}</td>
-        <td align="center">{{ answer.submission_time }}</td>
-        <td align="center">{{ answer.vote_number }}</td>
-        <td align="center">{{ answer.id }}</td>
-        {% for question in entry %}
-        <td>
-            <a href="{{ url_for('upvote_answer',answer_id=answer.id, question_id=answer.question_id) }}"
-               class="btn btn-primary">Upvote
-                answer</a>
-        <td>
-            <a href="{{ url_for('downvote_answer',answer_id=answer.id, question_id=answer.question_id) }}"
-               class="btn btn-primary">Downvote
-                answer</a>
-        <td align="center"><img
-                src="static/{{ answer.image | default('no-image-available.png') }}"
-                alt={{ answer.image }} width="120"></td>
-        </td>
-        <td><a href="{{ url_for('edit_answer',answer_id=answer.id,question_id=question.id) }}"
-               class="btn btn-primary">Edit Answer</a>
-        </td>
-        <td>
-            <a href="{{ url_for('delete_answer',answer_id=answer.id, question_id=answer.question_id) }}"
-               class="btn btn-primary">Delete answer</a></td>
-    </tr>
-     <td><div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th class="text-center" style="vertical-align: middle">ID</th>
-            <th class="text-center">Answer ID</th>
-            <th class="text-center" style="vertical-align: middle">Comment message</th>
-            <th class="text-center">Submission Time</th>
-            <th class="text-center" style="vertical-align: middle">Question ID</th>
-            <th class="text-center" style="vertical-align: middle">Edit Comment</th>
-            <th class="text-center" style="vertical-align: middle">Edit Count</th>
-            <th class="text-center" style="vertical-align: middle">Delete Comment</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for comment in answer_comments %}
-        <tr>
-            <td align="center">{{ comment.id }}</td>
-            <td align="center">{{ comment.answer_id }}</td>
-            <td align="center">{{ comment.message }}</td>
-            <td align="center">{{ comment.submission_time }}</td>
-            <td align="center">{{ comment.question_id }}</td>
-            <td><a href="{{ comment.question_id }}" class="btn btn-primary">Edit Comment</a></td>
-            <td align="center">{{ comment.edited_count }}</td>
-
-            <td>
-                <button onclick="document.getElementById('id02').style.display='block'">Delete comment</button>
-
-                <div id="id02" class="modal">
-                    <span onclick="document.getElementById('id02').style.display='none'" class="close"
-                          title="Close delete">&times;</span>
                     <form class="modal-content" action="{{ url_for( 'index' ) }}">
                         <div class="modal-container">
-                            <h1>Delete comment</h1>
-                            <p>Are you sure you want to delete the comment?</p>
+                            <h1>Delete question</h1>
+                            <p>Are you sure you want to delete the question?</p>
                             <div class="clearfix">
-                                <a href="{{ comment.question_id }}" class="cancelbtn">Cancel</a>
-                                <a href="{{ url_for( 'delete_comment_answer', comment_id=comment.id, answer_id=comment.answer_id, question_id=comment.question_id) }}" class="deletebtn">Delete</a>
+                                <a href="{{ question.id }}" class="cancelbtn">Cancel</a>
+                                <a href="{{ url_for('delete_question', question_id=question.id) }}"
+                                   class="deletebtn">Delete</a>
                             </div>
                         </div>
                     </form>
                 </div>
-            </td>
+            </div>
+        {% endif %}
+    {% endfor %}
 
+
+    <h2>Answers</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Answer</th>
+            <th>Posted at</th>
+            <th>Number of votes</th>
+            <th>Answer ID</th>
+            <th>Upvote answer</th>
+            <th>Downvote answer</th>
+            <th>Image</th>
+            <th>Edit answer</th>
+            <th>Delete answer</th>
         </tr>
+        </thead>
+        <tbody>
+        {% for answer in answers %}
+            <tr>
+                <td>{{ answer.message }}</td>
+                <td align="center">{{ answer.submission_time }}</td>
+                <td align="center">{{ answer.vote_number }}</td>
+                <td align="center">{{ answer.id }}</td>
+                {% for question in entry %}
+                    {% if username %}
+                        {% if user_id != answer.answer_user_id %}
+                            <td>
+                                <a href="{{ url_for('upvote_answer',answer_id=answer.id, question_id=answer.question_id) }}"
+                                   class="btn btn-primary">Upvote
+                                    answer</a>
+                            <td>
+                            <a href="{{ url_for('downvote_answer',answer_id=answer.id, question_id=answer.question_id) }}"
+                               class="btn btn-primary">Downvote
+                                answer</a>
+                        {% endif %}
+                        <td align="center"><img
+                                src="static/{{ answer.image | default('no-image-available.png') }}"
+                                alt={{ answer.image }} width="120"></td>
+                        </td>
+                        {% if user_id == answer.answer_user_id %}
+
+                            <td><a href="{{ url_for('edit_answer',answer_id=answer.id,question_id=question.id) }}"
+                                   class="btn btn-primary">Edit Answer</a>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('delete_answer',answer_id=answer.id, question_id=answer.question_id) }}"
+                                   class="btn btn-primary">Delete answer</a></td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+                    <td>
+                        <div>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="text-center" style="vertical-align: middle">ID</th>
+                                    <th class="text-center">Answer ID</th>
+                                    <th class="text-center" style="vertical-align: middle">Comment message</th>
+                                    <th class="text-center">Submission Time</th>
+                                    <th class="text-center" style="vertical-align: middle">Question ID</th>
+                                    <th class="text-center" style="vertical-align: middle">Edit Comment</th>
+                                    <th class="text-center" style="vertical-align: middle">Edit Count</th>
+                                    <th class="text-center" style="vertical-align: middle">Delete Comment</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for comment in answer_comments %}
+                                    <tr>
+                                        <td align="center">{{ comment.id }}</td>
+                                        <td align="center">{{ comment.answer_id }}</td>
+                                        <td align="center">{{ comment.message }}</td>
+                                        <td align="center">{{ comment.submission_time }}</td>
+                                        <td align="center">{{ comment.question_id }}</td>
+                                        {% if user_id == comment.comment_user_id %}
+                                            <td><a href="{{ comment.question_id }}" class="btn btn-primary">Edit
+                                                Comment</a>
+                                            </td>
+                                        {% endif %}
+                                        <td align="center">{{ comment.edited_count }}</td>
+
+                                        {% if user_id == comment.comment_user_id %}
+
+                                            <td>
+                                                <button onclick="document.getElementById('id02').style.display='block'">
+                                                    Delete comment
+                                                </button>
+
+
+                                                <div id="id02" class="modal">
+                    <span onclick="document.getElementById('id02').style.display='none'" class="close"
+                          title="Close delete">&times;</span>
+                                                    <form class="modal-content" action="{{ url_for( 'index' ) }}">
+                                                        <div class="modal-container">
+                                                            <h1>Delete comment</h1>
+                                                            <p>Are you sure you want to delete the comment?</p>
+                                                            <div class="clearfix">
+                                                                <a href="{{ comment.question_id }}"
+                                                                   class="cancelbtn">Cancel</a>
+                                                                <a href="{{ url_for( 'delete_comment_answer', comment_id=comment.id, answer_id=comment.answer_id, question_id=comment.question_id) }}"
+                                                                   class="deletebtn">Delete</a>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        {% endif %}
+
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                    {% if username %}
+
+                        <td>
+                            <a href="{{ url_for('add_comment',answer_id=answer.id,question_id=question.id, comment_user_id=user_id) }}"
+                               class="btn btn-primary">Add Comment</a>
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
         {% endfor %}
         </tbody>
     </table>
-</div></td>
+    {% if username %}
+        {% for question in entry %}
+            <a href="{{ url_for( 'add_answer', question_id=question.id, answer_user_id=user_id ) }}"
+               class="btn btn-primary">Post an answer</a>
+        {% endfor %}
+    {% endif %}
 
-    <td><a href="{{ url_for('add_comment',answer_id=answer.id,question_id=question.id) }}"
-           class="btn btn-primary">Add Comment</a>
-    </td>
+
+    {#<h3>Comments Section</h3><br>#}
+    {##}
+    {#<div>#}
+    {#    <table class="table">#}
+    {#        <thead>#}
+    {#        <tr>#}
+    {#            <th class="text-center" style="vertical-align: middle">ID</th>#}
+    {#            <th class="text-center">Answer ID</th>#}
+    {#            <th class="text-center" style="vertical-align: middle">Comment message</th>#}
+    {#            <th class="text-center">Submission Time</th>#}
+    {#            <th class="text-center" style="vertical-align: middle">Question ID</th>#}
+    {#            <th class="text-center" style="vertical-align: middle">Edit Comment</th>#}
+    {#            <th class="text-center" style="vertical-align: middle">Edit Count</th>#}
+    {#            <th class="text-center" style="vertical-align: middle">Delete Comment</th>#}
+    {#        </tr>#}
+    {#        </thead>#}
+    {#        <tbody>#}
+    {#        {% for comment in answer_comments %}#}
+    {#        <tr>#}
+    {#            <td align="center">{{ comment.id }}</td>#}
+    {#            <td align="center">{{ comment.answer_id }}</td>#}
+    {#            <td align="center">{{ comment.message }}</td>#}
+    {#            <td align="center">{{ comment.submission_time }}</td>#}
+    {#            <td align="center">{{ comment.question_id }}</td>#}
+    {#            <td><a href="{{ comment.question_id }}" class="btn btn-primary">Edit Comment</a></td>#}
+    {#            <td align="center">{{ comment.edited_count }}</td>#}
+    {##}
+    {#            <td>#}
+    {#                <button onclick="document.getElementById('id02').style.display='block'">Delete comment</button>#}
+    {##}
+    {#                <div id="id02" class="modal">#}
+    {#                    <span onclick="document.getElementById('id02').style.display='none'" class="close"#}
+    {#                          title="Close delete">&times;</span>#}
+    {#                    <form class="modal-content" action="{{ url_for( 'index' ) }}">#}
+    {#                        <div class="modal-container">#}
+    {#                            <h1>Delete comment</h1>#}
+    {#                            <p>Are you sure you want to delete the comment?</p>#}
+    {#                            <div class="clearfix">#}
+    {#                                <a href="{{ comment.question_id }}" class="cancelbtn">Cancel</a>#}
+    {#                                <a href="{{ url_for( 'delete_comment_answer', comment_id=comment.id, answer_id=comment.answer_id, question_id=comment.question_id) }}" class="deletebtn">Delete</a>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    </form>#}
+    {#                </div>#}
+    {#            </td>#}
+    {##}
+    {#        </tr>#}
+    {#        {% endfor %}#}
+    {#        </tbody>#}
+    {#    </table>#}
+    {#</div>#}
+
+
+    {% for question in entry %}
+        <a href="{{ url_for( 'index' ) }}" class="btn btn-primary">Back to list of questions</a>
     {% endfor %}
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
-{% for question in entry %}
-<a href="{{ url_for( 'add_answer', question_id=question.id ) }}" class="btn btn-primary">Post an answer</a>
-{% endfor %}
-
-
-{#<h3>Comments Section</h3><br>#}
-{##}
-{#<div>#}
-{#    <table class="table">#}
-{#        <thead>#}
-{#        <tr>#}
-{#            <th class="text-center" style="vertical-align: middle">ID</th>#}
-{#            <th class="text-center">Answer ID</th>#}
-{#            <th class="text-center" style="vertical-align: middle">Comment message</th>#}
-{#            <th class="text-center">Submission Time</th>#}
-{#            <th class="text-center" style="vertical-align: middle">Question ID</th>#}
-{#            <th class="text-center" style="vertical-align: middle">Edit Comment</th>#}
-{#            <th class="text-center" style="vertical-align: middle">Edit Count</th>#}
-{#            <th class="text-center" style="vertical-align: middle">Delete Comment</th>#}
-{#        </tr>#}
-{#        </thead>#}
-{#        <tbody>#}
-{#        {% for comment in answer_comments %}#}
-{#        <tr>#}
-{#            <td align="center">{{ comment.id }}</td>#}
-{#            <td align="center">{{ comment.answer_id }}</td>#}
-{#            <td align="center">{{ comment.message }}</td>#}
-{#            <td align="center">{{ comment.submission_time }}</td>#}
-{#            <td align="center">{{ comment.question_id }}</td>#}
-{#            <td><a href="{{ comment.question_id }}" class="btn btn-primary">Edit Comment</a></td>#}
-{#            <td align="center">{{ comment.edited_count }}</td>#}
-{##}
-{#            <td>#}
-{#                <button onclick="document.getElementById('id02').style.display='block'">Delete comment</button>#}
-{##}
-{#                <div id="id02" class="modal">#}
-{#                    <span onclick="document.getElementById('id02').style.display='none'" class="close"#}
-{#                          title="Close delete">&times;</span>#}
-{#                    <form class="modal-content" action="{{ url_for( 'index' ) }}">#}
-{#                        <div class="modal-container">#}
-{#                            <h1>Delete comment</h1>#}
-{#                            <p>Are you sure you want to delete the comment?</p>#}
-{#                            <div class="clearfix">#}
-{#                                <a href="{{ comment.question_id }}" class="cancelbtn">Cancel</a>#}
-{#                                <a href="{{ url_for( 'delete_comment_answer', comment_id=comment.id, answer_id=comment.answer_id, question_id=comment.question_id) }}" class="deletebtn">Delete</a>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </form>#}
-{#                </div>#}
-{#            </td>#}
-{##}
-{#        </tr>#}
-{#        {% endfor %}#}
-{#        </tbody>#}
-{#    </table>#}
-{#</div>#}
-
-
-{% for question in entry %}
-<a href="{{ url_for( 'index' ) }}" class="btn btn-primary">Back to list of questions</a>
-{% endfor %}
 {% endblock %}
 
 
