@@ -8,19 +8,55 @@ function getSortedItems(items, sortField, sortDirection) {
     // if you have not changed the original html uncomment the code below to have an idea of the
     // effect this function has on the table
     //
+    // if (sortDirection === "asc") {
+    //     const firstItem = items.shift()
+    //     if (firstItem) {
+    //         items.push(firstItem)
+    //     }
+    // } else {
+    //     const lastItem = items.pop()
+    //     if (lastItem) {
+    //         items.push(lastItem)
+    //     }
+    // }
+
+    // if (sortDirection === "asc") {
+    //     items = items.sort()
+    // } else {
+    //     items = items.sort(function (first_element, second_element) {
+    //         if (first_element > second_element) {
+    //             return -1;
+    //         }
+    //         if (second_element > first_element) {
+    //             return 1;
+    //         }
+    //         return 0;
+    //     });
+    // }
+    let sortedItems = items;
     if (sortDirection === "asc") {
-        const firstItem = items.shift()
-        if (firstItem) {
-            items.push(firstItem)
-        }
+        sorted_items = items.sort(function (a, b) {
+            if (a["Description"] > b["Description"]) {
+                return 1;
+            }
+            if (a["Description"] < b["Description"]) {
+                return -1;
+            }
+            return 0;
+        });
     } else {
-        const lastItem = items.pop()
-        if (lastItem) {
-            items.push(lastItem)
-        }
+        sorted_items = items.sort(function (a, b) {
+            if (a["Description"] > b["Description"]) {
+                return -1;
+            }
+            if (a["Description"] < b["Description"]) {
+                return 1;
+            }
+            return 0;
+        });
     }
 
-    return items
+    return sortedItems
 }
 
 // you receive an array of objects which you must filter by all it's keys to have a value matching "filterValue"
