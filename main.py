@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 
 import data_manager
+from bonus_questions import SAMPLE_QUESTIONS
 
 
 
@@ -27,6 +28,11 @@ def index():
     username = session.get("username")
     user_id = session.get("user_id")
     return render_template("index.html", entries=entries, username=username)
+
+
+@app.route("/bonus-questions")
+def bonus_questions():
+    return render_template("bonus_questions.html", questions=SAMPLE_QUESTIONS)
 
 # @app.route("/register", methods=["GET", "POST"])
 # def register():

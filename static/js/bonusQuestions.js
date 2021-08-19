@@ -34,7 +34,22 @@ function getFilteredItems(items, filterValue) {
     //
     for (let i=0; i<filterValue.length; i++) {
         items.pop()
+        // console.log(filterValue)
     }
+    // let sorted_questions = []
+    // for (let i=0; i<items.length; i++) {
+    //     if (items[i].title === 'life' && filterValue === 'life') {
+    //         sorted_questions.push(items[i]);
+    //     }
+    // }
+    if (filterValue === '') {
+        return items
+    }
+    if (filterValue !== '') {
+        return items.filter(value => Object.keys(value).some(k => value[k].toLowerCase().includes(filterValue.toLowerCase())));
+
+    }
+
 
     return items
 }

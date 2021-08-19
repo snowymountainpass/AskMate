@@ -37,6 +37,8 @@
         <p>Browsing anonymously</p>
     {% endif %}
 
+    <a href="{{ url_for('bonus_questions') }}">Bonus Questions</a>
+
 
     {% with messages = get_flashed_messages() %} {% if messages %}
         <ul class="flashes">
