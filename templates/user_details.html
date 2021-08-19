@@ -1,0 +1,86 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+<p>Showing content posted by {{ username }}</p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <td>User ID</td>
+                <td>Username</td>
+                <td>Registration Date</td>
+                <td>Asked Questions</td>
+                <td>Answers</td>
+                <td>Comments to Questions</td>
+                <td>Comments to Answers</td>
+                <td>Reputation</td>
+            </tr>
+
+
+        </thead>
+        <tbody>
+            <tr>
+                    {% for content in user_details %}
+                        <td>{{ content.user_id }}</td>
+                        <td>{{ content.username }}</td>
+                        <td>{{ content.registration_date}}</td>
+                        <td>{{ content.asked_questions }}</td>
+                        <td>{{ content.answers }}</td>
+                        <td>{{ content.comments_questions }}</td>
+                        <td>{{ content.comments_answer }}</td>
+                        <td>{{ content.reputation }}</td>
+                    {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <br>
+
+    <table>
+        <thead>
+            <tr>
+                <td>Question ID</td>
+                <td>Question Title</td>
+                <td>Question Message</td>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+    </table>
+
+    <br>
+    <br>
+
+    <table>
+        <thead>
+            <tr>
+                <td>Answer ID</td>
+                <td>Answer Message</td>
+                <td>Question ID</td>
+                <td>Question Title</td>
+                <td>Question Message</td>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+    </table>
+
+    <br>
+    <br>
+
+    <table>
+        <thead>
+            <tr>
+                <td>Comment ID</td>
+                <td>Comment Message</td>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+    </table>
+
+
+
+
+{% endblock %}

@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from dotenv import load_dotenv
 import os
+import bcrypt
+
 
 import data_manager
 from bonus_questions import SAMPLE_QUESTIONS
@@ -124,8 +126,9 @@ def edit_entry(question_id):
     # title = entry["title"] if entry["id"] == str(id) else ""
     message = request.form.get("message")
     image = request.form.get("image")
+    user_id = session.get("user_id")
 
-    if data_manager.edit_question(question_id, message, image):
+    if data_manager.edit_question(question_id, message, image,user_id):
         flash("Question successfully edited")
         return redirect(url_for("get_entry", question_id=question_id))
 
@@ -197,12 +200,13 @@ def delete_answer(answer_id, question_id):
 def edit_answer(answer_id, question_id):
     old_message = data_manager.get_message_from_answer(answer_id)
     old_message = old_message[0].get("message")
+    user_id = session.get("user_id")
 
     if request.method == "GET":
         return render_template("post_answer.html", question_id=question_id, message=old_message)
     elif request.method == "POST":
         new_message = request.form.get("message")
-        data_manager.edit_answer_to_question(answer_id, old_message, new_message)
+        data_manager.edit_answer_to_question(answer_id, old_message, new_message, user_id)
         return redirect(url_for("get_entry", question_id=question_id))
 
 
@@ -302,8 +306,16 @@ def delete_comment_answer(comment_id, answer_id, question_id):
 @app.route("/users", methods=["GET"])
 def show_users():
     entries = data_manager.show_users()
+    print(entries)
+    for element in entries:
+        current_user = element["user_id"]
+        number_of_questions = data_manager.count_user_questions(current_user)
     return render_template("users.html", entries=entries)
 
+
+def hash_password(raw_password):
+    hashed_password= bcrypt.hashpw(raw_password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_password.decode('utf-8')
 
 @app.route("/register_user", methods=["GET", "POST"])
 def register_user():
@@ -311,7 +323,8 @@ def register_user():
         username = request.form.get("user")
         password = request.form.get("pass")
         if not data_manager.check_existing_username(username):
-            data_manager.register_new_user(username, password)
+            hashed_password = hash_password(password)
+            data_manager.register_new_user(username, hashed_password)
             return redirect(url_for('index'))
         else:
             flash("Username is already taken !")
@@ -322,6 +335,11 @@ def register_user():
     return render_template("register.html")
 
 
+def verify_password(raw_password, hashed_password):
+    hashed_bytes_password = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(raw_password.encode('utf-8'), hashed_bytes_password)
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login_user():
     if request.method == "POST":
@@ -330,9 +348,10 @@ def login_user():
         for element in data_manager.login(username):
             db_password = element["password"]
 
-        if password == db_password:
+
+        if verify_password(password, db_password):
             # session["user_id"] = data_manager.user_id_return(username, password)
-            for userid in data_manager.user_id_return(username, password):
+            for userid in data_manager.user_id_return(username, db_password):
                 db_user_id = userid["user_id"]
             session["user_id"] = db_user_id
             session["username"] = username
@@ -346,6 +365,16 @@ def login_user():
 def logout():
     session.clear()
     return redirect(url_for("index"))
+
+
+@app.route("/user/user_name")
+def show_user_details():
+    user_id = session.get("user_id")
+    user_name = session.get("username")
+    user_details = data_manager.get_user_details(user_id)
+    return render_template("user_details.html", username=user_name, user_details=user_details)
+
+
 
 
 if __name__ == "__main__":

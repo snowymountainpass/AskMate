@@ -208,6 +208,7 @@ def upvote_question(cursor, id):
 
     cursor.execute(query, {"id": id})
 
+
 @database_common.connection_handler
 def downvote_question(cursor, id):
     query = """
@@ -232,7 +233,7 @@ def get_question_user_id(cursor, id):
 @database_common.connection_handler
 def increase_user_reputation(cursor, user_id):
     query = """
-    UPDATE "user" 
+    UPDATE users 
     SET reputation = reputation + 10
     WHERE user_id = %(user_id)s
     """
@@ -242,7 +243,7 @@ def increase_user_reputation(cursor, user_id):
 @database_common.connection_handler
 def decrease_user_reputation(cursor, user_id):
     query = """
-    UPDATE "user" 
+    UPDATE users 
     SET reputation = reputation - 2
     WHERE user_id = %(user_id)s
     """
@@ -281,7 +282,7 @@ def get_answer_user_id(cursor, id):
 
 
 @database_common.connection_handler
-def edit_question(cursor, id, message, image):
+def edit_question(cursor, id, message, image, user_id):
     query = """
     UPDATE question
     SET message = %(message)s,
@@ -289,6 +290,12 @@ def edit_question(cursor, id, message, image):
     WHERE id = %(id)s
     """
     cursor.execute(query, {"message": message, "image": image, "id": id})
+    query_2 = """
+    UPDATE users 
+    SET asked_questions = %(message)s,
+    WHERE user_id = %(user_id)s
+    """
+    cursor.execute(query_2, {"message": message, "user_id": user_id})
     return True
 
 
@@ -311,6 +318,13 @@ def inject_new_question(cursor, title, message, image, username, user_id):
             "user_id": user_id,
         },
     )
+    add_user_question = """
+    INSERT INTO users 
+    (asked_questions)
+    VALUES (%(message)s)
+    WHERE user_id = %(user_id)s
+    """
+    cursor.execute(add_user_question, {"message": message, "user_id": user_id, })
     get_id_query = """
     SELECT id
     FROM question
@@ -340,6 +354,12 @@ def add_answer_to_question(cursor, id_question, message, username, user_id):
             "user_id": user_id,
         },
     )
+    add_user_answer = """
+    INSERT INTO users  (answers)
+    VALUES (%(message)s)
+    WHERE user_id = %(user_id)s
+    """
+    cursor.execute(add_user_answer, {"message": message, "user_id": user_id})
 
 
 @database_common.connection_handler
@@ -361,6 +381,12 @@ def inject_question_comment(cursor, id, message, username, user_id):
             "user_id": user_id,
         },
     )
+    query_2 = """
+    INSERT INTO users  (comments_questions)
+    VALUES (%(message)s)
+    WHERE user_id = %(user_id)s
+    """
+    cursor.execute(query_2, {"message": message, "user_id": user_id})
 
 
 @database_common.connection_handler
@@ -381,6 +407,12 @@ def add_comment_to_answer(cursor, id_answer, id_question, comment_message, usern
             "user_id": user_id,
         },
     )
+    query_2 = """
+    INSERT INTO users  (comments_answer)
+    VALUES (%(comment_message))
+    WHERE user_id = %(user_id)sUSER 
+    """
+    cursor.execute(query_2, {"comment_message": comment_message, "user_id": user_id})
 
 
 @database_common.connection_handler
@@ -447,7 +479,7 @@ def delete_answer_to_question(cursor, id_answer):
 
 
 @database_common.connection_handler
-def edit_answer_to_question(cursor, id_answer, old_message, new_message):
+def edit_answer_to_question(cursor, id_answer, old_message, new_message, user_id):
     query = """
     UPDATE answer
     SET message = %(new_message)s, submission_time = %(submission_time)s
@@ -462,6 +494,12 @@ def edit_answer_to_question(cursor, id_answer, old_message, new_message):
             "old_message": old_message,
         },
     )
+    query_2 = """
+    UPDATE users 
+    SET answers = %(new_message)s
+    WHERE user_id = %(user_id)s
+    """
+    cursor.execute(query_2, {"new_message": new_message, "user_id": user_id})
 
 
 @database_common.connection_handler
@@ -511,8 +549,8 @@ def sort_answers_wip(
 @database_common.connection_handler
 def show_users(cursor):
     query = """
-    SELECT username,registration_date,reputation
-    FROM "user"
+    SELECT user_id, username,registration_date, reputation
+    FROM users 
     ORDER BY username ASC;
     """
 
@@ -523,7 +561,7 @@ def show_users(cursor):
 @database_common.connection_handler
 def register_new_user(cursor, user_name, pass_word):
     query = """
-    INSERT INTO "user" (username,registration_date,asked_questions,answers,comments_question,comments_answer,password,reputation) 
+    INSERT INTO users  (username,registration_date,asked_questions,answers,comments_question,comments_answer,password,reputation) 
     VALUES (%(user_name)s,%(time)s,'default_question','default_answer',
     'default_comments_question','default_comments_answer', %(pass_word)s,0)
     """
@@ -534,7 +572,7 @@ def register_new_user(cursor, user_name, pass_word):
 def check_existing_username(cursor, user_name):
     query = """
     SELECT username, user_id
-    FROM "user" 
+    FROM users  
     WHERE username = %(user_name)s
     """
     cursor.execute(query, {"user_name": user_name})
@@ -545,7 +583,7 @@ def check_existing_username(cursor, user_name):
 def login(cursor, user_name):
     query = """
     SELECT password
-    FROM "user"
+    FROM users 
     WHERE username = %(user_name)s
     """
     cursor.execute(query, {"user_name": user_name})
@@ -556,8 +594,58 @@ def login(cursor, user_name):
 def user_id_return(cursor, user_name, pass_word):
     query = """
     SELECT user_id
-    FROM "user"
+    FROM users 
     WHERE username = %(user_name)s AND password = %(pass_word)s 
     """
     cursor.execute(query, {"user_name": user_name, "pass_word": pass_word})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def count_user_questions(cursor, user_id):
+    # query = """
+    # SELECT count(question.id)
+    # FROM question
+    # JOIN "user" u ON u.user_id = question.question_user_id
+    # WHERE u.user_id = %(user_id)s
+    # """
+    query = """
+    SELECT COUNT(id)
+    FROM question
+    WHERE question_user_id = %(user_id)s
+    """
+    cursor.execute(query, {"user_id": user_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def count_user_answers(cursor, user_id):
+    query = """
+        SELECT count(answer.id)
+        FROM answer
+        JOIN users  u on u.user_id = answer.answer_user_id
+        WHERE u.user_id = %(user_id)s
+        """
+    cursor.execute(query, {"user_id": user_id})
+
+
+@database_common.connection_handler
+def count_user_comments(cursor, user_id):
+    query = """
+        SELECT count(comment.id)
+        FROM comment
+        JOIN users  u on u.user_id = comment.comment_user_id
+        WHERE u.user_id = %(user_id)s
+        """
+    cursor.execute(query, {"user_id": user_id})
+
+
+@database_common.connection_handler
+def get_user_details(cursor, userid):
+    query = """
+    SELECT *
+    FROM users
+    WHERE user_id=%(user_id)s
+    """
+    cursor.execute(query, {"user_id": userid})
     return cursor.fetchall()
