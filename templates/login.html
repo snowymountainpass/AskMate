@@ -1,15 +1,5 @@
 {% extends "base_template.html" %}
-{#{% block nav %}#}
-{#<ul>#}
-{#    {% if user %}#}
-{#    <li>{{ user }}</li>#}
-{#    <li><a href="{{ url_for('logout') }}">Logout</a></li>#}
-{#    {% else %}#}
-{#    <li><a href="{{ url_for('register_user') }}">Register</a></li>#}
-{#    <li><a href="{{ url_for('login_user') }}">Login</a></li>#}
-{#    {% endif %}#}
-{#</ul>#}
-{#{% endblock %}#}
+
 
 {% block content %}
     <form action="{{ url_for('login_user') }}" method="POST">

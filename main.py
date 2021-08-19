@@ -36,37 +36,6 @@ def index():
 def bonus_questions():
     return render_template("bonus_questions.html", questions=SAMPLE_QUESTIONS)
 
-# @app.route("/register", methods=["GET", "POST"])
-# def register():
-#     global users
-#
-#     if request.method == "POST":
-#         users[request.form.get("user")] = request.form.get("pass")
-#         session["user"] = request.form.get("user")
-#
-#         return redirect(url_for("index"))
-#
-#     return render_template("register.html")
-
-
-# @app.route("/login", methods=["GET", "POST"])
-# def login():
-#     global users
-#
-#     if request.method == "POST":
-#         u = request.form.get("user")
-#         p = request.form.get("pass")
-#
-#         if u in users.keys() and users[u] == p:
-#             session["user"] = u
-#
-#         return redirect(url_for("index"))
-#
-#     return render_template("login.html")
-
-
-
-
 
 @app.route("/entry/<int:question_id>", methods=["GET", "POST"])
 def get_entry(question_id):
@@ -97,23 +66,6 @@ def get_entry(question_id):
     )
 
 
-# @app.route('/entry/question-<int:id_question>/answer-<int:id_answer>/comments', methods=["GET", "POST"])
-# def get_comments(id_question, id_answer):
-#     headers = ["Answer", "Posted at", "Number of votes", "Answer ID"]
-#     entry = data_manager.get_question_by_id(id_question)
-#     entry_answers = data_manager.get_answers_by_question(id_question)
-#
-#     if request.method == "GET":
-#         if entry_answers is None:
-#             return render_template('entry.html', entry=entry, headers=headers)
-#         else:
-#             return render_template('entry.html', entry=entry, answers=entry_answers, headers=headers)
-#     elif request.method == "POST":
-#         comments = data_manager.get_comments_by_answer(id_answer, id_question)
-#         print(comments)
-#         return render_template('entry.html', entry=entry, answers=entry_answers, headers=headers, comments=comments)
-
-
 @app.route("/enter-edit/<int:question_id>", methods=["GET"])
 def editting(question_id):
     entry = data_manager.get_question_at_id(question_id)
@@ -123,7 +75,6 @@ def editting(question_id):
 @app.route("/edit/<int:question_id>/", methods=["POST"])
 def edit_entry(question_id):
     entry = data_manager.get_question_at_id(question_id)
-    # title = entry["title"] if entry["id"] == str(id) else ""
     message = request.form.get("message")
     image = request.form.get("image")
     user_id = session.get("user_id")
@@ -330,8 +281,6 @@ def register_user():
             flash("Username is already taken !")
             return redirect(url_for("register_user"))
 
-
-
     return render_template("register.html")
 
 
@@ -350,7 +299,6 @@ def login_user():
 
 
         if verify_password(password, db_password):
-            # session["user_id"] = data_manager.user_id_return(username, password)
             for userid in data_manager.user_id_return(username, db_password):
                 db_user_id = userid["user_id"]
             session["user_id"] = db_user_id

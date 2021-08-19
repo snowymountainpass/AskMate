@@ -258,58 +258,6 @@
     {% endif %}
 
 
-    {#<h3>Comments Section</h3><br>#}
-    {##}
-    {#<div>#}
-    {#    <table class="table">#}
-    {#        <thead>#}
-    {#        <tr>#}
-    {#            <th class="text-center" style="vertical-align: middle">ID</th>#}
-    {#            <th class="text-center">Answer ID</th>#}
-    {#            <th class="text-center" style="vertical-align: middle">Comment message</th>#}
-    {#            <th class="text-center">Submission Time</th>#}
-    {#            <th class="text-center" style="vertical-align: middle">Question ID</th>#}
-    {#            <th class="text-center" style="vertical-align: middle">Edit Comment</th>#}
-    {#            <th class="text-center" style="vertical-align: middle">Edit Count</th>#}
-    {#            <th class="text-center" style="vertical-align: middle">Delete Comment</th>#}
-    {#        </tr>#}
-    {#        </thead>#}
-    {#        <tbody>#}
-    {#        {% for comment in answer_comments %}#}
-    {#        <tr>#}
-    {#            <td align="center">{{ comment.id }}</td>#}
-    {#            <td align="center">{{ comment.answer_id }}</td>#}
-    {#            <td align="center">{{ comment.message }}</td>#}
-    {#            <td align="center">{{ comment.submission_time }}</td>#}
-    {#            <td align="center">{{ comment.question_id }}</td>#}
-    {#            <td><a href="{{ comment.question_id }}" class="btn btn-primary">Edit Comment</a></td>#}
-    {#            <td align="center">{{ comment.edited_count }}</td>#}
-    {##}
-    {#            <td>#}
-    {#                <button onclick="document.getElementById('id02').style.display='block'">Delete comment</button>#}
-    {##}
-    {#                <div id="id02" class="modal">#}
-    {#                    <span onclick="document.getElementById('id02').style.display='none'" class="close"#}
-    {#                          title="Close delete">&times;</span>#}
-    {#                    <form class="modal-content" action="{{ url_for( 'index' ) }}">#}
-    {#                        <div class="modal-container">#}
-    {#                            <h1>Delete comment</h1>#}
-    {#                            <p>Are you sure you want to delete the comment?</p>#}
-    {#                            <div class="clearfix">#}
-    {#                                <a href="{{ comment.question_id }}" class="cancelbtn">Cancel</a>#}
-    {#                                <a href="{{ url_for( 'delete_comment_answer', comment_id=comment.id, answer_id=comment.answer_id, question_id=comment.question_id) }}" class="deletebtn">Delete</a>#}
-    {#                            </div>#}
-    {#                        </div>#}
-    {#                    </form>#}
-    {#                </div>#}
-    {#            </td>#}
-    {##}
-    {#        </tr>#}
-    {#        {% endfor %}#}
-    {#        </tbody>#}
-    {#    </table>#}
-    {#</div>#}
-
 
     {% for question in entry %}
         <a href="{{ url_for( 'index' ) }}" class="btn btn-primary">Back to list of questions</a>

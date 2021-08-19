@@ -1,7 +1,5 @@
 import datetime
 
-from psycopg2 import sql
-
 import database_common
 
 
@@ -22,61 +20,6 @@ def get_all_questions(cursor, criterion, direction):
         """
     cursor.execute(query)
     return cursor.fetchall()
-
-
-# @database_common.connection_handler
-# def get_all_questions_t_a(cursor):
-#     query = """
-#     SELECT * 
-#     FROM question
-#     ORDER BY title
-#     """
-#     cursor.execute(query)
-#     return cursor.fetchall()
-
-
-# @database_common.connection_handler
-# def get_all_questions_st_a(cursor):
-#     query = """
-#     SELECT * 
-#     FROM question
-#     ORDER BY submission_time
-#     """
-#     cursor.execute(query)
-#     return cursor.fetchall()
-
-
-# @database_common.connection_handler
-# def get_all_questions_mess_a(cursor):
-#     query = """
-#     SELECT * 
-#     FROM question
-#     ORDER BY message
-#     """
-#     cursor.execute(query)
-#     return cursor.fetchall()
-
-
-# @database_common.connection_handler
-# def get_all_questions_views_a(cursor):
-#     query = """
-#     SELECT * 
-#     FROM question
-#     ORDER BY view_number
-#     """
-#     cursor.execute(query)
-#     return cursor.fetchall()
-
-
-# @database_common.connection_handler
-# def get_all_questions_votes_a(cursor):
-#     query = """
-#     SELECT * 
-#     FROM question
-#     ORDER BY vote_number
-#     """
-#     cursor.execute(query)
-#     return cursor.fetchall()
 
 
 @database_common.connection_handler
@@ -143,18 +86,6 @@ def get_comments_for_answer(cursor, id):
     """
     cursor.execute(query, {"id": id})
     return cursor.fetchall()
-
-
-# @data_commons.connection_handler
-# def get_comments_by_answer(cursor, id_answer, id_question):
-#     query = """
-#     SELECT comment.message,comment.question_id,comment.answer_id,comment.submission_time
-#     FROM comment
-#     INNER JOIN answer ON comment.answer_id = answer.id
-#     WHERE comment.answer_id=%(id_answer)s AND comment.question_id = %(id_question)s
-#     """
-#     cursor.execute(query, {"id_answer": id_answer, "id_question": id_question})
-#     return cursor.fetchall()
 
 
 @database_common.connection_handler
@@ -515,35 +446,17 @@ def sort_answers(
         ORDER BY %(sort_by_criteria)s %(display_order)s
         """
 
-    # %(sort_by_criteria)s %(display_order)s
+
     cursor.execute(
         query,
         {
             "id_question": id_question,
             "sort_by_criteria": sort_by_criteria,
         },
-    )  # 'display_order': display_order
-
-
-@database_common.connection_handler
-def sort_answers_wip(
-        cursor, id_question, sort_by_criteria, display_order
-):  # https://kb.objectrocket.com/postgresql/python-parameterized-sql-for-postgres-915
-    query = ""
-    query += "SELECT *"
-    query += "FROM answer"
-    query += "INNER JOIN question"
-    query += "ON answer.question_id = question.id"
-    query += "WHERE question.id = %id_question"
-    query += "ORDER BY %(sort_by_criteria)s %(display_order)s"
-    cursor.execute(
-        query,
-        (
-            id_question,
-            sort_by_criteria,
-            display_order,
-        ),
     )
+
+
+
 
 
 @database_common.connection_handler
@@ -603,12 +516,6 @@ def user_id_return(cursor, user_name, pass_word):
 
 @database_common.connection_handler
 def count_user_questions(cursor, user_id):
-    # query = """
-    # SELECT count(question.id)
-    # FROM question
-    # JOIN "user" u ON u.user_id = question.question_user_id
-    # WHERE u.user_id = %(user_id)s
-    # """
     query = """
     SELECT COUNT(id)
     FROM question
