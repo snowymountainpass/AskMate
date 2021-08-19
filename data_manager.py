@@ -569,35 +569,35 @@ def get_user_details(cursor, userid):
 
 
 @database_common.connection_handler
-def count_user_questions(cursor, user_id):
+def count_user_questions(cursor, username):
     query = """
     SELECT count(question.id)
     FROM question
     JOIN "user" u ON u.user_id = question.user_id
-    WHERE u.user_id = %(user_id)s
+    WHERE u.username = %(username)s
     """
-    cursor.execute(query, {"user_id": user_id})
+    cursor.execute(query, {"username": username})
 
 
 @database_common.connection_handler
-def count_user_answers(cursor, user_id):
+def count_user_answers(cursor, username):
     query = """
         SELECT count(answer.id)
         FROM answer
         JOIN "user" u on u.user_id = answer.user_id
-        WHERE u.user_id = %(user_id)s
+        WHERE u.username = %(username)s
         """
-    cursor.execute(query, {"user_id": user_id})
+    cursor.execute(query, {"username": username})
 
 
 @database_common.connection_handler
-def count_user_comments(cursor, user_id):
+def count_user_comments(cursor, username):
     query = """
         SELECT count(comment.id)
         FROM comment
         JOIN "user" u on u.user_id = comment.user_id
-        WHERE u.user_id = %(user_id)s
+        WHERE u.username = %(username)s
         """
-    cursor.execute(query, {"user_id": user_id})
+    cursor.execute(query, {"username": username})
 
 
