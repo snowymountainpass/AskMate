@@ -221,12 +221,12 @@ def edit_question(cursor, id, message, image, user_id):
     WHERE id = %(id)s
     """
     cursor.execute(query, {"message": message, "image": image, "id": id})
-    query_2 = """
-    UPDATE users 
-    SET asked_questions = %(message)s,
-    WHERE user_id = %(user_id)s
-    """
-    cursor.execute(query_2, {"message": message, "user_id": user_id})
+    # query_2 = """
+    # UPDATE users
+    # SET asked_questions = %(message)s,
+    # WHERE user_id = %(user_id)s
+    # """
+    # cursor.execute(query_2, {"message": message, "user_id": user_id})
     return True
 
 
@@ -249,13 +249,13 @@ def inject_new_question(cursor, title, message, image, username, user_id):
             "user_id": user_id,
         },
     )
-    add_user_question = """
-    INSERT INTO users 
-    (asked_questions)
-    VALUES (%(message)s)
-    WHERE user_id = %(user_id)s
-    """
-    cursor.execute(add_user_question, {"message": message, "user_id": user_id, })
+    # add_user_question = """
+    # INSERT INTO users
+    # (asked_questions)
+    # VALUES (%(message)s)
+    # WHERE user_id = %(user_id)s
+    # """
+    # cursor.execute(add_user_question, {"message": message, "user_id": user_id, })
     get_id_query = """
     SELECT id
     FROM question
@@ -285,12 +285,12 @@ def add_answer_to_question(cursor, id_question, message, username, user_id):
             "user_id": user_id,
         },
     )
-    add_user_answer = """
-    INSERT INTO users  (answers)
-    VALUES (%(message)s)
-    WHERE user_id = %(user_id)s
-    """
-    cursor.execute(add_user_answer, {"message": message, "user_id": user_id})
+    # add_user_answer = """
+    # INSERT INTO users  (answers)
+    # VALUES (%(message)s)
+    # WHERE user_id = %(user_id)s
+    # """
+    # cursor.execute(add_user_answer, {"message": message, "user_id": user_id})
 
 
 @database_common.connection_handler
@@ -312,12 +312,12 @@ def inject_question_comment(cursor, id, message, username, user_id):
             "user_id": user_id,
         },
     )
-    query_2 = """
-    INSERT INTO users  (comments_questions)
-    VALUES (%(message)s)
-    WHERE user_id = %(user_id)s
-    """
-    cursor.execute(query_2, {"message": message, "user_id": user_id})
+    # query_2 = """
+    # INSERT INTO users  (comments_questions)
+    # VALUES (%(message)s)
+    # WHERE user_id = %(user_id)s
+    # """
+    # cursor.execute(query_2, {"message": message, "user_id": user_id})
 
 
 @database_common.connection_handler
@@ -338,12 +338,12 @@ def add_comment_to_answer(cursor, id_answer, id_question, comment_message, usern
             "user_id": user_id,
         },
     )
-    query_2 = """
-    INSERT INTO users  (comments_answer)
-    VALUES (%(comment_message))
-    WHERE user_id = %(user_id)sUSER 
-    """
-    cursor.execute(query_2, {"comment_message": comment_message, "user_id": user_id})
+    # query_2 = """
+    # INSERT INTO users  (comments_answer)
+    # VALUES (%(comment_message))
+    # WHERE user_id = %(user_id)sUSER
+    # """
+    # cursor.execute(query_2, {"comment_message": comment_message, "user_id": user_id})
 
 
 @database_common.connection_handler
@@ -425,12 +425,12 @@ def edit_answer_to_question(cursor, id_answer, old_message, new_message, user_id
             "old_message": old_message,
         },
     )
-    query_2 = """
-    UPDATE users 
-    SET answers = %(new_message)s
-    WHERE user_id = %(user_id)s
-    """
-    cursor.execute(query_2, {"new_message": new_message, "user_id": user_id})
+    # query_2 = """
+    # UPDATE users
+    # SET answers = %(new_message)s
+    # WHERE user_id = %(user_id)s
+    # """
+    # cursor.execute(query_2, {"new_message": new_message, "user_id": user_id})
 
 
 @database_common.connection_handler

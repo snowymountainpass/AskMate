@@ -204,7 +204,7 @@
                                 <td align="center">{{ comment.question_id }}</td>
                                 {% if user_id and user_id == comment.comment_user_id %}
                                     <td>
-                                        <a href="{{ url_for('edit_comment', comment_id=comment.id, question_id=question.id) }}"
+                                        <a href="{{ url_for('edit_comment', comment_id=comment.id, question_id=comment.question_id) }}"
                                            class="btn btn-primary">Edit
                                             Comment</a>
                                     </td>
