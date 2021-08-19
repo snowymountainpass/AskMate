@@ -32,22 +32,25 @@ function getFilteredItems(items, filterValue) {
     // if you have not changed the original html uncomment the code below to have an idea of the
     // effect this function has on the table
     //
-    for (let i=0; i<filterValue.length; i++) {
-        items.pop()
-        // console.log(filterValue)
-    }
-    // let sorted_questions = []
-    // for (let i=0; i<items.length; i++) {
-    //     if (items[i].title === 'life' && filterValue === 'life') {
-    //         sorted_questions.push(items[i]);
-    //     }
+    // for (let i=0; i<filterValue.length; i++) {
+    //     items.pop()
+    //     // console.log(filterValue)
     // }
+
     if (filterValue === '') {
         return items
     }
-    if (filterValue !== '') {
-        return items.filter(value => Object.keys(value).some(k => value[k].toLowerCase().includes(filterValue.toLowerCase())));
-
+    else if (filterValue.toLowerCase().startsWith('description:')) {
+        return items.filter(item => item["Description"].includes(filterValue.split(':')[1]))
+    }
+    else if (filterValue.toLowerCase().startsWith('!description:')) {
+        return items.filter(item => !item["Description"].includes(filterValue.split(':')[1]))
+    }
+    else if (filterValue.startsWith('!')) {
+        return items.filter(item => !item["Title"].includes(filterValue.slice(1)));
+    } else if (filterValue !== 'description:' && filterValue !== '!description:') {
+        // return items.filter(value => Object.keys(value).some(k => value[k].toLowerCase().includes(filterValue.toLowerCase())));
+        return items.filter(item => item["Title"].includes(filterValue));
     }
 
 
