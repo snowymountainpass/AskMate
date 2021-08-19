@@ -30,9 +30,15 @@
             <li><a href="{{ url_for('register_user') }}">Register</a></li>
             <li><a href="{{ url_for('login_user') }}">Login</a></li>
         {% endif %}
+
     </ul>
     <ul>
         <li><a href="{{ url_for("show_users") }}">Show registered users</a></li>
+    </ul>
+
+    <ul>
+        <li><a href="{{ url_for('bonus_questions') }}">Bonus Questions</a>
+        </li>
     </ul>
 
     {% if username %}
@@ -41,7 +47,6 @@
         <p>Browsing anonymously</p>
     {% endif %}
 
-    <a href="{{ url_for('bonus_questions') }}">Bonus Questions</a>
 
 
     {% with messages = get_flashed_messages() %} {% if messages %}
