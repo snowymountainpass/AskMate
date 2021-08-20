@@ -8,8 +8,6 @@ import data_manager
 from bonus_questions import SAMPLE_QUESTIONS
 
 
-
-
 load_dotenv()
 app = Flask(__name__)
 app.secret_key = "alskua ekjegu keucyf iqek,rvgkfarg rkjegkjqaved"
@@ -21,6 +19,7 @@ app.config["UPLOAD_FOLDER"] = os.path.join(
 
 
 users = {"alex": "1234", "laura": "2468", "cipi": "1357"}
+
 
 @app.route("/")
 def index():
@@ -79,7 +78,7 @@ def edit_entry(question_id):
     image = request.form.get("image")
     user_id = session.get("user_id")
 
-    if data_manager.edit_question(question_id, message, image,user_id):
+    if data_manager.edit_question(question_id, message, image, user_id):
         flash("Question successfully edited")
         return redirect(url_for("get_entry", question_id=question_id))
 
@@ -107,7 +106,9 @@ def add_new_question():
     else:
         image = "No image"
 
-    id_row = data_manager.inject_new_question(title, message, savepath, username, user_id)
+    id_row = data_manager.inject_new_question(
+        title, message, savepath, username, user_id
+    )
     for row in id_row:
         question_id = row["id"]
 
@@ -127,15 +128,14 @@ def delete_question(question_id):
 
 @app.route("/add-answer/question-<int:question_id>", methods=["GET", "POST"])
 def add_answer(question_id):
-
-    if request.method == "GET":
-        return render_template("post_answer.html", question_id=question_id)
-    elif request.method == "POST":
+    if request.method == "POST":
         message = request.form.get("message")
         username = session.get("username")
         user_id = session.get("user_id")
         data_manager.add_answer_to_question(question_id, message, username, user_id)
         return redirect(url_for("get_entry", question_id=question_id))
+
+    return render_template("post_answer.html", question_id=question_id)
 
 
 @app.route("/delete-answer/<int:answer_id>/<int:question_id>", methods=["GET", "POST"])
@@ -153,25 +153,40 @@ def edit_answer(answer_id, question_id):
     old_message = old_message[0].get("message")
     user_id = session.get("user_id")
 
-    if request.method == "GET":
-        return render_template("post_answer.html", question_id=question_id, message=old_message)
-    elif request.method == "POST":
+    if request.method == "POST":
         new_message = request.form.get("message")
-        data_manager.edit_answer_to_question(answer_id, old_message, new_message, user_id)
+        data_manager.edit_answer_to_question(
+            answer_id,
+            old_message,
+            new_message,
+            user_id,
+        )
         return redirect(url_for("get_entry", question_id=question_id))
+
+    return render_template(
+        "post_answer.html",
+        question_id=question_id,
+        message=old_message,
+    )
 
 
 @app.route("/add-a-comment/<int:question_id>/<int:answer_id>", methods=["GET", "POST"])
 def add_comment(answer_id, question_id):
-    if request.method == "GET":
-        return render_template("post_comment.html", answer_id=answer_id)
-    elif request.method == "POST":
+    if request.method == "POST":
         comment_message = request.form.get("message")
         username = session.get("username")
         user_id = session.get("user_id")
 
-        data_manager.add_comment_to_answer(answer_id, question_id, comment_message, username, user_id)
+        data_manager.add_comment_to_answer(
+            answer_id,
+            question_id,
+            comment_message,
+            username,
+            user_id,
+        )
         return redirect(url_for("get_entry", question_id=question_id))
+
+    return render_template("post_comment.html", answer_id=answer_id)
 
 
 @app.route("/upvote-question/<int:question_id>", methods=["POST"])
@@ -181,6 +196,7 @@ def upvote_question(question_id):
     for element in data_manager.get_question_user_id(question_id):
         get_user_id_from_question = element["question_user_id"]
         print(get_user_id_from_question)
+
     data_manager.increase_user_reputation(get_user_id_from_question)
 
     return redirect(url_for("get_entry", question_id=question_id))
@@ -206,7 +222,9 @@ def upvote_answer(answer_id, question_id):
     return redirect(url_for("get_entry", question_id=question_id))
 
 
-@app.route("/downvote-answer/<int:answer_id>-<int:question_id>", methods=["GET", "POST"])
+@app.route(
+    "/downvote-answer/<int:answer_id>-<int:question_id>", methods=["GET", "POST"]
+)
 def downvote_answer(answer_id, question_id):
     data_manager.downvote_answer(answer_id)
     for element in data_manager.get_answer_user_id(answer_id):
@@ -223,7 +241,12 @@ def add_comment_question(question_id):
         username = session.get("username")
         user_id = session.get("user_id")
 
-        data_manager.inject_question_comment(question_id, comment_message, username, user_id)
+        data_manager.inject_question_comment(
+            question_id,
+            comment_message,
+            username,
+            user_id,
+        )
 
         return redirect(url_for("get_entry", question_id=question_id))
 
@@ -239,7 +262,12 @@ def edit_comment(comment_id, question_id):
         data_manager.edit_comment(comment_id, comment_message)
 
         return redirect(url_for("get_entry", question_id=question_id))
-    return render_template("edit_comment.html", comment_id=comment_id, comments=this_comment)
+
+    return render_template(
+        "edit_comment.html",
+        comment_id=comment_id,
+        comments=this_comment,
+    )
 
 
 @app.route("/entry/<int:comment_id>-<int:question_id>/delete", methods=["GET", "POST"])
@@ -248,7 +276,10 @@ def delete_comment_question(comment_id, question_id):
     return redirect(url_for("get_entry", question_id=question_id))
 
 
-@app.route("/entry/<int:comment_id>-<int:answer_id>-<int:question_id>/delete", methods=["GET", "POST"])
+@app.route(
+    "/entry/<int:comment_id>-<int:answer_id>-<int:question_id>/delete",
+    methods=["GET", "POST"],
+)
 def delete_comment_answer(comment_id, answer_id, question_id):
     data_manager.delete_comment_answer(comment_id, answer_id, question_id)
     return redirect(url_for("get_entry", question_id=question_id))
@@ -265,8 +296,9 @@ def show_users():
 
 
 def hash_password(raw_password):
-    hashed_password= bcrypt.hashpw(raw_password.encode('utf-8'), bcrypt.gensalt())
-    return hashed_password.decode('utf-8')
+    hashed_password = bcrypt.hashpw(raw_password.encode("utf-8"), bcrypt.gensalt())
+    return hashed_password.decode("utf-8")
+
 
 @app.route("/register_user", methods=["GET", "POST"])
 def register_user():
@@ -276,7 +308,7 @@ def register_user():
         if not data_manager.check_existing_username(username):
             hashed_password = hash_password(password)
             data_manager.register_new_user(username, hashed_password)
-            return redirect(url_for('index'))
+            return redirect(url_for("index"))
         else:
             flash("Username is already taken !")
             return redirect(url_for("register_user"))
@@ -285,8 +317,8 @@ def register_user():
 
 
 def verify_password(raw_password, hashed_password):
-    hashed_bytes_password = hashed_password.encode('utf-8')
-    return bcrypt.checkpw(raw_password.encode('utf-8'), hashed_bytes_password)
+    hashed_bytes_password = hashed_password.encode("utf-8")
+    return bcrypt.checkpw(raw_password.encode("utf-8"), hashed_bytes_password)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -297,13 +329,12 @@ def login_user():
         for element in data_manager.login(username):
             db_password = element["password"]
 
-
         if verify_password(password, db_password):
             for userid in data_manager.user_id_return(username, db_password):
                 db_user_id = userid["user_id"]
             session["user_id"] = db_user_id
             session["username"] = username
-            return redirect(url_for('index'))
+            return redirect(url_for("index"))
         else:
             flash("Invalid credentials !")
     return render_template("login.html")
@@ -320,9 +351,11 @@ def show_user_details():
     user_id = session.get("user_id")
     user_name = session.get("username")
     user_details = data_manager.get_user_details(user_id)
-    return render_template("user_details.html", username=user_name, user_details=user_details)
-
-
+    return render_template(
+        "user_details.html",
+        username=user_name,
+        user_details=user_details,
+    )
 
 
 if __name__ == "__main__":

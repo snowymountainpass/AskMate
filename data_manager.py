@@ -9,7 +9,14 @@ def get_time():
 
 @database_common.connection_handler
 def get_all_questions(cursor, criterion, direction):
-    criteria = ["id", "title", "submission_time", "message", "view_number", "vote_number"]
+    criteria = [
+        "id",
+        "title",
+        "submission_time",
+        "message",
+        "view_number",
+        "vote_number",
+    ]
     directions = ["asc", "desc"]
 
     if criterion in criteria and direction in directions:
@@ -321,7 +328,9 @@ def inject_question_comment(cursor, id, message, username, user_id):
 
 
 @database_common.connection_handler
-def add_comment_to_answer(cursor, id_answer, id_question, comment_message, username, user_id):
+def add_comment_to_answer(
+    cursor, id_answer, id_question, comment_message, username, user_id
+):
     query = """
     INSERT INTO comment (question_id,answer_id,message,submission_time,edited_count, comment_username, comment_user_id)
     VALUES (%(question_id)s,%(answer_id)s,%(message)s,%(submission_time)s,%(edited_count)s, %(username)s, %(user_id)s)    
@@ -435,7 +444,7 @@ def edit_answer_to_question(cursor, id_answer, old_message, new_message, user_id
 
 @database_common.connection_handler
 def sort_answers(
-        cursor, id_question, sort_by_criteria, display_order
+    cursor, id_question, sort_by_criteria, display_order
 ):  # https://pysql.tecladocode.com/section08/lectures/08_sql_string_composition/
     query = """
         SELECT *
@@ -446,7 +455,6 @@ def sort_answers(
         ORDER BY %(sort_by_criteria)s %(display_order)s
         """
 
-
     cursor.execute(
         query,
         {
@@ -454,9 +462,6 @@ def sort_answers(
             "sort_by_criteria": sort_by_criteria,
         },
     )
-
-
-
 
 
 @database_common.connection_handler
@@ -478,7 +483,9 @@ def register_new_user(cursor, user_name, pass_word):
     VALUES (%(user_name)s,%(time)s,'default_question','default_answer',
     'default_comments_question','default_comments_answer', %(pass_word)s,0)
     """
-    cursor.execute(query, {"user_name": user_name, "time": get_time(), "pass_word": pass_word})
+    cursor.execute(
+        query, {"user_name": user_name, "time": get_time(), "pass_word": pass_word}
+    )
 
 
 @database_common.connection_handler
