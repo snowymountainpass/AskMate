@@ -17,9 +17,7 @@
             href="{{ url_for('static', filename='main.css') }}"
         />
         <title>{% block title %} {% endblock %}</title>
-        <style>
-            {# #111d4a ; #53d8fb  ; #66c3ff ; #f5e0b7  ; #d6ba73 #}
-        </style>
+        {% block scripts %}{% enddblock %}
         <script>
             function toggleShowDropdown() {
                 document

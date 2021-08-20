@@ -1,9 +1,11 @@
-<html>
-    <head>
+{% extends "base_template.html" %}
+
+{% block scripts %}
         <script type="text/javascript" src="{{ url_for('static', filename='js/bonusQuestions.js') }}" defer></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/doNotModifyThisFile.js') }}" defer></script>
-    </head>
-    <body>
+{% enddblock %}
+
+{% block content %}
         <h1>AskMate</h1>
         <h2>All Questions:</h2>
         <button id="theme-button">Change Theme to Dark</button>
@@ -35,5 +37,4 @@
             </tbody>
         </table>
     <a href="{{ url_for( 'index' ) }}" class="btn btn-primary">Back to list of questions</a>
-    </body>
-</html>
+{% endblock %}
