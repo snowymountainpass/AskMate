@@ -1,22 +1,30 @@
-{% extends "base_template.html" %}
+{% extends "base_template.html" %} {% block title %}Answer for question {{
+question_id }}{% endblock %} {% block content %}
 
-{% block title %}Answer for question {{ question_id }}{% endblock %}
-
-{% block content %}
-
-    <form method="POST">
+<form method="POST">
     <div class="form-group">
-     <h2 class="form-check-label">Answer for question ID {{ question_id }}</h2>
+        <h2 class="form-check-label">
+            Answer for question ID {{ question_id }}
+        </h2>
     </div>
 
-        <div class="form-group">
-            <label for="message" class="form-check-label">Message</label><br>
-            <textarea class="form-control" name="message" id="message" cols="30" rows="10" placeholder="Enter your answer."
-                      spellcheck="true">{{ message }}</textarea>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="button-submit">Submit</button>
-        </div>
-    </form>
+    <div class="form-group">
+        <label for="message" class="form-check-label">Message</label><br />
+        <textarea
+            class="form-control"
+            name="message"
+            id="message"
+            cols="30"
+            rows="10"
+            placeholder="Enter your answer."
+            spellcheck="true"
+        >
+{{ message }}</textarea
+        >
+    </div>
+    <div class="form-group">
+        <button type="submit" class="button-submit">Submit</button>
+    </div>
+</form>
 
 {% endblock %}

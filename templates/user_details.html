@@ -1,44 +1,36 @@
-{% extends "base_template.html" %}
-
-{% block content %}
+{% extends "base_template.html" %} {% block content %}
 <p>Showing content posted by {{ username }}</p>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <td>User ID</td>
-                <td>Username</td>
-                <td>Registration Date</td>
-                <td>Asked Questions</td>
-                <td>Answers</td>
-                <td>Comments to Questions</td>
-                <td>Comments to Answers</td>
-                <td>Reputation</td>
-            </tr>
+<table class="table">
+    <thead>
+        <tr>
+            <td>User ID</td>
+            <td>Username</td>
+            <td>Registration Date</td>
+            <td>Asked Questions</td>
+            <td>Answers</td>
+            <td>Comments to Questions</td>
+            <td>Comments to Answers</td>
+            <td>Reputation</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            {% for content in user_details %}
+            <td>{{ content.user_id }}</td>
+            <td>{{ content.username }}</td>
+            <td>{{ content.registration_date}}</td>
+            <td>{{ content.asked_questions }}</td>
+            <td>{{ content.answers }}</td>
+            <td>{{ content.comments_questions }}</td>
+            <td>{{ content.comments_answer }}</td>
+            <td>{{ content.reputation }}</td>
+            {% endfor %}
+        </tr>
+    </tbody>
+</table>
 
-
-        </thead>
-        <tbody>
-            <tr>
-                    {% for content in user_details %}
-                        <td>{{ content.user_id }}</td>
-                        <td>{{ content.username }}</td>
-                        <td>{{ content.registration_date}}</td>
-                        <td>{{ content.asked_questions }}</td>
-                        <td>{{ content.answers }}</td>
-                        <td>{{ content.comments_questions }}</td>
-                        <td>{{ content.comments_answer }}</td>
-                        <td>{{ content.reputation }}</td>
-                    {% endfor %}
-            </tr>
-        </tbody>
-    </table>
-
-    <br>
-    <br>
-
-
-
-
+<br />
+<br />
 
 {% endblock %}
