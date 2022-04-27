@@ -282,8 +282,7 @@ def register_user():
 
 def verify_password(raw_password, hashed_password):
     hashed_bytes_password = hashed_password.encode('utf-8')
-    # return bcrypt.checkpw(raw_password.encode('utf-8'), hashed_bytes_password)
-    return raw_password.encode('utf-8')==hashed_bytes_password
+    return raw_password.encode('utf-8') == hashed_bytes_password
 
 
 @app.route("/login", methods=["GET", "POST"])
