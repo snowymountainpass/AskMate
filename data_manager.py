@@ -298,7 +298,7 @@ def inject_question_comment(cursor, id, message, username, user_id):
 @database_common.connection_handler
 def add_comment_to_answer(cursor, id_answer, id_question, comment_message, username, user_id):
     query = """
-    INSERT INTO comment (question_id,answer_id,message,submission_time,edited_count, comment_username, comment_user_id)
+    INSERT INTO comment (question_id,answer_id,message,submission_time,edited_count, username, user_id)
     VALUES (%(question_id)s,%(answer_id)s,%(message)s,%(submission_time)s,%(edited_count)s, %(username)s, %(user_id)s)    
     """
     cursor.execute(
