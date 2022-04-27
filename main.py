@@ -3,12 +3,8 @@ from dotenv import load_dotenv
 import os
 import bcrypt
 
-
 import data_manager
 from bonus_questions import SAMPLE_QUESTIONS
-
-
-
 
 load_dotenv()
 app = Flask(__name__)
@@ -19,8 +15,8 @@ app.config["UPLOAD_FOLDER"] = os.path.join(
     "images",
 )
 
-
 users = {"alex": "1234", "laura": "2468", "cipi": "1357"}
+
 
 @app.route("/")
 def index():
@@ -79,7 +75,7 @@ def edit_entry(question_id):
     image = request.form.get("image")
     user_id = session.get("user_id")
 
-    if data_manager.edit_question(question_id, message, image,user_id):
+    if data_manager.edit_question(question_id, message, image, user_id):
         flash("Question successfully edited")
         return redirect(url_for("get_entry", question_id=question_id))
 
@@ -127,7 +123,6 @@ def delete_question(question_id):
 
 @app.route("/add-answer/question-<int:question_id>", methods=["GET", "POST"])
 def add_answer(question_id):
-
     if request.method == "GET":
         return render_template("post_answer.html", question_id=question_id)
     elif request.method == "POST":
@@ -265,8 +260,9 @@ def show_users():
 
 
 def hash_password(raw_password):
-    hashed_password= bcrypt.hashpw(raw_password.encode('utf-8'), bcrypt.gensalt())
+    hashed_password = bcrypt.hashpw(raw_password.encode('utf-8'), bcrypt.gensalt())
     return hashed_password.decode('utf-8')
+
 
 @app.route("/register_user", methods=["GET", "POST"])
 def register_user():
@@ -297,7 +293,6 @@ def login_user():
         for element in data_manager.login(username):
             db_password = element["password"]
 
-
         if verify_password(password, db_password):
             for userid in data_manager.user_id_return(username, db_password):
                 db_user_id = userid["user_id"]
@@ -321,8 +316,6 @@ def show_user_details():
     user_name = session.get("username")
     user_details = data_manager.get_user_details(user_id)
     return render_template("user_details.html", username=user_name, user_details=user_details)
-
-
 
 
 if __name__ == "__main__":
