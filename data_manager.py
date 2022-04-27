@@ -459,9 +459,9 @@ def check_existing_username(cursor, user_name):
 @database_common.connection_handler
 def login(cursor, user_name):
     query = """
-    SELECT password
-    FROM users 
-    WHERE username = %(user_name)s
+    SELECT "user".password
+    FROM "user" 
+    WHERE "user".username LIKE %(user_name)s
     """
     cursor.execute(query, {"user_name": user_name})
     return cursor.fetchall()
@@ -470,9 +470,9 @@ def login(cursor, user_name):
 @database_common.connection_handler
 def user_id_return(cursor, user_name, pass_word):
     query = """
-    SELECT user_id
-    FROM users 
-    WHERE username = %(user_name)s AND password = %(pass_word)s 
+    SELECT "user".user_id
+    FROM "user" 
+    WHERE "user".username = %(user_name)s AND "user".password = %(pass_word)s 
     """
     cursor.execute(query, {"user_name": user_name, "pass_word": pass_word})
     return cursor.fetchall()
