@@ -204,7 +204,7 @@ def downvote_answer(cursor, id):
 @database_common.connection_handler
 def get_answer_user_id(cursor, id):
     query = """
-        SELECT answer_user_id
+        SELECT answer.user_id
         FROM answer
         WHERE id = %(id)s
         """
@@ -258,7 +258,7 @@ def inject_new_question(cursor, title, message, image, username, user_id):
 @database_common.connection_handler
 def add_answer_to_question(cursor, id_question, message, username, user_id):
     query = """
-    INSERT INTO answer (submission_time, vote_number, question_id, message, answer_username, answer_user_id)
+    INSERT INTO answer (submission_time, vote_number, question_id, message, username, user_id)
     VALUES (%(submission_time)s,%(vote_number)s,%(question_id)s,%(message)s, %(username)s, %(user_id)s)
     """
     cursor.execute(
