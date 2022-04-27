@@ -174,7 +174,7 @@ def upvote_question(question_id):
     data_manager.upvote_question(question_id)
 
     for element in data_manager.get_question_user_id(question_id):
-        get_user_id_from_question = element["question_user_id"]
+        get_user_id_from_question = element["user_id"]
         print(get_user_id_from_question)
     data_manager.increase_user_reputation(get_user_id_from_question)
 
@@ -185,7 +185,7 @@ def upvote_question(question_id):
 def downvote_question(question_id):
     data_manager.downvote_question(question_id)
     for element in data_manager.get_question_user_id(question_id):
-        get_user_id_from_question = element["question_user_id"]
+        get_user_id_from_question = element["user_id"]
     data_manager.decrease_user_reputation(get_user_id_from_question)
 
     return redirect(url_for("get_entry", question_id=question_id))

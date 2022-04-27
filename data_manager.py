@@ -36,7 +36,7 @@ def get_question_at_id(cursor, id):
 @database_common.connection_handler
 def get_answers_for_question(cursor, id):
     query = """
-    SELECT answer.id, answer.submission_time, answer.vote_number, answer.question_id, answer.message, answer.image, answer.answer_user_id, answer.answer_username
+    SELECT answer.id, answer.submission_time, answer.vote_number, answer.question_id, answer.message, answer.image, answer.user_id, answer.username
     FROM answer
     INNER JOIN question 
         ON answer.question_id = question.id
@@ -63,7 +63,7 @@ def get_message_from_answer(cursor, id_answer):
 @database_common.connection_handler
 def get_comments_for_question(cursor, id):
     query = """
-    SELECT comment.id, comment.message, comment.submission_time, edited_count, comment.comment_user_id, comment.comment_username
+    SELECT comment.id, comment.message, comment.submission_time, edited_count, comment.user_id, comment.username
     FROM comment
     INNER JOIN question 
         ON comment.question_id = question.id
@@ -77,7 +77,7 @@ def get_comments_for_question(cursor, id):
 @database_common.connection_handler
 def get_comments_for_answer(cursor, id):
     query = """
-    SELECT comment.id, comment.question_id, comment.answer_id, comment.message, comment.submission_time, edited_count, comment.comment_user_id, comment.comment_username
+    SELECT comment.id, comment.question_id, comment.answer_id, comment.message, comment.submission_time, edited_count, comment.user_id, comment.username
     FROM comment
     INNER JOIN question 
         ON comment.question_id = question.id
@@ -153,7 +153,7 @@ def downvote_question(cursor, id):
 @database_common.connection_handler
 def get_question_user_id(cursor, id):
     query = """
-        SELECT question_user_id
+        SELECT question.user_id
         FROM question
         WHERE id = %(id)s
         """
@@ -164,9 +164,9 @@ def get_question_user_id(cursor, id):
 @database_common.connection_handler
 def increase_user_reputation(cursor, user_id):
     query = """
-    UPDATE users 
+    UPDATE "user" 
     SET reputation = reputation + 10
-    WHERE user_id = %(user_id)s
+    WHERE "user".user_id = %(user_id)s
     """
     cursor.execute(query, {"user_id": user_id})
 
@@ -174,9 +174,9 @@ def increase_user_reputation(cursor, user_id):
 @database_common.connection_handler
 def decrease_user_reputation(cursor, user_id):
     query = """
-    UPDATE users 
+    UPDATE "user" 
     SET reputation = reputation - 2
-    WHERE user_id = %(user_id)s
+    WHERE "user".user_id = %(user_id)s
     """
     cursor.execute(query, {"user_id": user_id})
 
@@ -221,12 +221,7 @@ def edit_question(cursor, id, message, image, user_id):
     WHERE id = %(id)s
     """
     cursor.execute(query, {"message": message, "image": image, "id": id})
-    # query_2 = """
-    # UPDATE users
-    # SET asked_questions = %(message)s,
-    # WHERE user_id = %(user_id)s
-    # """
-    # cursor.execute(query_2, {"message": message, "user_id": user_id})
+
     return True
 
 
@@ -235,7 +230,7 @@ def inject_new_question(cursor, title, message, image, username, user_id):
     get_time_of_posting = get_time()
     query = """
     INSERT INTO question
-    (submission_time, view_number, vote_number, title, message, image, question_username, question_user_id)
+    (submission_time, view_number, vote_number, title, message, image, username, user_id)
     VALUES (%(time)s, 0, 0, %(title)s, %(message)s, %(image)s, %(username)s, %(user_id)s)
     """
     cursor.execute(
@@ -284,7 +279,7 @@ def inject_question_comment(cursor, id, message, username, user_id):
     get_time_of_posting = get_time()
     query = """
     INSERT INTO comment
-    (question_id, answer_id, message, submission_time, edited_count, comment_username, comment_user_id)
+    (question_id, answer_id, message, submission_time, edited_count, username, user_id)
     VALUES (%(question_id)s, Null, %(message)s, %(time)s, 0, %(username)s, %(user_id)s)
     
     """
@@ -403,8 +398,7 @@ def edit_answer_to_question(cursor, id_answer, old_message, new_message, user_id
 
 @database_common.connection_handler
 def sort_answers(
-        cursor, id_question, sort_by_criteria, display_order
-):  # https://pysql.tecladocode.com/section08/lectures/08_sql_string_composition/
+        cursor, id_question, sort_by_criteria, display_order):
     query = """
         SELECT *
         FROM answer
@@ -438,7 +432,7 @@ def show_users(cursor):
 @database_common.connection_handler
 def register_new_user(cursor, user_name, pass_word):
     query = """
-    INSERT INTO users  (username,registration_date,asked_questions,answers,comments_question,comments_answer,password,reputation) 
+    INSERT INTO "user"  ("user".username,"user".registration_date,"user".asked_questions,"user".answers,"user".comments_question,"user".comments_answer,"user".password,"user".reputation) 
     VALUES (%(user_name)s,%(time)s,'default_question','default_answer',
     'default_comments_question','default_comments_answer', %(pass_word)s,0)
     """
@@ -448,9 +442,9 @@ def register_new_user(cursor, user_name, pass_word):
 @database_common.connection_handler
 def check_existing_username(cursor, user_name):
     query = """
-    SELECT username, user_id
-    FROM users  
-    WHERE username = %(user_name)s
+    SELECT "user".username, "user".user_id
+    FROM "user"  
+    WHERE "user".username LIKE %(user_name)s
     """
     cursor.execute(query, {"user_name": user_name})
     return cursor.fetchall()
@@ -494,7 +488,7 @@ def count_user_answers(cursor, user_id):
     query = """
         SELECT count(answer.id)
         FROM answer
-        JOIN users  u on u.user_id = answer.answer_user_id
+        JOIN "user"  u on u.user_id = answer.user_id
         WHERE u.user_id = %(user_id)s
         """
     cursor.execute(query, {"user_id": user_id})
@@ -505,7 +499,7 @@ def count_user_comments(cursor, user_id):
     query = """
         SELECT count(comment.id)
         FROM comment
-        JOIN users  u on u.user_id = comment.comment_user_id
+        JOIN "user" u on u.user_id = comment.user_id
         WHERE u.user_id = %(user_id)s
         """
     cursor.execute(query, {"user_id": user_id})
@@ -515,8 +509,8 @@ def count_user_comments(cursor, user_id):
 def get_user_details(cursor, userid):
     query = """
     SELECT *
-    FROM users
-    WHERE user_id=%(user_id)s
+    FROM "user"
+    WHERE "user".user_id LIKE %(user_id)s
     """
     cursor.execute(query, {"user_id": userid})
     return cursor.fetchall()
