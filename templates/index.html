@@ -1,4 +1,6 @@
-{% extends "base_template.html" %} {% block title %}Ask Mate{% endblock %} {% block content %}
+{% extends "base_template.html" %} {% block title %}Ask Mate{% endblock %}
+
+{% block content %}
 
     <script>
         function toggleShowDropdown() {
@@ -19,103 +21,266 @@
             }
         }
     </script>
-    <h1>Welcome to Ask Mate</h1>
-    <br/><br/>
-    <ul>
+
+    <body>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-md-auto gap-2">
+                        <li class="nav-item rounded">
+                            <a class="nav-link active" aria-current="page" href="{{url_for('index')}}"><i
+                                    class="bi bi-house-fill me-2"></i>Home</a>
+                        </li>
+                        <li class="nav-item rounded">
+                            <a class="nav-link" href="#"><i class="bi bi-people-fill me-2"></i>About</a>
+                        </li>
+                        <li class="nav-item rounded">
+                            <a class="nav-link" href="{{ url_for("show_users") }}"><i class="bi bi-telephone-fill me-2"></i>Registered Users</a>
+                        </li>
+                        <li class="nav-item dropdown rounded">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill me-2"></i>Profile</a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+
+                                {% if username %}
+                                    <li><a href="{{ url_for('show_user_details') }}">User Details</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+                                        Logout
+                                    </a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item" href="{{ url_for('register_user') }}">
+                                        Register
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('login_user') }}">
+                                        Login
+                                    </a></li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <br>
+
+
+        <h2 style="text-align: center">Home Page</h2>
+        <br>
+        <br>
         {% if username %}
-            <li>{{ username }}</li>
-            <li><a href="{{ url_for('show_user_details') }}">User Details</a></li>
-            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            <h3 style="text-align: center">Welcome back, {{ username }}</h3>
         {% else %}
-            <li><a href="{{ url_for('register_user') }}">Register</a></li>
-            <li><a href="{{ url_for('login_user') }}">Login</a></li>
+            <h3 style="text-align: center">Browsing anonymously</h3>
         {% endif %}
 
-    </ul>
-    <ul>
-        <li><a href="{{ url_for("show_users") }}">Show registered users</a></li>
-    </ul>
+        {% with messages = get_flashed_messages() %} {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %} {% endwith %}
+        <br/>
+        {% if username %}
+            <a href="{{ url_for('enter_question') }}" class="btn btn-primary"
+            >Post a question</a>
+        {% endif %}
+        <br/>
 
-    <ul>
-        <li><a href="{{ url_for('bonus_questions') }}">Bonus Questions</a>
-        </li>
-    </ul>
+        <div class="dropdown">
+            <button onclick="toggleShowDropdown()" class="dropbtn">Sort by:</button>
+            <div id="dropdownList" class="dropdown-content">
+                <a href="{{ url_for('index', criterion='title', direction='asc') }}">Sort by title (ascending)</a>
+                <a href="{{ url_for('index', criterion='title', direction='desc') }}">Sort by title (descending)</a>
 
-    {% if username %}
-        <p>Welcome back, {{ username }}</p>
-    {% else %}
-        <p>Browsing anonymously</p>
-    {% endif %}
+                <a href="{{ url_for('index', criterion='submission_time', direction='asc') }}">Sort by submission time
+                    (ascending)</a>
+                <a href="{{ url_for('index', criterion='submission_time', direction='desc') }}">Sort by submission time
+                    (descending)</a>
 
+                <a href="{{ url_for('index', criterion='message', direction='asc') }}">Sort by message (ascending)</a>
+                <a href="{{ url_for('index', criterion='message', direction='desc') }}">Sort by message (descending)</a>
 
+                <a href="{{ url_for('index', criterion='view_number', direction='asc') }}">Sort by view number
+                    (ascending)</a>
+                <a href="{{ url_for('index', criterion='view_number', direction='desc') }}">Sort by view number
+                    (descending)</a>
 
-    {% with messages = get_flashed_messages() %} {% if messages %}
-        <ul class="flashes">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %} {% endwith %}
-    <br/>
-    {% if username %}
-        <a href="{{ url_for('enter_question') }}" class="btn btn-primary"
-        >Post a question</a>
-    {% endif %}
-    <br/><br/>
-    <div class="dropdown">
-        <button onclick="toggleShowDropdown()" class="dropbtn">Sort by:</button>
-        <div id="dropdownList" class="dropdown-content">
-            <a href="{{ url_for('index', criterion='title', direction='asc') }}">Sort by title (ascending)</a>
-            <a href="{{ url_for('index', criterion='title', direction='desc') }}">Sort by title (descending)</a>
+                <a href="{{ url_for('index', criterion='vote_number', direction='asc') }}">Sort by vote number
+                    (ascending)</a>
+                <a href="{{ url_for('index', criterion='vote_number', direction='desc') }}">Sort by vote number
+                    (descending)</a>
+            </div>
 
-            <a href="{{ url_for('index', criterion='submission_time', direction='asc') }}">Sort by submission time
-                (ascending)</a>
-            <a href="{{ url_for('index', criterion='submission_time', direction='desc') }}">Sort by submission time
-                (descending)</a>
-
-            <a href="{{ url_for('index', criterion='message', direction='asc') }}">Sort by message (ascending)</a>
-            <a href="{{ url_for('index', criterion='message', direction='desc') }}">Sort by message (descending)</a>
-
-            <a href="{{ url_for('index', criterion='view_number', direction='asc') }}">Sort by view number
-                (ascending)</a>
-            <a href="{{ url_for('index', criterion='view_number', direction='desc') }}">Sort by view number
-                (descending)</a>
-
-            <a href="{{ url_for('index', criterion='vote_number', direction='asc') }}">Sort by vote number
-                (ascending)</a>
-            <a href="{{ url_for('index', criterion='vote_number', direction='desc') }}">Sort by vote number
-                (descending)</a>
         </div>
 
-    </div>
-    {% if entries %}
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Title</th>
-                <th>Message</th>
-                <th>View count</th>
-                <th>Vote number</th>
-                <th>Submitted at</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for entry in entries %}
-                <tr>
-                    <td>
-                        <a href="{{ url_for( 'get_entry', question_id=entry.id ) }}">
-                            {{ entry.title }}
-                        </a>
-                    </td>
-                    <td>{{ entry.message }}</td>
-                    <td align="center">{{ entry.view_number }}</td>
-                    <td align="center">{{ entry.vote_number }}</td>
-                    <td align="center">{{ entry.submission_time }}</td>
-                </tr>
+        <div class="container-fluid  flex justify-content-center align-items-center">
+            <div class="container table-responsive py-5">
+                {% if entries %}
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Title</th>
+                                <th scope="col">Message</th>
+                                <th scope="col">View count</th>
+                                <th scope="col">Vote number</th>
+                                <th scope="col">Submitted at</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in entries %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for( 'get_entry', question_id=entry.id ) }}">
+                                            {{ entry.title }}
+                                        </a>
+                                    </td>
+                                    <td>{{ entry.message }}</td>
+                                    <td align="center">{{ entry.view_number }}</td>
+                                    <td align="center">{{ entry.vote_number }}</td>
+                                    <td align="center">{{ entry.submission_time }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>Nothing here</p>
+                {% endif %}
+            </div>
 
-            {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Nothing here</p>
-    {% endif %} {% endblock %}
+        </div>
+    </body>
+
+{% endblock %}
+
+
+{#ORIGINAL#}
+{#{% block content %}#}
+{##}
+{#    <script>#}
+{#        function toggleShowDropdown() {#}
+{#            document.getElementById("dropdownList").classList.toggle("show");#}
+{#        }#}
+{##}
+{##}
+{#        window.onclick = function (event) {#}
+{#            if (!event.target.matches('.dropbtn')) {#}
+{#                var dropdowns = document.getElementsByClassName("dropdown-content");#}
+{#                var i;#}
+{#                for (i = 0; i < dropdowns.length; i++) {#}
+{#                    var openDropdown = dropdowns[i];#}
+{#                    if (openDropdown.classList.contains('show')) {#}
+{#                        openDropdown.classList.remove('show');#}
+{#                    }#}
+{#                }#}
+{#            }#}
+{#        }#}
+{#    </script>#}
+{#    <h1>Welcome to Ask Mate</h1>#}
+{#    <br/><br/>#}
+{#    <ul>#}
+{#        {% if username %}#}
+{#            <li>{{ username }}</li>#}
+{#            <li><a href="{{ url_for('show_user_details') }}">User Details</a></li>#}
+{#            <li><a href="{{ url_for('logout') }}">Logout</a></li>#}
+{#        {% else %}#}
+{#            <li><a href="{{ url_for('register_user') }}">Register</a></li>#}
+{#            <li><a href="{{ url_for('login_user') }}">Login</a></li>#}
+{#        {% endif %}#}
+{##}
+{#    </ul>#}
+{#    <ul>#}
+{#        <li><a href="{{ url_for("show_users") }}">Show registered users</a></li>#}
+{#    </ul>#}
+{##}
+{#    <ul>#}
+{#        <li><a href="{{ url_for('bonus_questions') }}">Bonus Questions</a>#}
+{#        </li>#}
+{#    </ul>#}
+{##}
+{#    {% if username %}#}
+{#        <p>Welcome back, {{ username }}</p>#}
+{#    {% else %}#}
+{#        <p>Browsing anonymously</p>#}
+{#    {% endif %}#}
+{##}
+{##}
+{##}
+{#    {% with messages = get_flashed_messages() %} {% if messages %}#}
+{#        <ul class="flashes">#}
+{#            {% for message in messages %}#}
+{#                <li>{{ message }}</li>#}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#    {% endif %} {% endwith %}#}
+{#    <br/>#}
+{#    {% if username %}#}
+{#        <a href="{{ url_for('enter_question') }}" class="btn btn-primary"#}
+{#        >Post a question</a>#}
+{#    {% endif %}#}
+{#    <br/><br/>#}
+{#    <div class="dropdown">#}
+{#        <button onclick="toggleShowDropdown()" class="dropbtn">Sort by:</button>#}
+{#        <div id="dropdownList" class="dropdown-content">#}
+{#            <a href="{{ url_for('index', criterion='title', direction='asc') }}">Sort by title (ascending)</a>#}
+{#            <a href="{{ url_for('index', criterion='title', direction='desc') }}">Sort by title (descending)</a>#}
+{##}
+{#            <a href="{{ url_for('index', criterion='submission_time', direction='asc') }}">Sort by submission time#}
+{#                (ascending)</a>#}
+{#            <a href="{{ url_for('index', criterion='submission_time', direction='desc') }}">Sort by submission time#}
+{#                (descending)</a>#}
+{##}
+{#            <a href="{{ url_for('index', criterion='message', direction='asc') }}">Sort by message (ascending)</a>#}
+{#            <a href="{{ url_for('index', criterion='message', direction='desc') }}">Sort by message (descending)</a>#}
+{##}
+{#            <a href="{{ url_for('index', criterion='view_number', direction='asc') }}">Sort by view number#}
+{#                (ascending)</a>#}
+{#            <a href="{{ url_for('index', criterion='view_number', direction='desc') }}">Sort by view number#}
+{#                (descending)</a>#}
+{##}
+{#            <a href="{{ url_for('index', criterion='vote_number', direction='asc') }}">Sort by vote number#}
+{#                (ascending)</a>#}
+{#            <a href="{{ url_for('index', criterion='vote_number', direction='desc') }}">Sort by vote number#}
+{#                (descending)</a>#}
+{#        </div>#}
+{##}
+{#    </div>#}
+{#    {% if entries %}#}
+{#        <table class="table">#}
+{#            <thead>#}
+{#            <tr>#}
+{#                <th>Title</th>#}
+{#                <th>Message</th>#}
+{#                <th>View count</th>#}
+{#                <th>Vote number</th>#}
+{#                <th>Submitted at</th>#}
+{#            </tr>#}
+{#            </thead>#}
+{#            <tbody>#}
+{#            {% for entry in entries %}#}
+{#                <tr>#}
+{#                    <td>#}
+{#                        <a href="{{ url_for( 'get_entry', question_id=entry.id ) }}">#}
+{#                            {{ entry.title }}#}
+{#                        </a>#}
+{#                    </td>#}
+{#                    <td>{{ entry.message }}</td>#}
+{#                    <td align="center">{{ entry.view_number }}</td>#}
+{#                    <td align="center">{{ entry.vote_number }}</td>#}
+{#                    <td align="center">{{ entry.submission_time }}</td>#}
+{#                </tr>#}
+{##}
+{#            {% endfor %}#}
+{#            </tbody>#}
+{#        </table>#}
+{#    {% else %}#}
+{#        <p>Nothing here</p>#}
+{#    {% endif %}#}
+{##}
+{#{% endblock %}#}
+{#ORIGINAL#}

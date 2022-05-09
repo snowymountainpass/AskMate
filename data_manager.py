@@ -432,7 +432,7 @@ def show_users(cursor):
 @database_common.connection_handler
 def register_new_user(cursor, user_name, pass_word):
     query = """
-    INSERT INTO "user"  ("user".username,"user".registration_date,"user".asked_questions,"user".answers,"user".comments_question,"user".comments_answer,"user".password,"user".reputation) 
+    INSERT INTO "user"  (username,registration_date,asked_questions,answers,comments_question,comments_answer,password,reputation) 
     VALUES (%(user_name)s,%(time)s,'default_question','default_answer',
     'default_comments_question','default_comments_answer', %(pass_word)s,0)
     """

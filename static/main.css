@@ -244,3 +244,34 @@ hr {
         .show {
             display: block;
         }
+
+.navbar{
+    background-color: rgb(203, 90, 107);
+    width: content-box;
+}
+
+.navbar-brand {
+    background-image: url("images/AM logo.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    /*background-size: contain;*/
+    background-size: 165%;
+    width: 48px;
+    height: 48px;
+
+}
+
+.navbar-nav .nav-item:hover {
+    background-color: rgb(42, 119, 211);
+}
+body{
+    background-color: #003366;
+    color: #aaaaaa;
+}
+.table{
+    color: #aaaaaa;
+}
+
+h2{
+    align-items: center;
+}
