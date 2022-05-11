@@ -14,3 +14,16 @@ This project is an implementation of a forum website. Users can add questions, a
 - Users can post questions, answer questions and post comments;
 - Users can edit or delete questions and answers 
 - Users can upvote questions and answers
+
+## Screengrabs
+Landing page (logged in)
+![AM-3](https://user-images.githubusercontent.com/73165724/167826205-e29dbbb4-0e67-4555-a727-1727fee26038.png)
+
+Sign Up page
+![AM-1](https://user-images.githubusercontent.com/73165724/167826181-d85ec5bd-fe78-4976-b659-7050c1a5bb05.png)
+
+Landing page (logged out)
+![AM-2](https://user-images.githubusercontent.com/73165724/167826192-2556e253-bdce-445b-8c09-8b4898fadfb0.png)
+
+Posting a question page
+![AM-4](https://user-images.githubusercontent.com/73165724/167826248-aa06a4e0-59e9-418d-82bf-2f35dfbb40e7.png)
