@@ -256,6 +256,8 @@ def show_users():
     for element in entries:
         current_user = element["user_id"]
         number_of_questions = data_manager.count_user_questions(current_user)
+        number_of_comments = data_manager.count_user_comments(current_user)
+        number_of_answers = data_manager.count_user_answers(current_user)
     return render_template("users.html", entries=entries)
 
 

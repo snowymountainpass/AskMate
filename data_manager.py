@@ -510,7 +510,7 @@ def get_user_details(cursor, userid):
     query = """
     SELECT *
     FROM "user"
-    WHERE "user".user_id LIKE %(user_id)s
+    WHERE "user".user_id = %(user_id)s
     """
     cursor.execute(query, {"user_id": userid})
     return cursor.fetchall()

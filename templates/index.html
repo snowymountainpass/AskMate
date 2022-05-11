@@ -36,12 +36,9 @@
                             <a class="nav-link active" aria-current="page" href="{{url_for('index')}}"><i
                                     class="bi bi-house-fill me-2"></i>Home</a>
                         </li>
-                        <li class="nav-item rounded">
-                            <a class="nav-link" href="#"><i class="bi bi-people-fill me-2"></i>About</a>
-                        </li>
-                        <li class="nav-item rounded">
-                            <a class="nav-link" href="{{ url_for("show_users") }}"><i class="bi bi-telephone-fill me-2"></i>Registered Users</a>
-                        </li>
+{#                        <li class="nav-item rounded">#}
+{#                            <a class="nav-link" href="{{ url_for("show_users") }}"><i class="bi bi-telephone-fill me-2"></i>Registered Users</a>#}
+{#                        </li>#}
                         <li class="nav-item dropdown rounded">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill me-2"></i>Profile</a>
@@ -85,12 +82,7 @@
                 {% endfor %}
             </ul>
         {% endif %} {% endwith %}
-        <br/>
-        {% if username %}
-            <a href="{{ url_for('enter_question') }}" class="btn btn-primary"
-            >Post a question</a>
-        {% endif %}
-        <br/>
+
 
         <div class="dropdown">
             <button onclick="toggleShowDropdown()" class="dropbtn">Sort by:</button>
@@ -116,7 +108,13 @@
                 <a href="{{ url_for('index', criterion='vote_number', direction='desc') }}">Sort by vote number
                     (descending)</a>
             </div>
-
+            <br/>
+            <br/>
+            {% if username %}
+                <a href="{{ url_for('enter_question') }}" class="btn btn-primary"
+                >Post a question</a>
+            {% endif %}
+            <br/>
         </div>
 
         <div class="container-fluid  flex justify-content-center align-items-center">
